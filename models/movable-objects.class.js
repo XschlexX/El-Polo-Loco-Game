@@ -1,8 +1,9 @@
 class MovableObjects {
-    x = 120;
-    y = 250;
-    height = 150;
-    width = 100;
+    height = 75;
+    width = 60;
+    groundLevel = 425 - this.height;
+    x = 50;
+    y = this.groundLevel;
     img;
 
 
