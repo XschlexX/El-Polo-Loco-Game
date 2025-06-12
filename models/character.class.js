@@ -53,11 +53,11 @@ class Character extends MovableObjects {
                 this.x += this.speed;
                 this.otherDirection = false;
             }
-            if (this.world.keyboard.LEFT) {
+            if (this.world.keyboard.LEFT && this.x > -1340) {
                 this.x -= this.speed;
                 this.otherDirection = true;
             }
-            this.world.camera_x = -this.x;
+            this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
         setInterval(() => {
             if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
