@@ -1,7 +1,7 @@
 class MovableObjects {
     height = 75;
-    width = 60;
-    groundLevel = 425 - this.height;
+    width = this.height * 0.8;
+    groundLevel = 440 - this.height;
     x = 50;
     y = this.groundLevel;
     img;
@@ -23,6 +23,14 @@ class MovableObjects {
             img.src = path;
             this.imageCache[path] = img;
         });
+    }
+
+    playAnimation(arr) {
+        let i = this.currentImage % arr.length;
+        let path = arr[i];
+        this.img = this.imageCache[path];
+        this.currentImage++;
+
     }
 
     moveRight() {

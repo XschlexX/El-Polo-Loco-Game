@@ -1,7 +1,7 @@
 class Character extends MovableObjects {
     height = 280;
     width = this.height * 0.5;
-    speed = 5;
+    speed = 10;
     imagesIdle = [
         '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
         '../assets/img/2_character_pepe/1_idle/idle/I-2.png',
@@ -30,7 +30,7 @@ class Character extends MovableObjects {
 
     constructor() {
         super();
-        this.groundLevel = 430 - this.height; // Neuberechnung von groundLevel  
+        this.groundLevel = 445 - this.height; // Neuberechnung von groundLevel  
         this.y = this.groundLevel; // y-Position basierend auf neuem groundLevel
         this.loadImage('../assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.imagesWalk);
@@ -49,7 +49,7 @@ class Character extends MovableObjects {
 
     animate() {
         setInterval(() => {
-            if (this.world.keyboard.RIGHT) {
+            if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX + 100) {
                 this.x += this.speed;
                 this.otherDirection = false;
             }
@@ -61,10 +61,7 @@ class Character extends MovableObjects {
         }, 1000 / 60);
         setInterval(() => {
             if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                let i = this.currentImage % this.imagesWalk.length;
-                let path = this.imagesWalk[i];
-                this.img = this.imageCache[path];
-                this.currentImage++;
+                this.playAnimation(this.imagesWalk);
             }
         }, 150);
     }
