@@ -3,9 +3,9 @@ class Character extends MovableObjects {
     width = this.height * 0.5;
     groundLevel = 445 - this.height;
     x = 50;
-    // y = this.groundLevel;
-    y = 0;
-    speed = 10;
+    y = this.groundLevel;
+    // y = 0;
+    speed = 5;
     sleep = false;
     world;
     imagesIdle = [
@@ -86,16 +86,15 @@ class Character extends MovableObjects {
         }, 100); // Häufigere Überprüfung, aber nicht zu oft
         setInterval(() => {
             if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX + 100) {
-                this.x += this.speed;
-                this.otherDirection = false;
+                this.moveRight();
             }
             if (this.world.keyboard.LEFT && this.x > -1340) {
-                this.x -= this.speed;
-                this.otherDirection = true;
+                this.moveLeft(true);
             }
 
-            if (this.world.keyboard.UP) {
-                this.speedY = 4;
+            if (this.world.keyboard.SPACE && !this.isAboveGround(this.groundLevel)) {
+                this.jump();
+                this.currentImage = 0;
             }
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
@@ -110,10 +109,6 @@ class Character extends MovableObjects {
                 this.playAnimation(this.imagesIdle);
             }
         }, 150);
-    }
-
-    jump() {
-        console.log('Jumping');
     }
 
 }
