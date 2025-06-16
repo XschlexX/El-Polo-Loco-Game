@@ -2,8 +2,9 @@ class Endboss extends MovableObjects {
     height = 400;
     width = this.height * 0.8;
     groundLevel = 450 - this.height;
-    // x = 700;
     y = this.groundLevel;
+    x = 700;
+
 
     imagesAlert = [
         '../assets/img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -27,7 +28,6 @@ class Endboss extends MovableObjects {
         super();
         this.loadImage(this.imagesAlert[0]);
         this.loadImages(this.imagesAlert);
-        this.x = 700;
         this.animate();
     }
 

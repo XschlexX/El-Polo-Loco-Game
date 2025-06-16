@@ -1,7 +1,13 @@
 class Character extends MovableObjects {
     height = 280;
     width = this.height * 0.5;
+    groundLevel = 445 - this.height;
+    x = 50;
+    // y = this.groundLevel;
+    y = 0;
     speed = 10;
+    sleep = false;
+    world;
     imagesIdle = [
         '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
         '../assets/img/2_character_pepe/1_idle/idle/I-2.png',
@@ -14,6 +20,20 @@ class Character extends MovableObjects {
         '../assets/img/2_character_pepe/1_idle/idle/I-9.png',
         '../assets/img/2_character_pepe/1_idle/idle/I-10.png'
     ];
+
+    imagesLongIdle = [
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
+        '../assets/img/2_character_pepe/1_idle/long_idle/I-20.png',
+    ];
+
     imagesWalk = [
         '../assets/img/2_character_pepe/2_walk/W-21.png',
         '../assets/img/2_character_pepe/2_walk/W-22.png',
@@ -22,32 +42,48 @@ class Character extends MovableObjects {
         '../assets/img/2_character_pepe/2_walk/W-25.png',
         '../assets/img/2_character_pepe/2_walk/W-26.png'
     ];
+
     imagesJump = [
-
+        '../assets/img/2_character_pepe/3_jump/J-31.png',
+        '../assets/img/2_character_pepe/3_jump/J-32.png',
+        '../assets/img/2_character_pepe/3_jump/J-33.png',
+        '../assets/img/2_character_pepe/3_jump/J-34.png',
+        '../assets/img/2_character_pepe/3_jump/J-35.png',
+        '../assets/img/2_character_pepe/3_jump/J-36.png',
+        '../assets/img/2_character_pepe/3_jump/J-37.png',
+        '../assets/img/2_character_pepe/3_jump/J-38.png',
+        '../assets/img/2_character_pepe/3_jump/J-39.png'
     ];
-    world;
-
 
     constructor() {
         super();
-        this.groundLevel = 445 - this.height; // Neuberechnung von groundLevel  
-        this.y = this.groundLevel; // y-Position basierend auf neuem groundLevel
-        this.loadImage('../assets/img/2_character_pepe/1_idle/idle/I-1.png');
+        this.loadImage(this.imagesIdle[0]);
+        this.loadImages(this.imagesIdle);
+        this.loadImages(this.imagesLongIdle);
         this.loadImages(this.imagesWalk);
-        // this.animateIdle();
+        this.loadImages(this.imagesJump);
+        this.applyGravity(this.groundLevel);
         this.animate();
     }
 
-    // animateIdle() {
-    //     setInterval(() => {
-    //         let i = this.currentImage % this.imagesIdle.length;
-    //         let path = this.imagesIdle[i];
-    //         this.img = this.imageCache[path];
-    //         this.currentImage++;
-    //     }, 150);
-    // }
-
     animate() {
+        let sleepTimer;
+
+        const resetSleepTimer = () => {
+            clearTimeout(sleepTimer);
+            this.sleep = false;
+            sleepTimer = setTimeout(() => {
+                this.sleep = true;
+            }, 3000);
+        };
+
+        resetSleepTimer();
+
+        setInterval(() => {
+            if (this.world.keyboard.ANY) {
+                resetSleepTimer();
+            }
+        }, 100); // Häufigere Überprüfung, aber nicht zu oft
         setInterval(() => {
             if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX + 100) {
                 this.x += this.speed;
@@ -57,11 +93,21 @@ class Character extends MovableObjects {
                 this.x -= this.speed;
                 this.otherDirection = true;
             }
+
+            if (this.world.keyboard.UP) {
+                this.speedY = 4;
+            }
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
         setInterval(() => {
             if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.playAnimation(this.imagesWalk);
+            } else if (this.isAboveGround(this.groundLevel)) {
+                this.playAnimation(this.imagesJump);
+            } else if (this.sleep) {
+                this.playAnimation(this.imagesLongIdle);
+            } else {
+                this.playAnimation(this.imagesIdle);
             }
         }, 150);
     }
