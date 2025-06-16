@@ -2,10 +2,10 @@ class MovableObjects {
     img;
     imageCache = {};
     currentImage = 0;
-    speed = 0.15;
+    // speed = 0.15;
     otherDirection = false;
     speedY = 0;
-    acceleration = 0.1;
+    acceleration = 0.3;
 
     applyGravity(groundLevel) {
         setInterval(() => {
@@ -45,12 +45,16 @@ class MovableObjects {
     }
 
     moveRight() {
-        console.log('Moving right');
+        this.x += this.speed;
+        this.otherDirection = false;
     }
 
-    moveLeft() {
-        setInterval(() => {
-            this.x -= this.speed;
-        }, 1000 / 60);
+    moveLeft(directionState) {
+        this.x -= this.speed;
+        this.otherDirection = directionState;
+    }
+
+    jump() {
+        this.speedY = 8;
     }
 }
