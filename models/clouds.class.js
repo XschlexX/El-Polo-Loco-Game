@@ -3,6 +3,7 @@ class Cloud extends MovableObjects {
     width = 1440;
     height = 480;
     speed = 0.15;
+    drawRect = false;
 
     constructor() {
         super().loadImage('../assets/img/5_background/layers/4_clouds/full.png');

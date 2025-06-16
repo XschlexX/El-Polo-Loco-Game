@@ -7,6 +7,10 @@ class Character extends MovableObjects {
     // y = 0;
     speed = 5;
     sleep = false;
+    xOffset = 24;
+    yOffset = 110;
+    widthOffset = 60;
+    heightOffset = 120;
     world;
     imagesIdle = [
         '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
@@ -91,7 +95,6 @@ class Character extends MovableObjects {
             if (this.world.keyboard.LEFT && this.x > -1340) {
                 this.moveLeft(true);
             }
-
             if (this.world.keyboard.SPACE && !this.isAboveGround(this.groundLevel)) {
                 this.jump();
                 this.currentImage = 0;

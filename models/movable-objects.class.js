@@ -6,6 +6,11 @@ class MovableObjects {
     otherDirection = false;
     speedY = 0;
     acceleration = 0.3;
+    drawRect = true;
+    xOffset = 0;
+    yOffset = 0;
+    widthOffset = 0;
+    heightOffset = 0;
 
     applyGravity(groundLevel) {
         setInterval(() => {

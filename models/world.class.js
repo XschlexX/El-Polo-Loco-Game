@@ -35,13 +35,13 @@ class World {
         requestAnimationFrame(() => self.draw());
     }
 
-    addObjectsToMap(objects) {
+    addObjectsToMap(objects, drawRect) {
         objects.forEach(o => {
-            this.addToMap(o);
+            this.addToMap(o, drawRect);
         });
     }
 
-    addToMap(mo) {
+    addToMap(mo, drawRect) {
         if (mo.otherDirection) {
             this.ctx.save();
             this.ctx.translate(mo.width, 0);
@@ -50,6 +50,11 @@ class World {
             // this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
         }
         this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+        if (mo.drawRect) {
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = 'red';
+            this.ctx.strokeRect(mo.x + mo.xOffset, mo.y + mo.yOffset, mo.width - mo.widthOffset, mo.height - mo.heightOffset);
+        }
         if (mo.otherDirection) {
             this.ctx.restore();
             mo.x = -mo.x;
