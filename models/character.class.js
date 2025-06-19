@@ -61,6 +61,22 @@ class Character extends MovableObjects {
         '../assets/img/2_character_pepe/3_jump/J-39.png'
     ];
 
+    imagesHurt = [
+        '../assets/img/2_character_pepe/4_hurt/H-41.png',
+        '../assets/img/2_character_pepe/4_hurt/H-42.png',
+        '../assets/img/2_character_pepe/4_hurt/H-43.png'
+    ];
+
+    imagesDead = [
+        '../assets/img/2_character_pepe/5_dead/D-51.png',
+        '../assets/img/2_character_pepe/5_dead/D-52.png',
+        '../assets/img/2_character_pepe/5_dead/D-53.png',
+        '../assets/img/2_character_pepe/5_dead/D-54.png',
+        '../assets/img/2_character_pepe/5_dead/D-55.png',
+        '../assets/img/2_character_pepe/5_dead/D-56.png',
+        '../assets/img/2_character_pepe/5_dead/D-57.png'
+    ];
+
     constructor() {
         super();
         this.loadImage(this.imagesIdle[0]);
@@ -68,6 +84,8 @@ class Character extends MovableObjects {
         this.loadImages(this.imagesLongIdle);
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesJump);
+        this.loadImages(this.imagesHurt);
+        this.loadImages(this.imagesDead);
         this.applyGravity(this.groundLevel);
         this.animate();
     }
@@ -104,17 +122,23 @@ class Character extends MovableObjects {
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
         setInterval(() => {
-            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.imagesWalk);
-            } else if (this.isAboveGround(this.groundLevel)) {
-                this.playAnimation(this.imagesJump);
-            } else if (this.sleep) {
-                this.playAnimation(this.imagesLongIdle);
+            if (this.isDead()) {
+                this.playAnimation(this.imagesDead);
+            } else if (this.isHurt()) {
+                this.playAnimation(this.imagesHurt);
             } else {
-                this.playAnimation(this.imagesIdle);
+                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                    this.playAnimation(this.imagesWalk);
+                } else if (this.isAboveGround(this.groundLevel)) {
+                    this.playAnimation(this.imagesJump);
+                } else if (this.sleep) {
+                    this.playAnimation(this.imagesLongIdle);
+                } else {
+                    this.playAnimation(this.imagesIdle);
+                }
             }
         }, 150);
-    }
 
+    }
 }
 
