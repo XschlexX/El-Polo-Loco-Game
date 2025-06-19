@@ -13,10 +13,21 @@ class World {
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
+        this.checkCollisions();
     }
 
     setWorld() {
         this.character.world = this;
+    }
+
+    checkCollisions() {
+        setInterval(() => {
+            this.level.enemies.forEach(enemy => {
+                if (this.character.isColliding(enemy)) {
+                    console.log('Collision with ', enemy);
+                }
+            });
+        }, 200);
     }
 
     draw() {
@@ -35,29 +46,35 @@ class World {
         requestAnimationFrame(() => self.draw());
     }
 
-    addObjectsToMap(objects, drawRect) {
+    addObjectsToMap(objects) {
         objects.forEach(o => {
-            this.addToMap(o, drawRect);
+            this.addToMap(o);
         });
     }
 
-    addToMap(mo, drawRect) {
+    addToMap(mo) {
         if (mo.otherDirection) {
-            this.ctx.save();
-            this.ctx.translate(mo.width, 0);
-            this.ctx.scale(-1, 1);
-            mo.x = -mo.x;
-            // this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
+            this.flipImage(mo);
         }
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-        if (mo.drawRect) {
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeStyle = 'red';
-            this.ctx.strokeRect(mo.x + mo.xOffset, mo.y + mo.yOffset, mo.width - mo.widthOffset, mo.height - mo.heightOffset);
-        }
+        mo.draw(this.ctx);
+        mo.drawFrame(this.ctx);
+        mo.drawCollisionFrame(this.ctx);
+
         if (mo.otherDirection) {
-            this.ctx.restore();
-            mo.x = -mo.x;
+            this.flipImageBack(mo);
         }
     }
+
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
+        mo.x = -mo.x;
+    }
+
+    flipImageBack(mo) {
+        this.ctx.restore();
+        mo.x = -mo.x;
+    }
+
 }

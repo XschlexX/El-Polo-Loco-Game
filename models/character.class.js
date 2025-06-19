@@ -7,10 +7,12 @@ class Character extends MovableObjects {
     // y = 0;
     speed = 5;
     sleep = false;
-    xOffset = 24;
-    yOffset = 110;
-    widthOffset = 60;
-    heightOffset = 120;
+    rectOffset = {
+        left: 50,
+        top: 110,
+        right: 100,
+        bottom: 125
+    };
     world;
     imagesIdle = [
         '../assets/img/2_character_pepe/1_idle/idle/I-1.png',

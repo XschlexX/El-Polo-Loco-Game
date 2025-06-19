@@ -3,6 +3,13 @@ class Chicken extends MovableObjects {
     width = this.height * 0.8;
     groundLevel = 440 - this.height;
     y = this.groundLevel;
+    rectOffset = {
+        left: 0,
+        top: 25,
+        right: 0,
+        bottom: 30
+    };
+
     imagesWalk = [
         '../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         '../assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
