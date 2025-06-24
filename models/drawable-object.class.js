@@ -37,7 +37,7 @@ class DrawableObject {
         if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'red';
-            ctx.strokeRect(this.x + this.rectOffset.left, this.y + this.rectOffset.top, this.width - this.rectOffset.right, this.height - this.rectOffset.bottom);
+            ctx.strokeRect(this.x + this.rectOffsetLeft, this.y + this.rectOffsetTop, this.width - this.rectOffsetRight, this.height - this.rectOffsetBottom);
         }
     }
 

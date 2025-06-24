@@ -7,12 +7,10 @@ class Character extends MovableObjects {
     // y = 0;
     speed = 5;
     sleep = false;
-    rectOffset = {
-        left: 50,
-        top: 110,
-        right: 100,
-        bottom: 125
-    };
+    rectOffsetLeft = 50;
+    rectOffsetTop = 110;
+    rectOffsetRight = 100;
+    rectOffsetBottom = 125;
     world;
     imagesIdle = [
         '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
@@ -92,7 +90,6 @@ class Character extends MovableObjects {
 
     animate() {
         let sleepTimer;
-
         const resetSleepTimer = () => {
             clearTimeout(sleepTimer);
             this.sleep = false;
@@ -115,7 +112,7 @@ class Character extends MovableObjects {
             if (this.world.keyboard.LEFT && this.x > -1340) {
                 this.moveLeft(true);
             }
-            if (this.world.keyboard.SPACE && !this.isAboveGround(this.groundLevel)) {
+            if (this.world.keyboard.UP && !this.isAboveGround(this.groundLevel)) {
                 this.jump();
                 this.currentImage = 0;
             }

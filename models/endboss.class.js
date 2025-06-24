@@ -4,12 +4,8 @@ class Endboss extends MovableObjects {
     groundLevel = 450 - this.height;
     y = this.groundLevel;
     x = 300;
-    rectOffset = {
-        left: 0,
-        top: 70,
-        right: 0,
-        bottom: 85
-    };
+    rectOffsetTop = 70;
+    rectOffsetBottom = 15 + this.rectOffsetTop;
 
     imagesAlert = [
         '../assets/img/4_enemie_boss_chicken/2_alert/G5.png',

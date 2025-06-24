@@ -6,12 +6,10 @@ class MovableObjects extends DrawableObject {
     acceleration = 0.3;
     energy = 100;
     lastHit = 0;
-    rectOffset = {
-        left: 0,
-        top: 0,
-        right: 0,
-        bottom: 0
-    };
+    rectOffsetLeft = 0;
+    rectOffsetTop = 0;
+    rectOffsetRight = 0;
+    rectOffsetBottom = 0;
 
 
     applyGravity(groundLevel) {
@@ -30,10 +28,10 @@ class MovableObjects extends DrawableObject {
     }
 
     isColliding(mo) {
-        return (this.x + this.rectOffset.left + this.width - this.rectOffset.right) > (mo.x + mo.rectOffset.left) &&
-            (this.y + this.rectOffset.top + this.height - this.rectOffset.bottom) > (mo.y + mo.rectOffset.top) &&
-            (this.x + this.rectOffset.left) < (mo.x + mo.rectOffset.left + mo.width - mo.rectOffset.right) &&
-            (this.y + this.rectOffset.top) < (mo.y + mo.rectOffset.top + mo.height - mo.rectOffset.bottom);
+        return (this.x + this.rectOffsetLeft + this.width - this.rectOffsetRight) > (mo.x + mo.rectOffsetLeft) &&
+            (this.y + this.rectOffsetTop + this.height - this.rectOffsetBottom) > (mo.y + mo.rectOffsetTop) &&
+            (this.x + this.rectOffsetLeft) < (mo.x + mo.rectOffsetLeft + mo.width - mo.rectOffsetRight) &&
+            (this.y + this.rectOffsetTop) < (mo.y + mo.rectOffsetTop + mo.height - mo.rectOffsetBottom);
     }
 
     hit() {
@@ -56,12 +54,10 @@ class MovableObjects extends DrawableObject {
     }
 
     playAnimation(arr) {
-        // setInterval(() => {
         let i = this.currentImage % arr.length;
         let path = arr[i];
         this.img = this.imageCache[path];
         this.currentImage++;
-        // }, 150);
     }
 
     moveRight() {
