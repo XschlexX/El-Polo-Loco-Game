@@ -2,13 +2,13 @@ class Level {
     clouds;
     enemies;
     backgroundObjects;
-    statusBar;
+    statusBars;
     levelEndX = 2160;
 
-    constructor(clouds, enemies, backgroundObjects, statusBar) {
+    constructor(clouds, enemies, backgroundObjects, statusBars) {
         this.clouds = clouds;
         this.enemies = enemies;
         this.backgroundObjects = backgroundObjects;
-        this.statusBar = statusBar;
+        this.statusBars = statusBars;
     }
 }

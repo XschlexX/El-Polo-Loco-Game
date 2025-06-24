@@ -1,17 +1,20 @@
 class World {
 
-    level = level1;
+    // character = new Character(keyboard);
     character = new Character(keyboard);
+    level = level1;
     canvas;
     ctx;
     keyboard;
     camera_x = 0;
-    statusBar = new StatusBar();
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        window.world = this;
+
         this.draw();
         this.setWorld();
         this.checkCollisions();
@@ -19,9 +22,11 @@ class World {
 
     setWorld() {
         this.character.world = this;
-        // this.statusBar.energy = this.character.energy;
+        // this.level.character = this.character;
         // this.statusBar.setPercentage(this.character.energy);
     }
+
+
 
     checkCollisions() {
         setInterval(() => {
@@ -43,8 +48,8 @@ class World {
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.clouds);
         this.ctx.translate(-this.camera_x, 0);
+        this.addObjectsToMap(this.level.statusBars);
 
-        this.addToMap(this.statusBar);
         this.ctx.translate(this.camera_x, 0);
 
         this.addToMap(this.character);
