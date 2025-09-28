@@ -43,7 +43,10 @@ const level1 = new Level(
         new StatusBar('imagesBottleBar', 2),
         new StatusBar('imagesCoinBar', 0),
         new StatusBar('imagesCoinBar', 1),
-        new StatusBar('imagesCoinBar', 2)
+        new StatusBar('imagesCoinBar', 2),
+        new StatusBar('imagesHealthBarEndboss', 0),
+        new StatusBar('imagesHealthBarEndboss', 1),
+        new StatusBar('imagesHealthBarEndboss', 2)
     ]
 
 );

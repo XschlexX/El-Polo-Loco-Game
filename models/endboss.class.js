@@ -3,7 +3,7 @@ class Endboss extends MovableObjects {
     width = this.height * 0.8;
     groundLevel = 450 - this.height;
     y = this.groundLevel;
-    x = 300;
+    x = 400;
     rectOffsetTop = 70;
     rectOffsetBottom = 15 + this.rectOffsetTop;
 

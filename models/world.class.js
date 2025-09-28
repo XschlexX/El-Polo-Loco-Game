@@ -7,7 +7,7 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    throwableObjects = [new ThrowableObject()];
+    throwableObjects = [];
     lastThrow;
 
 
@@ -52,7 +52,7 @@ class World {
 
     checkThrowableObject() {
         if (this.keyboard.SPACE && this.throwInterval()) {
-            let bottle = new ThrowableObject(this.character.x, this.character.y);
+            let bottle = new ThrowableObject(this.character);
             this.throwableObjects.push(bottle);
             this.lastThrow = new Date().getTime();
         }

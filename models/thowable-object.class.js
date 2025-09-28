@@ -3,7 +3,8 @@ class ThrowableObject extends MovableObjects {
     height = 70;
     width = this.height * 0.3;
     groundLevel = 445 - this.height;
-    world;
+    character;
+    // world;
 
     imagesRotate = [
         '../assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
@@ -21,15 +22,16 @@ class ThrowableObject extends MovableObjects {
     ];
 
 
-    constructor(x, y) {
+    constructor(character) {
         super();
-        this.x = x;
-        this.y = y;
+        this.character = character;
+        this.x = character.x;
+        this.y = character.y;
 
         this.loadImage(this.imagesRotate[0]);
         this.loadImages(this.imagesRotate);
         this.animate();
-        this.throw(x, y);
+        this.throw(this.x, this.y);
     }
 
     animate() {
@@ -41,9 +43,9 @@ class ThrowableObject extends MovableObjects {
     }
 
     throw(x, y) {
-        this.x = x;
-        this.y = y;
-        this.speedY = 7;
+        this.x = x + this.character.width - this.character.rectOffsetLeft;
+        this.y = y + this.character.rectOffsetTop;
+        this.speedY = 9;
         this.applyGravity(this.groundLevel);
         setInterval(() => {
             this.x += 6;

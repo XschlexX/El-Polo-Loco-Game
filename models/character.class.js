@@ -59,6 +59,14 @@ class Character extends MovableObjects {
         '../assets/img/2_character_pepe/3_jump/J-39.png'
     ];
 
+    imagesThrow = [
+        '../assets/img/2_character_pepe/6_throw/th_1.png',
+        '../assets/img/2_character_pepe/6_throw/th_2.png',
+        '../assets/img/2_character_pepe/6_throw/th_3.png',
+        '../assets/img/2_character_pepe/6_throw/th_4.png',
+        '../assets/img/2_character_pepe/6_throw/th_5.png'
+    ];
+
     imagesHurt = [
         '../assets/img/2_character_pepe/4_hurt/H-41.png',
         '../assets/img/2_character_pepe/4_hurt/H-42.png',
@@ -82,6 +90,7 @@ class Character extends MovableObjects {
         this.loadImages(this.imagesLongIdle);
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesJump);
+        this.loadImages(this.imagesThrow);
         this.loadImages(this.imagesHurt);
         this.loadImages(this.imagesDead);
         this.applyGravity(this.groundLevel);
@@ -128,6 +137,8 @@ class Character extends MovableObjects {
                     this.playAnimation(this.imagesWalk);
                 } else if (this.isAboveGround(this.groundLevel)) {
                     this.playAnimation(this.imagesJump);
+                } else if (this.world.keyboard.SPACE) {
+                    this.playAnimation(this.imagesThrow);
                 } else if (this.sleep) {
                     this.playAnimation(this.imagesLongIdle);
                 } else {

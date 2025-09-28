@@ -44,7 +44,13 @@ class StatusBar extends DrawableObject {
         '../assets/img/7_statusbars/3_icons/icon_coin.png'
     ];
 
-    x = 50;
+    imagesHealthBarEndboss = [
+        '../assets/img/7_statusbars/4_bar_elements/statusbar_empty_endboss.png',
+        '../assets/img/7_statusbars/4_bar_elements/statusbar_blue_endboss.png',
+        '../assets/img/7_statusbars/3_icons/icon_health_endboss.png'
+    ];
+
+    x = 30;
     y = 20;
     width = 200;
     height = 20;
@@ -109,6 +115,19 @@ class StatusBar extends DrawableObject {
             this.y = this.y - 8 + this.gap * 2;
             this.height = this.height * 1.55;
             this.width = this.height;
+        } else if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 0) {
+            this.x = 720 - this.width - this.x;
+            this.y = this.y;
+
+        } else if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 1) {
+            this.x = 720 - this.width - this.x;
+            this.y = this.y;
+
+        } else if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 2) {
+            this.y = this.y - 15;
+            this.height = this.height * 2.5;
+            this.width = this.height * 1.1;
+            this.x = 720 - this.width - 6;
         }
     }
 }
