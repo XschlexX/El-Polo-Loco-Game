@@ -4,7 +4,16 @@ class ThrowableObject extends MovableObjects {
     width = this.height * 0.3;
     groundLevel = 445 - this.height;
     character;
-    // world;
+    world;
+    hasSplashed = false;
+    splashAnimationComplete = false;
+    throwInterval;
+    markedForDeletion = false;
+    // Collision Box Offsets für bessere Treffergenauigkeit
+    rectOffsetLeft = 5;
+    rectOffsetRight = 5;
+    rectOffsetTop = 5;
+    rectOffsetBottom = 5;
 
     imagesRotate = [
         '../assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
@@ -47,16 +56,55 @@ class ThrowableObject extends MovableObjects {
 
     animate() {
         setInterval(() => {
-            if (this.isAboveGround(this.groundLevel)) {
+            if (!this.hasSplashed && this.isAboveGround(this.groundLevel)) {
                 this.playAnimation(this.imagesRotate);
-            } else {
-                this.playAnimation(this.imagesSplash);
-                // console.log(world);
+            } else if (!this.hasSplashed && !this.isAboveGround(this.groundLevel)) {
+                // Flasche trifft den Boden
+                this.splash();
+            }
+
+            if (this.hasSplashed && !this.splashAnimationComplete) {
+                let i = this.currentImage % this.imagesSplash.length;
+                let path = this.imagesSplash[i];
+                this.img = this.imageCache[path];
+                this.currentImage++;
+
+                // Animation stoppt nach einem Durchlauf
+                if (this.currentImage >= this.imagesSplash.length) {
+                    this.splashAnimationComplete = true;
+                    this.markedForDeletion = true; // Markiere zum Löschen
+                    // Nach kurzer Verzögerung aus der World entfernen
+                    setTimeout(() => {
+                        this.removeFromWorld();
+                    }, 100);
+                }
             }
             this.height = this.img.naturalHeight * 0.2;
             this.width = this.img.naturalWidth * 0.2;
         }, 50);
-        // world.throwableObjects.splice(world.throwableObjects.indexOf(this), 1);
+    }
+
+    splash() {
+        if (!this.hasSplashed) {
+            this.hasSplashed = true;
+            this.currentImage = 0; // Reset für Splash-Animation
+            this.stopMovement(); // Stoppe horizontale Bewegung
+        }
+    }
+
+    removeFromWorld() {
+        if (this.world) {
+            const index = this.world.throwableObjects.indexOf(this);
+            if (index > -1) {
+                this.world.throwableObjects.splice(index, 1);
+            }
+        }
+    }
+
+    stopMovement() {
+        if (this.throwInterval) {
+            clearInterval(this.throwInterval);
+        }
     }
 
     throw(x, y) {
@@ -69,7 +117,7 @@ class ThrowableObject extends MovableObjects {
         this.y = y + this.character.rectOffsetTop;
         this.speedY = 9;
         this.applyGravity(this.groundLevel);
-        setInterval(() => {
+        this.throwInterval = setInterval(() => {
             this.x += throwDirection;
         }, 1000 / 60);
 

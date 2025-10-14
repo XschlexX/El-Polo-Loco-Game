@@ -63,11 +63,17 @@ class StatusBar extends DrawableObject {
 
     constructor(statusbar, type) {
         super();
-        this.setCharacter();
         this.statusbar = statusbar;
         this.type = type;
         this.setPosition();
         this.loadImage(this[statusbar][type]);
+
+        // Initialisierung je nach Statusbar-Typ
+        if (statusbar === 'imagesHealthBar' || statusbar === 'imagesBottleBar' || statusbar === 'imagesCoinBar') {
+            this.setCharacter();
+        } else if (statusbar === 'imagesHealthBarEndboss') {
+            this.setEndboss();
+        }
     }
 
     setCharacter() {
@@ -83,10 +89,40 @@ class StatusBar extends DrawableObject {
         }, 500);
     }
 
+    setEndboss() {
+        setTimeout(() => {
+            if (world) {
+                this.endboss = world.level.enemies.find(enemy => enemy instanceof Endboss);
+                if (this.endboss) {
+                    console.log('Endboss in StatusBar:', this.endboss.energy);
+                    this.endbossMultiplier = this.width / this.endboss.energy;
+                    this.initialWidth = this.width; // Speichere die Anfangsbreite
+                    this.initialX = this.x; // Speichere die Anfangs-X-Position
+                    this.setEndbossWidth();
+                } else {
+                    console.error('Endboss nicht gefunden');
+                }
+            }
+        }, 500);
+    }
+
     setWidth() {
         setInterval(() => {
             if (this.statusbar === 'imagesHealthBar' && this.type === 1) {
                 this.width = this.character.energy * this.multiplier;
+            }
+        }, 100);
+    }
+
+    setEndbossWidth() {
+        setInterval(() => {
+            if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 1 && this.endboss) {
+                let newWidth = this.endboss.energy * this.endbossMultiplier;
+                let widthDifference = this.initialWidth - newWidth;
+
+                // Passe X-Position an, damit die Bar von links nach rechts kleiner wird
+                this.x = this.initialX + widthDifference;
+                this.width = newWidth;
             }
         }, 100);
     }

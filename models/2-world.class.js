@@ -28,6 +28,9 @@ class World {
         this.throwableObjects.forEach(object => {
             object.world = this;
         });
+        this.level.enemies.forEach(enemy => {
+            enemy.world = this;
+        });
         // this.level.character = this.character;
         // this.statusBar.setPercentage(this.character.energy);
     }
@@ -39,20 +42,63 @@ class World {
             this.checkCollisions();
             this.checkThrowableObject();
         }, 200);
+
+        // Häufigere Prüfung der Flaschen-Kollisionen für bessere Treffergenauigkeit
+        setInterval(() => {
+            this.checkBottleCollisions();
+        }, 50);
     }
 
     checkCollisions() {
         this.level.enemies.forEach(enemy => {
-            if (this.character.isColliding(enemy) && !this.character.isHurt()) {
-                this.character.hit();
-                console.log('Energy: ', this.character.energy);
+            // Ignoriere tote oder sterbende Gegner
+            if (enemy.isDying || enemy.isDead()) {
+                return;
             }
+
+            if (this.character.isColliding(enemy)) {
+                // Prüfe ob Character von oben auf das Huhn springt
+                if (this.isJumpingOnEnemy(this.character, enemy)) {
+                    // Character springt auf Gegner - Gegner stirbt
+                    enemy.hit();
+                    this.character.jump(); // Kleiner Bounce-Effekt
+                    console.log('Jumped on enemy! Enemy energy:', enemy.energy);
+                } else if (!this.character.isHurt()) {
+                    // Normale Kollision von der Seite - Character nimmt Schaden
+                    this.character.hit();
+                    console.log('Character hit! Energy:', this.character.energy);
+                }
+            }
+        });
+    }
+
+    isJumpingOnEnemy(character, enemy) {
+        // Prüfe ob Character von oben kommt (fällt) und über dem Gegner ist
+        return character.speedY < 0 &&
+            character.y + character.height - character.rectOffsetBottom < enemy.y + enemy.rectOffsetTop + 20;
+    }
+
+    checkBottleCollisions() {
+        this.throwableObjects.forEach(bottle => {
+            this.level.enemies.forEach(enemy => {
+                // Ignoriere tote oder sterbende Gegner
+                if (enemy.isDying || enemy.isDead()) {
+                    return;
+                }
+
+                if (bottle.isColliding(enemy) && !bottle.hasSplashed) {
+                    bottle.splash(); // Flasche zerbricht
+                    enemy.hit(); // Gegner nimmt Schaden
+                    console.log('Bottle hit enemy! Enemy energy:', enemy.energy);
+                }
+            });
         });
     }
 
     checkThrowableObject() {
         if (this.keyboard.SPACE && this.throwInterval()) {
             let bottle = new ThrowableObject(this.character);
+            bottle.world = this; // Setze World-Referenz
             this.throwableObjects.push(bottle);
             this.lastThrow = new Date().getTime();
         }
@@ -87,7 +133,10 @@ class World {
 
     addObjectsToMap(objects) {
         objects.forEach(o => {
-            this.addToMap(o);
+            // Objekte, die zum Löschen markiert sind, nicht zeichnen
+            if (!o.markedForDeletion) {
+                this.addToMap(o);
+            }
         });
     }
 

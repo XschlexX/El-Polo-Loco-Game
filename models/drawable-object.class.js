@@ -22,7 +22,15 @@ class DrawableObject {
     }
 
     draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        // Opacity-Unterstützung für Fade-Out-Effekt
+        if (this.opacity !== undefined && this.opacity < 1) {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+            ctx.restore();
+        } else {
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        }
     }
 
     drawFrame(ctx) {
