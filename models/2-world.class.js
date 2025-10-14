@@ -91,6 +91,19 @@ class World {
         });
     }
 
+    // addThrowableObjectToMap() {
+    //     if (this.character.otherDirection) {
+    //         this.flipImage(this.throwableObjects);
+    //     }
+    //     this.throwableObjects.draw(this.ctx);
+    //     this.throwableObjects.drawFrame(this.ctx);
+    //     this.throwableObjects.drawCollisionFrame(this.ctx);
+
+    //     if (mo.otherDirection) {
+    //         this.flipImageBack(mo);
+    //     }
+    // }
+
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
