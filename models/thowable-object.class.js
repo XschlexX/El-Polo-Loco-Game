@@ -8,12 +8,13 @@ class ThrowableObject extends MovableObjects {
     hasSplashed = false;
     splashAnimationComplete = false;
     throwInterval;
+    throwSpeed = 5;
     markedForDeletion = false;
     // Collision Box Offsets für bessere Treffergenauigkeit
-    rectOffsetLeft = 5;
-    rectOffsetRight = 5;
-    rectOffsetTop = 5;
-    rectOffsetBottom = 5;
+    rectOffsetLeft = -15;
+    rectOffsetRight = -15;
+    // rectOffsetTop = -15;
+    rectOffsetBottom = -25;
 
     imagesRotate = [
         '../assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
@@ -108,7 +109,7 @@ class ThrowableObject extends MovableObjects {
     }
 
     throw(x, y) {
-        let throwDirection = this.character.otherDirection ? -2 : 2;
+        let throwDirection = this.character.otherDirection ? -this.throwSpeed : this.throwSpeed;
         if (!this.character.otherDirection) {
             this.x = x + this.character.width - this.character.rectOffsetLeft;
         } else {

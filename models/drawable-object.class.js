@@ -22,15 +22,24 @@ class DrawableObject {
     }
 
     draw(ctx) {
+        ctx.save();
+
+        // Rotation anwenden wenn vorhanden
+        if (this.rotation) {
+            const centerX = this.x + this.width / 2;
+            const centerY = this.y + this.height / 2;
+            ctx.translate(centerX, centerY);
+            ctx.rotate(this.rotation * Math.PI / 180);
+            ctx.translate(-centerX, -centerY);
+        }
+
         // Opacity-Unterstützung für Fade-Out-Effekt
         if (this.opacity !== undefined && this.opacity < 1) {
-            ctx.save();
             ctx.globalAlpha = this.opacity;
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-            ctx.restore();
-        } else {
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         }
+
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        ctx.restore();
     }
 
     drawFrame(ctx) {
