@@ -4,7 +4,7 @@ class Endboss extends MovableObjects {
     groundLevel = 450 - this.height;
     y = this.groundLevel;
     x = 400;
-    energy = 10;
+    energy = 50;
     rectOffsetTop = 70;
     rectOffsetBottom = 15 + this.rectOffsetTop;
     rectOffsetLeft = 40;

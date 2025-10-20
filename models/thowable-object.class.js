@@ -11,10 +11,10 @@ class ThrowableObject extends MovableObjects {
     throwSpeed = 5;
     markedForDeletion = false;
     // Collision Box Offsets für bessere Treffergenauigkeit
-    rectOffsetLeft = -15;
-    rectOffsetRight = -15;
+    // rectOffsetLeft = -15;
+    // rectOffsetRight = -15;
     // rectOffsetTop = -15;
-    rectOffsetBottom = -25;
+    // rectOffsetBottom = -25;
 
     imagesRotate = [
         '../assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',

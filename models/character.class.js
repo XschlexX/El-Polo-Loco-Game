@@ -6,12 +6,15 @@ class Character extends MovableObjects {
     y = this.groundLevel;
     // y = 0;
     speed = 5;
+    energy = 1000;
+    bottles = 10;
     sleep = false;
     rectOffsetLeft = 50;
     rectOffsetTop = 110;
     rectOffsetRight = 100;
     rectOffsetBottom = 125;
     world;
+
     imagesIdle = [
         '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
         '../assets/img/2_character_pepe/1_idle/idle/I-2.png',
@@ -137,7 +140,7 @@ class Character extends MovableObjects {
                     this.playAnimation(this.imagesWalk);
                 } else if (this.isAboveGround(this.groundLevel)) {
                     this.playAnimation(this.imagesJump);
-                } else if (this.world.keyboard.SPACE) {
+                } else if (this.world.keyboard.SPACE && this.bottles > 0) {
                     this.playAnimation(this.imagesThrow);
                 } else if (this.sleep) {
                     this.playAnimation(this.imagesLongIdle);

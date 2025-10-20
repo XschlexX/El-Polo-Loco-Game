@@ -96,10 +96,12 @@ class World {
     }
 
     checkThrowableObject() {
-        if (this.keyboard.SPACE && this.throwInterval()) {
+        if (this.keyboard.SPACE && this.throwInterval() && this.character.bottles > 0) {
             let bottle = new ThrowableObject(this.character);
             bottle.world = this; // Setze World-Referenz
             this.throwableObjects.push(bottle);
+            this.character.bottles--; // Reduziere Flaschenanzahl
+            console.log('Bottles remaining:', this.character.bottles);
             this.lastThrow = new Date().getTime();
         }
     }

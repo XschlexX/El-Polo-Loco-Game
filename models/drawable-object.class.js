@@ -51,7 +51,7 @@ class DrawableObject {
     }
 
     drawCollisionFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof ThrowableObject) {
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'red';
             ctx.strokeRect(this.x + this.rectOffsetLeft, this.y + this.rectOffsetTop, this.width - this.rectOffsetRight, this.height - this.rectOffsetBottom);

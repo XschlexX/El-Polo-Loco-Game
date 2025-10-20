@@ -12,6 +12,8 @@ class Chicken extends MovableObjects {
     moveInterval;
     animationInterval;
     opacity = 1;
+    movingLeft = true; // Startrichtung: nach links
+    minX = -1440; // Linke Grenze (Level-Start)
 
     imagesWalk = [
         '../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -29,6 +31,7 @@ class Chicken extends MovableObjects {
         super();
         this.loadImage('../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.x = 200 + Math.random() * 500;
+        this.maxX = this.x; // Rechte Grenze = Startposition
         this.speed = 0.25 + Math.random() * .5;
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesDead);
@@ -38,7 +41,21 @@ class Chicken extends MovableObjects {
     animate() {
         this.moveInterval = setInterval(() => {
             if (!this.isDead()) {
-                this.moveLeft(false);
+                if (this.movingLeft) {
+                    this.x -= this.speed; // Nach links bewegen
+                    this.otherDirection = false; // Nach links = nicht gespiegelt
+                    // Richtungswechsel wenn linke Grenze erreicht
+                    if (this.x <= this.minX) {
+                        this.movingLeft = false;
+                    }
+                } else {
+                    this.x += this.speed; // Nach rechts bewegen
+                    this.otherDirection = true; // Nach rechts = gespiegelt
+                    // Richtungswechsel wenn rechte Grenze erreicht
+                    if (this.x >= this.maxX) {
+                        this.movingLeft = true;
+                    }
+                }
             }
         }, 1000 / 60);
 

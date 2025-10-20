@@ -81,7 +81,11 @@ class StatusBar extends DrawableObject {
             if (world) {
                 this.character = world.character;
                 console.log('Character in StatusBar:', this.character.energy);
-                this.multiplier = this.width / this.character.energy;
+                if (this.statusbar === 'imagesBottleBar') {
+                    this.multiplier = this.width / this.character.bottles;
+                } else {
+                    this.multiplier = this.width / this.character.energy;
+                }
                 this.setWidth();
             } else {
                 console.error('Character nicht gefunden');
@@ -110,6 +114,8 @@ class StatusBar extends DrawableObject {
         setInterval(() => {
             if (this.statusbar === 'imagesHealthBar' && this.type === 1) {
                 this.width = this.character.energy * this.multiplier;
+            } else if (this.statusbar === 'imagesBottleBar' && this.type === 1) {
+                this.width = this.character.bottles * this.multiplier;
             }
         }, 100);
     }
