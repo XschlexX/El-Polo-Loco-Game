@@ -70,7 +70,7 @@ class MovableObjects extends DrawableObject {
         this.otherDirection = directionState;
     }
 
-    jump() {
-        this.speedY = 8;
+    jump(speed) {
+        this.speedY = speed;
     }
 }

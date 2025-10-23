@@ -1,6 +1,5 @@
 class World {
 
-    // character = new Character(keyboard);
     character = new Character(keyboard);
     level = level1;
     canvas;
@@ -41,6 +40,7 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowableObject();
+            this.checkBottleCollection(); // Prüfe ob Character Flaschen einsammelt
         }, 200);
 
         // Häufigere Prüfung der Flaschen-Kollisionen für bessere Treffergenauigkeit
@@ -61,20 +61,24 @@ class World {
                 if (this.isJumpingOnEnemy(this.character, enemy)) {
                     // Character springt auf Gegner - Gegner stirbt
                     enemy.hit();
-                    this.character.jump(); // Kleiner Bounce-Effekt
-                    console.log('Jumped on enemy! Enemy energy:', enemy.energy);
+                    this.character.jump(4); // Kleiner Bounce-Effekt
                 } else if (!this.character.isHurt()) {
                     // Normale Kollision von der Seite - Character nimmt Schaden
                     this.character.hit();
-                    console.log('Character hit! Energy:', this.character.energy);
+
+                    // Wenn es ein Endboss ist, aktiviere Ramming-Modus
+                    if (enemy instanceof Endboss && enemy.onCharacterCollision) {
+                        enemy.onCharacterCollision();
+                    }
                 }
             }
         });
     }
 
     isJumpingOnEnemy(character, enemy) {
-        // Prüfe ob Character von oben kommt (fällt) und über dem Gegner ist
+        // Prüfe ob Character von oben kommt (fällt), über dem Gegner ist UND in der Luft ist
         return character.speedY < 0 &&
+            character.isAboveGround(character.groundLevel) &&
             character.y + character.height - character.rectOffsetBottom < enemy.y + enemy.rectOffsetTop + 20;
     }
 
@@ -89,9 +93,21 @@ class World {
                 if (bottle.isColliding(enemy) && !bottle.hasSplashed) {
                     bottle.splash(); // Flasche zerbricht
                     enemy.hit(); // Gegner nimmt Schaden
-                    console.log('Bottle hit enemy! Enemy energy:', enemy.energy);
                 }
             });
+        });
+    }
+
+    checkBottleCollection() {
+        this.level.collectableBottles.forEach((bottle, index) => {
+            if (this.character.isColliding(bottle) && this.character.bottles < 10) {
+                // Character sammelt Flasche ein
+                this.level.collectableBottles.splice(index, 1); // Entferne Flasche aus Level
+                this.character.bottles++; // Erhöhe Flaschenanzahl
+                if (this.character.bottles > 10) {
+                    this.character.bottles = 10; // Maximum 10 Flaschen
+                }
+            }
         });
     }
 
@@ -101,7 +117,6 @@ class World {
             bottle.world = this; // Setze World-Referenz
             this.throwableObjects.push(bottle);
             this.character.bottles--; // Reduziere Flaschenanzahl
-            console.log('Bottles remaining:', this.character.bottles);
             this.lastThrow = new Date().getTime();
         }
     }
@@ -125,6 +140,7 @@ class World {
         this.ctx.translate(this.camera_x, 0);
 
         this.addToMap(this.character);
+        this.addObjectsToMap(this.level.collectableBottles); // Zeichne sammelbare Flaschen
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
@@ -141,19 +157,6 @@ class World {
             }
         });
     }
-
-    // addThrowableObjectToMap() {
-    //     if (this.character.otherDirection) {
-    //         this.flipImage(this.throwableObjects);
-    //     }
-    //     this.throwableObjects.draw(this.ctx);
-    //     this.throwableObjects.drawFrame(this.ctx);
-    //     this.throwableObjects.drawCollisionFrame(this.ctx);
-
-    //     if (mo.otherDirection) {
-    //         this.flipImageBack(mo);
-    //     }
-    // }
 
     addToMap(mo) {
         if (mo.otherDirection) {

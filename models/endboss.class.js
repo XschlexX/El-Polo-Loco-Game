@@ -1,4 +1,5 @@
 class Endboss extends MovableObjects {
+    // Basis-Properties (von Parent geerbt: x, y, width, height, energy, etc.)
     height = 400;
     width = this.height * 0.8;
     groundLevel = 450 - this.height;
@@ -10,22 +11,45 @@ class Endboss extends MovableObjects {
     rectOffsetBottom = 15 + this.rectOffsetTop;
     rectOffsetLeft = 40;
     rectOffsetRight = 40 + this.rectOffsetLeft;
-    speed = 0.5;
-    chasingSpeed = 2;
-    isChasing = false;
-    moveDistance = 300;
-    movingRight = true;
-    movementInterval = null;
-    animationInterval = null;
-    hasPlayedDeathAnimation = false;
-    hasPlayedAlertAnimation = false;
-    hasPlayedAttackAnimation = false;
-    isPlayingAlert = false;
-    isPlayingAttack = false;
-    isChasing = false;
-    rotation = 0;
-    targetRotation = 0;
-    rotationInterval = null;
+
+    // Bewegungs-Parameter
+    movement = {
+        speed: 0.5,              // Normale Patrol-Geschwindigkeit
+        chasingSpeed: 4,         // Geschwindigkeit während Verfolgung
+        moveDistance: 300,       // Patrol-Reichweite
+        movingRight: true        // Aktuelle Patrol-Richtung
+    };
+
+    // Ramm-Angriff Parameter
+    ramming = {
+        isActive: false,         // Ramm-Modus aktiv?
+        direction: 1,            // 1 = rechts, -1 = links
+        distance: this.width * 1.5,  // Wie weit nach Kollision weiterlaufen
+        distanceTraveled: 0      // Wie weit bereits gelaufen
+    };
+
+    // Zustands-Flags
+    state = {
+        isChasing: false,              // Verfolgt den Character?
+        hasPlayedAlert: false,         // Alert-Animation bereits gespielt?
+        hasPlayedAttack: false,        // Attack-Animation bereits gespielt?
+        hasPlayedDeath: false,         // Death-Animation bereits gespielt?
+        isPlayingAlert: false,         // Alert-Animation läuft gerade?
+        isPlayingAttack: false         // Attack-Animation läuft gerade?
+    };
+
+    // Rotations-Parameter
+    rotation = {
+        current: 0,              // Aktuelle Rotation in Grad
+        target: 0,               // Ziel-Rotation in Grad
+        intervalId: null         // Interval für sanfte Rotation
+    };
+
+    // Interval-IDs
+    intervals = {
+        movement: null,
+        animation: null
+    };
 
     imagesWalk = [
         '../assets/img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -60,6 +84,18 @@ class Endboss extends MovableObjects {
         '../assets/img/4_enemie_boss_chicken/3_attack/G20.png'
     ];
 
+    imagesAttackRun = [
+        '../assets/img/4_enemie_boss_chicken/1_walk/G1.png',
+        '../assets/img/4_enemie_boss_chicken/1_walk/G2.png',
+        '../assets/img/4_enemie_boss_chicken/1_walk/G3.png',
+        '../assets/img/4_enemie_boss_chicken/1_walk/G4.png',
+        '../assets/img/4_enemie_boss_chicken/3_attack/G13.png',
+        '../assets/img/4_enemie_boss_chicken/3_attack/G17.png',
+        '../assets/img/4_enemie_boss_chicken/3_attack/G18.png',
+        '../assets/img/4_enemie_boss_chicken/3_attack/G19.png',
+        '../assets/img/4_enemie_boss_chicken/3_attack/G20.png'
+    ];
+
     imagesHurt = [
         '../assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
         '../assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
@@ -79,6 +115,7 @@ class Endboss extends MovableObjects {
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesAlert);
         this.loadImages(this.imagesAttack);
+        this.loadImages(this.imagesAttackRun);
         this.loadImages(this.imagesHurt);
         this.loadImages(this.imagesDead);
         this.animate();
@@ -86,65 +123,77 @@ class Endboss extends MovableObjects {
 
     animate() {
         // Bewegung hin und her
-        this.movementInterval = setInterval(() => {
+        this.intervals.movement = setInterval(() => {
             // Keine Bewegung während Alert- oder Attack-Animation
-            if (this.isPlayingAlert || this.isPlayingAttack) {
+            if (this.state.isPlayingAlert || this.state.isPlayingAttack) {
+                return;
+            }
+
+            // Ramming-Modus: Läuft nach Kollision weiter
+            if (this.ramming.isActive) {
+                this.x += this.movement.chasingSpeed * this.ramming.direction;
+                this.ramming.distanceTraveled += this.movement.chasingSpeed;
+
+                // Wenn genug weit gelaufen, drehe um und gehe zurück in Chasing-Modus
+                if (this.ramming.distanceTraveled >= this.ramming.distance) {
+                    this.ramming.isActive = false;
+                    this.ramming.distanceTraveled = 0;
+                    this.otherDirection = !this.otherDirection;
+                }
                 return;
             }
 
             // Chasing-Modus: Verfolge den Character
-            if (this.isChasing && this.world && this.world.character) {
+            if (this.state.isChasing && this.world && this.world.character) {
                 const character = this.world.character;
-                const currentSpeed = this.chasingSpeed;
 
-                // Bewege dich in Richtung des Characters
                 if (character.x > this.x) {
-                    // Character ist rechts
-                    this.x += currentSpeed;
+                    this.x += this.movement.chasingSpeed;
                     this.otherDirection = true;
+                    this.ramming.direction = 1;
                 } else {
-                    // Character ist links
-                    this.x -= currentSpeed;
+                    this.x -= this.movement.chasingSpeed;
                     this.otherDirection = false;
+                    this.ramming.direction = -1;
                 }
                 return;
             }
 
             // Normale Patrol-Bewegung
-            if (this.movingRight) {
-                this.x += this.speed;
-                this.otherDirection = true; // Nach rechts = gespiegelt
-                // Wechsel Richtung wenn rechte Grenze erreicht
-                if (this.x >= this.startX + this.moveDistance) {
-                    this.movingRight = false;
+            if (this.movement.movingRight) {
+                this.x += this.movement.speed;
+                this.otherDirection = true;
+                if (this.x >= this.startX + this.movement.moveDistance) {
+                    this.movement.movingRight = false;
                 }
             } else {
-                this.x -= this.speed;
-                this.otherDirection = false; // Nach links = normal
-                // Wechsel Richtung wenn linke Grenze erreicht
+                this.x -= this.movement.speed;
+                this.otherDirection = false;
                 if (this.x <= this.startX) {
-                    this.movingRight = true;
+                    this.movement.movingRight = true;
                 }
             }
         }, 1000 / 60);
 
         // Animation basierend auf Zustand
-        this.animationInterval = setInterval(() => {
+        this.intervals.animation = setInterval(() => {
             if (this.isDead()) {
                 this.handleDeathAnimation();
-            } else if (this.isPlayingAlert) {
-                // Alert-Animation läuft gerade, nichts tun
-            } else if (this.isPlayingAttack) {
-                // Attack-Animation läuft gerade, nichts tun
-            } else if (!this.hasPlayedAlertAnimation && this.canSeeCharacter()) {
+            } else if (this.state.isPlayingAlert) {
+                // Alert-Animation läuft gerade
+            } else if (this.state.isPlayingAttack) {
+                // Attack-Animation läuft gerade
+            } else if (!this.state.hasPlayedAlert && this.canSeeCharacter()) {
                 this.handleAlertAnimation();
-            } else if (!this.canSeeCharacter() && (this.hasPlayedAlertAnimation || this.hasPlayedAttackAnimation)) {
-                // Character ist außer Sichtweite - Reset der Animationen für nächste Begegnung
-                this.hasPlayedAlertAnimation = false;
-                this.hasPlayedAttackAnimation = false;
-                this.isChasing = false; // Beende Verfolgung
+            } else if (!this.canSeeCharacter() && (this.state.hasPlayedAlert || this.state.hasPlayedAttack)) {
+                // Character außer Sichtweite - Reset
+                this.state.hasPlayedAlert = false;
+                this.state.hasPlayedAttack = false;
+                this.state.isChasing = false;
             } else if (this.isHurt()) {
                 this.playAnimation(this.imagesHurt);
+            } else if (this.state.isChasing || this.ramming.isActive) {
+                this.playAnimation(this.imagesAttackRun);
             } else {
                 this.playAnimation(this.imagesWalk);
             }
@@ -152,7 +201,7 @@ class Endboss extends MovableObjects {
     }
 
     handleDeathAnimation() {
-        if (!this.hasPlayedDeathAnimation) {
+        if (!this.state.hasPlayedDeath) {
             this.stopAllIntervals();
             this.img = this.imageCache[this.imagesDead[0]];
             this.playDeathAnimationOnce();
@@ -160,28 +209,27 @@ class Endboss extends MovableObjects {
     }
 
     stopAllIntervals() {
-        if (this.movementInterval) {
-            clearInterval(this.movementInterval);
-            this.movementInterval = null;
+        if (this.intervals.movement) {
+            clearInterval(this.intervals.movement);
+            this.intervals.movement = null;
         }
-        if (this.animationInterval) {
-            clearInterval(this.animationInterval);
-            this.animationInterval = null;
+        if (this.intervals.animation) {
+            clearInterval(this.intervals.animation);
+            this.intervals.animation = null;
         }
-        if (this.rotationInterval) {
-            clearInterval(this.rotationInterval);
-            this.rotationInterval = null;
+        if (this.rotation.intervalId) {
+            clearInterval(this.rotation.intervalId);
+            this.rotation.intervalId = null;
         }
     }
 
     playDeathAnimationOnce() {
-        this.hasPlayedDeathAnimation = true;
+        this.state.hasPlayedDeath = true;
         let frameIndex = 0;
 
-        // Erstes Bild anzeigen und zu 45° rotieren
         this.img = this.imageCache[this.imagesDead[frameIndex]];
-        this.rotation = 0;
-        this.targetRotation = 45;
+        this.rotation.current = 0;
+        this.rotation.target = 45;
         this.smoothRotate();
 
         const deathAnimationInterval = setInterval(() => {
@@ -190,18 +238,16 @@ class Endboss extends MovableObjects {
                 this.img = this.imageCache[this.imagesDead[frameIndex]];
 
                 if (frameIndex === 1) {
-                    // Zweites Bild: Rotation zurücksetzen und zu 45° rotieren
-                    this.rotation = 0;
-                    this.targetRotation = 45;
+                    this.rotation.current = 0;
+                    this.rotation.target = 45;
                     this.smoothRotate();
                 } else if (frameIndex === 2) {
-                    // Letztes Bild: Rotation zurücksetzen und NICHT rotieren
-                    if (this.rotationInterval) {
-                        clearInterval(this.rotationInterval);
-                        this.rotationInterval = null;
+                    if (this.rotation.intervalId) {
+                        clearInterval(this.rotation.intervalId);
+                        this.rotation.intervalId = null;
                     }
-                    this.rotation = 0;
-                    this.targetRotation = 0;
+                    this.rotation.current = 0;
+                    this.rotation.target = 0;
                 }
             } else {
                 clearInterval(deathAnimationInterval);
@@ -210,25 +256,22 @@ class Endboss extends MovableObjects {
     }
 
     smoothRotate() {
-        // Altes Rotations-Interval stoppen falls vorhanden
-        if (this.rotationInterval) {
-            clearInterval(this.rotationInterval);
+        if (this.rotation.intervalId) {
+            clearInterval(this.rotation.intervalId);
         }
 
-        // Berechne Rotationsschritt für sanfte Animation
-        const duration = 150; // 150ms bis zum nächsten Bild
+        const duration = 150;
         const fps = 60;
-        const totalFrames = (duration / 1000) * fps; // Anzahl Frames in 150ms
-        const rotationStep = (this.targetRotation - this.rotation) / totalFrames;
+        const totalFrames = (duration / 1000) * fps;
+        const rotationStep = (this.rotation.target - this.rotation.current) / totalFrames;
 
-        // Neues Rotations-Interval starten
-        this.rotationInterval = setInterval(() => {
-            if (Math.abs(this.targetRotation - this.rotation) > Math.abs(rotationStep)) {
-                this.rotation += rotationStep; // Sanft zur Ziel-Rotation bewegen
+        this.rotation.intervalId = setInterval(() => {
+            if (Math.abs(this.rotation.target - this.rotation.current) > Math.abs(rotationStep)) {
+                this.rotation.current += rotationStep;
             } else {
-                this.rotation = this.targetRotation; // Exakte Ziel-Rotation erreicht
-                clearInterval(this.rotationInterval);
-                this.rotationInterval = null;
+                this.rotation.current = this.rotation.target;
+                clearInterval(this.rotation.intervalId);
+                this.rotation.intervalId = null;
             }
         }, 1000 / fps);
     }
@@ -244,26 +287,21 @@ class Endboss extends MovableObjects {
     }
 
     handleAlertAnimation() {
-        if (!this.hasPlayedAlertAnimation) {
+        if (!this.state.hasPlayedAlert) {
             this.playAlertAnimationOnce();
         }
     }
 
     playAlertAnimationOnce() {
-        this.hasPlayedAlertAnimation = true;
-        this.isPlayingAlert = true;
+        this.state.hasPlayedAlert = true;
+        this.state.isPlayingAlert = true;
 
-        // Drehe den Endboss in Richtung des Characters
         if (this.world && this.world.character) {
             const character = this.world.character;
-            // Wenn Character links vom Endboss ist, nicht spiegeln (otherDirection = false)
-            // Wenn Character rechts vom Endboss ist, spiegeln (otherDirection = true)
             this.otherDirection = character.x > this.x;
         }
 
         let frameIndex = 0;
-
-        // Erstes Bild der Alert-Animation anzeigen
         this.img = this.imageCache[this.imagesAlert[frameIndex]];
 
         const alertAnimationInterval = setInterval(() => {
@@ -271,26 +309,24 @@ class Endboss extends MovableObjects {
             if (frameIndex < this.imagesAlert.length) {
                 this.img = this.imageCache[this.imagesAlert[frameIndex]];
             } else {
-                // Alert-Animation zu Ende, starte Attack-Animation
                 clearInterval(alertAnimationInterval);
-                this.isPlayingAlert = false;
+                this.state.isPlayingAlert = false;
                 this.handleAttackAnimation();
             }
         }, 150);
     }
 
     handleAttackAnimation() {
-        if (!this.hasPlayedAttackAnimation) {
+        if (!this.state.hasPlayedAttack) {
             this.playAttackAnimationOnce();
         }
     }
 
     playAttackAnimationOnce() {
-        this.hasPlayedAttackAnimation = true;
-        this.isPlayingAttack = true;
+        this.state.hasPlayedAttack = true;
+        this.state.isPlayingAttack = true;
         let frameIndex = 0;
 
-        // Erstes Bild der Attack-Animation anzeigen
         this.img = this.imageCache[this.imagesAttack[frameIndex]];
 
         const attackAnimationInterval = setInterval(() => {
@@ -298,12 +334,19 @@ class Endboss extends MovableObjects {
             if (frameIndex < this.imagesAttack.length) {
                 this.img = this.imageCache[this.imagesAttack[frameIndex]];
             } else {
-                // Attack-Animation zu Ende, starte Verfolgung
                 clearInterval(attackAnimationInterval);
-                this.isPlayingAttack = false;
-                this.isChasing = true; // Aktiviere Chasing-Modus
+                this.state.isPlayingAttack = false;
+                this.state.isChasing = true;
             }
         }, 150);
+    }
+
+    // Wird von World aufgerufen, wenn der Endboss mit dem Character kollidiert
+    onCharacterCollision() {
+        if (this.state.isChasing && !this.ramming.isActive) {
+            this.ramming.isActive = true;
+            this.ramming.distanceTraveled = 0;
+        }
     }
 
 }

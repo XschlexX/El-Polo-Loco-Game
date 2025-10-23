@@ -126,7 +126,6 @@ class ThrowableObject extends MovableObjects {
     }
 
     isBroken() {
-        console.log(this.isAboveGround(this.groundLevel));
         return this.isAboveGround(this.groundLevel);
     }
 }

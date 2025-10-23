@@ -125,7 +125,7 @@ class Character extends MovableObjects {
                 this.moveLeft(true);
             }
             if (this.world.keyboard.UP && !this.isAboveGround(this.groundLevel)) {
-                this.jump();
+                this.jump(8);
                 this.currentImage = 0;
             }
             this.world.camera_x = -this.x + 100;

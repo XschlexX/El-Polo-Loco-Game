@@ -80,7 +80,6 @@ class StatusBar extends DrawableObject {
         setTimeout(() => {
             if (world) {
                 this.character = world.character;
-                console.log('Character in StatusBar:', this.character.energy);
                 if (this.statusbar === 'imagesBottleBar') {
                     this.multiplier = this.width / this.character.bottles;
                 } else {
@@ -98,7 +97,6 @@ class StatusBar extends DrawableObject {
             if (world) {
                 this.endboss = world.level.enemies.find(enemy => enemy instanceof Endboss);
                 if (this.endboss) {
-                    console.log('Endboss in StatusBar:', this.endboss.energy);
                     this.endbossMultiplier = this.width / this.endboss.energy;
                     this.initialWidth = this.width; // Speichere die Anfangsbreite
                     this.initialX = this.x; // Speichere die Anfangs-X-Position

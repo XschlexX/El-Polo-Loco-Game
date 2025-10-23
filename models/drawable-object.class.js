@@ -25,11 +25,13 @@ class DrawableObject {
         ctx.save();
 
         // Rotation anwenden wenn vorhanden
-        if (this.rotation) {
+        // Unterstütze sowohl direkte rotation als auch rotation.current (für Endboss)
+        const rotationValue = this.rotation?.current !== undefined ? this.rotation.current : this.rotation;
+        if (rotationValue) {
             const centerX = this.x + this.width / 2;
             const centerY = this.y + this.height / 2;
             ctx.translate(centerX, centerY);
-            ctx.rotate(this.rotation * Math.PI / 180);
+            ctx.rotate(rotationValue * Math.PI / 180);
             ctx.translate(-centerX, -centerY);
         }
 
@@ -43,7 +45,7 @@ class DrawableObject {
     }
 
     drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof CollectableBottle) {
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'blue';
             ctx.strokeRect(this.x, this.y, this.width, this.height);
@@ -51,7 +53,7 @@ class DrawableObject {
     }
 
     drawCollisionFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof ThrowableObject) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof ThrowableObject || this instanceof CollectableBottle) {
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'red';
             ctx.strokeRect(this.x + this.rectOffsetLeft, this.y + this.rectOffsetTop, this.width - this.rectOffsetRight, this.height - this.rectOffsetBottom);
