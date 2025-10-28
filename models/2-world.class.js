@@ -56,6 +56,11 @@ class World {
                 return;
             }
 
+            // Ignoriere Endboss während Ramming (soll durchlaufen)
+            if (enemy instanceof Endboss && enemy.ramming.isActive) {
+                return;
+            }
+
             if (this.character.isColliding(enemy)) {
                 // Prüfe ob Character von oben auf das Huhn springt
                 if (this.isJumpingOnEnemy(this.character, enemy)) {
@@ -66,8 +71,8 @@ class World {
                     // Normale Kollision von der Seite - Character nimmt Schaden
                     this.character.hit();
 
-                    // Wenn es ein Endboss ist, aktiviere Ramming-Modus
-                    if (enemy instanceof Endboss && enemy.onCharacterCollision) {
+                    // Wenn es ein Endboss ist, aktiviere Ramming-Modus (nur wenn nicht bereits ramming)
+                    if (enemy instanceof Endboss && enemy.onCharacterCollision && !enemy.ramming.isActive) {
                         enemy.onCharacterCollision();
                     }
                 }
@@ -163,7 +168,7 @@ class World {
             this.flipImage(mo);
         }
         mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
+        // mo.drawFrame(this.ctx);
         mo.drawCollisionFrame(this.ctx);
 
         if (mo.otherDirection) {

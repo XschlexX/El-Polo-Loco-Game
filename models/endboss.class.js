@@ -15,7 +15,7 @@ class Endboss extends MovableObjects {
     // Bewegungs-Parameter
     movement = {
         speed: 0.5,              // Normale Patrol-Geschwindigkeit
-        chasingSpeed: 4,         // Geschwindigkeit während Verfolgung
+        chasingSpeed: 3,         // Geschwindigkeit während Verfolgung
         moveDistance: 300,       // Patrol-Reichweite
         movingRight: true        // Aktuelle Patrol-Richtung
     };
@@ -109,6 +109,16 @@ class Endboss extends MovableObjects {
     ];
 
 
+    /**
+     * CONSTRUCTOR
+     * Wird beim Erstellen eines neuen Endboss-Objekts aufgerufen
+     * 
+     * ABLAUF:
+     * 1. Ruft Parent-Constructor auf (MovableObjects)
+     * 2. Lädt das erste Walk-Bild als Startbild
+     * 3. Lädt alle Animations-Bilder in den Cache
+     * 4. Startet die animate() Methode
+     */
     constructor() {
         super();
         this.loadImage(this.imagesWalk[0]);
@@ -121,85 +131,144 @@ class Endboss extends MovableObjects {
         this.animate();
     }
 
+    /**
+     * ANIMATE - Hauptmethode für Bewegung und Animation
+     * Startet zwei getrennte Intervals:
+     * 1. Movement-Interval (60 FPS) - Steuert die Bewegung des Endboss
+     * 2. Animation-Interval (150ms) - Steuert welche Animation angezeigt wird
+     * 
+     * ACHTUNG: Diese Methode startet zwei permanente Intervals!
+     */
     animate() {
-        // Bewegung hin und her
+        // ==================== MOVEMENT INTERVAL (60 FPS) ====================
+        // Steuert die X-Position des Endboss basierend auf seinem aktuellen Zustand
         this.intervals.movement = setInterval(() => {
-            // Keine Bewegung während Alert- oder Attack-Animation
+            // REGEL 1: Während Alert/Attack-Animation stillstehen
+            // Der Endboss bewegt sich NICHT während diese Animationen laufen
             if (this.state.isPlayingAlert || this.state.isPlayingAttack) {
-                return;
+                return; // Stoppe Bewegung, gehe zum nächsten Frame
             }
 
-            // Ramming-Modus: Läuft nach Kollision weiter
+            // REGEL 2: RAMMING-MODUS (nach Kollision mit Character)
+            // Wird durch onCharacterCollision() aktiviert
             if (this.ramming.isActive) {
+                // Laufe in Ramm-Richtung weiter mit Chasing-Geschwindigkeit
                 this.x += this.movement.chasingSpeed * this.ramming.direction;
                 this.ramming.distanceTraveled += this.movement.chasingSpeed;
 
-                // Wenn genug weit gelaufen, drehe um und gehe zurück in Chasing-Modus
+                // Prüfe ob die Ramm-Distanz erreicht wurde
                 if (this.ramming.distanceTraveled >= this.ramming.distance) {
-                    this.ramming.isActive = false;
-                    this.ramming.distanceTraveled = 0;
-                    this.otherDirection = !this.otherDirection;
+                    // RAMMING BEENDET:
+                    this.ramming.isActive = false;           // Ramming ausschalten
+                    this.ramming.distanceTraveled = 0;       // Distanz zurücksetzen
+                    this.otherDirection = !this.otherDirection; // Drehe um 180°
+                    this.state.isChasing = this.canSeeCharacter();            // HIER: Gehe in Chasing-Modus
+                    // PROBLEM: Flags werden IMMER gesetzt, auch wenn Character weg ist!
+                    this.state.hasPlayedAlert = true;
+                    this.state.hasPlayedAttack = true;
                 }
-                return;
+                return; // Keine weiteren Bewegungen ausführen
             }
 
-            // Chasing-Modus: Verfolge den Character
+            // REGEL 3: CHASING-MODUS (Verfolge den Character)
+            // Wird durch playAttackAnimationOnce() aktiviert
             if (this.state.isChasing && this.world && this.world.character) {
                 const character = this.world.character;
 
+                // Bewege dich zum Character hin
                 if (character.x > this.x) {
+                    // Character ist rechts → Laufe nach rechts
                     this.x += this.movement.chasingSpeed;
                     this.otherDirection = true;
-                    this.ramming.direction = 1;
+                    this.ramming.direction = 1;  // Speichere Richtung für Ramming
                 } else {
+                    // Character ist links → Laufe nach links
                     this.x -= this.movement.chasingSpeed;
                     this.otherDirection = false;
-                    this.ramming.direction = -1;
+                    this.ramming.direction = -1;  // Speichere Richtung für Ramming
                 }
-                return;
+                return; // Keine Patrol-Bewegung ausführen
             }
 
-            // Normale Patrol-Bewegung
+            // REGEL 4: PATROL-MODUS (Standard-Verhalten)
+            // Läuft nur wenn NICHT Alert/Attack/Ramming/Chasing aktiv ist
             if (this.movement.movingRight) {
+                // Laufe nach rechts
                 this.x += this.movement.speed;
                 this.otherDirection = true;
+                // Prüfe ob rechte Grenze erreicht
                 if (this.x >= this.startX + this.movement.moveDistance) {
-                    this.movement.movingRight = false;
+                    this.movement.movingRight = false; // Wechsle Richtung
                 }
             } else {
+                // Laufe nach links
                 this.x -= this.movement.speed;
                 this.otherDirection = false;
+                // Prüfe ob linke Grenze (Startposition) erreicht
                 if (this.x <= this.startX) {
-                    this.movement.movingRight = true;
+                    this.movement.movingRight = true; // Wechsle Richtung
                 }
             }
-        }, 1000 / 60);
+        }, 1000 / 60); // 60 FPS für flüssige Bewegung
 
-        // Animation basierend auf Zustand
+        // ==================== ANIMATION INTERVAL (150ms) ====================
+        // Entscheidet welche Animation angezeigt wird basierend auf Zustand
+        // WICHTIG: Läuft alle 150ms (nicht 60 FPS!)
         this.intervals.animation = setInterval(() => {
+            // PRIORITÄT 1: Tod (höchste Priorität)
             if (this.isDead()) {
                 this.handleDeathAnimation();
-            } else if (this.state.isPlayingAlert) {
-                // Alert-Animation läuft gerade
-            } else if (this.state.isPlayingAttack) {
-                // Attack-Animation läuft gerade
-            } else if (!this.state.hasPlayedAlert && this.canSeeCharacter()) {
-                this.handleAlertAnimation();
-            } else if (!this.canSeeCharacter() && (this.state.hasPlayedAlert || this.state.hasPlayedAttack)) {
-                // Character außer Sichtweite - Reset
+            }
+            // PRIORITÄT 2: Alert-Animation läuft gerade (tue nichts, wird in playAlertAnimationOnce gesteuert)
+            else if (this.state.isPlayingAlert) {
+                // Alert-Animation läuft - keine neue Animation starten
+            }
+            // PRIORITÄT 3: Attack-Animation läuft gerade (tue nichts, wird in playAttackAnimationOnce gesteuert)
+            else if (this.state.isPlayingAttack) {
+                // Attack-Animation läuft - keine neue Animation starten
+            }
+            // PRIORITÄT 4: Character in Sichtweite UND Alert noch nicht gespielt → Starte Alert
+            else if (!this.state.hasPlayedAlert && this.canSeeCharacter()) {
+                this.handleAlertAnimation(); // Startet Alert → dann Attack → dann Chasing
+            }
+            // PRIORITÄT 5: Character außer Sichtweite → RESET
+            // HIER IST DAS PROBLEM!
+            else if (!this.canSeeCharacter() && (this.state.hasPlayedAlert || this.state.hasPlayedAttack) && !this.ramming.isActive && !this.state.isChasing) {
+                // Setze ALLE Flags zurück wenn:
+                // - Character nicht sichtbar
+                // - Alert oder Attack wurde gespielt
+                // - NICHT im Ramming
+                // - NICHT im Chasing
+                // PROBLEM: Nach Ramming ist isChasing = true, aber Character evtl. nicht mehr sichtbar!
                 this.state.hasPlayedAlert = false;
                 this.state.hasPlayedAttack = false;
                 this.state.isChasing = false;
-            } else if (this.isHurt()) {
+            }
+            // PRIORITÄT 6: Hurt-Animation
+            else if (this.isHurt()) {
                 this.playAnimation(this.imagesHurt);
-            } else if (this.state.isChasing || this.ramming.isActive) {
+            }
+            // PRIORITÄT 7: Chasing/Ramming Animation (AggressiveLook)
+            else if (this.state.isChasing || this.ramming.isActive) {
                 this.playAnimation(this.imagesAttackRun);
-            } else {
+            }
+            // PRIORITÄT 8: Standard Patrol Walk Animation
+            else {
                 this.playAnimation(this.imagesWalk);
             }
         }, 150);
     }
 
+    /**
+     * HANDLE DEATH ANIMATION
+     * Startet die Tod-Animation wenn der Endboss stirbt (energy <= 0)
+     * 
+     * ABLAUF:
+     * 1. Prüft ob Tod-Animation bereits gespielt wurde
+     * 2. Stoppt ALLE laufenden Intervals (Movement, Animation, Rotation)
+     * 3. Setzt das erste Death-Bild
+     * 4. Startet playDeathAnimationOnce()
+     */
     handleDeathAnimation() {
         if (!this.state.hasPlayedDeath) {
             this.stopAllIntervals();
@@ -208,6 +277,16 @@ class Endboss extends MovableObjects {
         }
     }
 
+    /**
+     * STOP ALL INTERVALS
+     * Stoppt alle laufenden Intervals des Endboss
+     * Wird aufgerufen wenn der Endboss stirbt
+     * 
+     * Stoppt:
+     * - Movement Interval (Bewegung)
+     * - Animation Interval (Animations-Steuerung)
+     * - Rotation Interval (sanfte Rotation bei Tod)
+     */
     stopAllIntervals() {
         if (this.intervals.movement) {
             clearInterval(this.intervals.movement);
@@ -223,6 +302,17 @@ class Endboss extends MovableObjects {
         }
     }
 
+    /**
+     * PLAY DEATH ANIMATION ONCE
+     * Spielt die Tod-Animation genau einmal ab mit Rotation
+     * 
+     * ABLAUF:
+     * Frame 0: Erstes Bild, starte Rotation zu 45°
+     * Frame 1: Zweites Bild, starte Rotation zu 45°
+     * Frame 2: Drittes Bild, setze Rotation auf 0°
+     * 
+     * Animation läuft einmal durch, dann stoppt das Interval
+     */
     playDeathAnimationOnce() {
         this.state.hasPlayedDeath = true;
         let frameIndex = 0;
@@ -255,6 +345,17 @@ class Endboss extends MovableObjects {
         }, 150);
     }
 
+    /**
+     * SMOOTH ROTATE
+     * Rotiert das Bild sanft von rotation.current zu rotation.target
+     * Wird bei Tod-Animation verwendet für visuellen Effekt
+     * 
+     * ABLAUF:
+     * 1. Stoppt vorherige Rotation falls aktiv
+     * 2. Berechnet Rotationsschritte für 150ms bei 60 FPS
+     * 3. Aktualisiert rotation.current schrittweise
+     * 4. Stoppt wenn Ziel-Rotation erreicht ist
+     */
     smoothRotate() {
         if (this.rotation.intervalId) {
             clearInterval(this.rotation.intervalId);
@@ -276,26 +377,75 @@ class Endboss extends MovableObjects {
         }, 1000 / fps);
     }
 
+    /**
+     * CAN SEE CHARACTER
+     * Prüft ob der Endboss den Character sehen kann
+     * 
+     * BEDINGUNGEN:
+     * 1. World und Character müssen existieren
+     * 2. Character muss in BLICKRICHTUNG des Endboss sein (directional detection)
+     * 3. Character muss innerhalb der Sichtweite sein (100px)
+     * 
+     * WICHTIG:
+     * - distance > 0 bedeutet Character ist VOR dem Endboss
+     * - distance < 0 bedeutet Character ist HINTER dem Endboss (nicht sichtbar!)
+     * - Ermöglicht "Stealth" von hinten
+     * 
+     * @returns {boolean} true wenn Character sichtbar ist
+     */
     canSeeCharacter() {
         if (!this.world || !this.world.character) {
             return false;
         }
-        // Endboss sieht Character wenn dieser in Sichtweite (z.B. 500px) ist
         const character = this.world.character;
-        const distance = Math.abs(this.x - character.x);
-        return distance < 300;
+        let distance;
+
+        if (this.otherDirection) {
+            // Endboss schaut nach rechts
+            // Distanz = Character-Start minus Endboss-Ende
+            distance = character.x - (this.x + this.width);
+        } else {
+            // Endboss schaut nach links
+            // Distanz = Endboss-Start minus Character-Ende
+            distance = (this.x) - (character.x + character.width);
+        }
+
+        // Nur sichtbar wenn: VOR dem Endboss (distance > 0) UND nah genug (< 100px)
+        return distance > 0 && distance < 200;
     }
 
+    /**
+     * HANDLE ALERT ANIMATION
+     * Wrapper-Methode die prüft ob Alert-Animation noch nicht gespielt wurde
+     * Wird vom Animation-Interval aufgerufen
+     * 
+     * Startet die Alert-Animation nur einmal pro Kampf
+     */
     handleAlertAnimation() {
         if (!this.state.hasPlayedAlert) {
             this.playAlertAnimationOnce();
         }
     }
 
+    /**
+     * PLAY ALERT ANIMATION ONCE
+     * Spielt die Alert-Animation (Ausrufezeichen-Effekt) genau einmal ab
+     * 
+     * ABLAUF:
+     * 1. Setze hasPlayedAlert = true (damit es nicht nochmal abgespielt wird)
+     * 2. Setze isPlayingAlert = true (Movement-Interval stoppt Bewegung)
+     * 3. Drehe Endboss zum Character
+     * 4. Spiele alle Alert-Frames durch (8 Bilder)
+     * 5. Nach Alert: Setze isPlayingAlert = false
+     * 6. Starte SOFORT die Attack-Animation
+     * 
+     * WICHTIG: Nach Alert folgt IMMER Attack!
+     */
     playAlertAnimationOnce() {
         this.state.hasPlayedAlert = true;
         this.state.isPlayingAlert = true;
 
+        // Drehe Endboss in Richtung des Characters
         if (this.world && this.world.character) {
             const character = this.world.character;
             this.otherDirection = character.x > this.x;
@@ -309,19 +459,41 @@ class Endboss extends MovableObjects {
             if (frameIndex < this.imagesAlert.length) {
                 this.img = this.imageCache[this.imagesAlert[frameIndex]];
             } else {
+                // Alert-Animation beendet
                 clearInterval(alertAnimationInterval);
                 this.state.isPlayingAlert = false;
-                this.handleAttackAnimation();
+                this.handleAttackAnimation(); // Starte Attack
             }
         }, 150);
     }
 
+    /**
+     * HANDLE ATTACK ANIMATION
+     * Wrapper-Methode die prüft ob Attack-Animation noch nicht gespielt wurde
+     * Wird von playAlertAnimationOnce() aufgerufen
+     * 
+     * Startet die Attack-Animation nur einmal pro Kampf
+     */
     handleAttackAnimation() {
         if (!this.state.hasPlayedAttack) {
             this.playAttackAnimationOnce();
         }
     }
 
+    /**
+     * PLAY ATTACK ANIMATION ONCE
+     * Spielt die Attack-Animation (Angriffs-Pose) genau einmal ab
+     * 
+     * ABLAUF:
+     * 1. Setze hasPlayedAttack = true (damit es nicht nochmal abgespielt wird)
+     * 2. Setze isPlayingAttack = true (Movement-Interval stoppt Bewegung)
+     * 3. Spiele alle Attack-Frames durch (12 Bilder)
+     * 4. Nach Attack: Setze isPlayingAttack = false
+     * 5. Aktiviere CHASING-MODUS (isChasing = true)
+     * 
+     * WICHTIG: Nach Attack startet der Endboss die Verfolgung!
+     * Ab hier verfolgt der Endboss den Character bis zur Kollision
+     */
     playAttackAnimationOnce() {
         this.state.hasPlayedAttack = true;
         this.state.isPlayingAttack = true;
@@ -334,14 +506,29 @@ class Endboss extends MovableObjects {
             if (frameIndex < this.imagesAttack.length) {
                 this.img = this.imageCache[this.imagesAttack[frameIndex]];
             } else {
+                // Attack-Animation beendet
                 clearInterval(attackAnimationInterval);
                 this.state.isPlayingAttack = false;
-                this.state.isChasing = true;
+                this.state.isChasing = true; // STARTE VERFOLGUNG!
             }
         }, 150);
     }
 
-    // Wird von World aufgerufen, wenn der Endboss mit dem Character kollidiert
+    /**
+     * ON CHARACTER COLLISION
+     * Wird von World.checkCollisions() aufgerufen wenn Endboss mit Character kollidiert
+     * 
+     * ABLAUF:
+     * 1. Prüft ob Endboss im Chasing-Modus ist
+     * 2. Prüft ob nicht bereits im Ramming-Modus
+     * 3. Aktiviert Ramming-Modus
+     * 4. Setzt distanceTraveled zurück
+     * 
+     * WICHTIG:
+     * - Wird NUR während Chasing aktiviert (nicht während Patrol)
+     * - Startet den "Durchrennen"-Angriff
+     * - Nach Ramming wird in animate() wieder isChasing = true gesetzt
+     */
     onCharacterCollision() {
         if (this.state.isChasing && !this.ramming.isActive) {
             this.ramming.isActive = true;

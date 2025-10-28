@@ -9,11 +9,12 @@ class Character extends MovableObjects {
     energy = 1000;
     bottles = 10;
     sleep = false;
-    rectOffsetLeft = 50;
-    rectOffsetTop = 110;
-    rectOffsetRight = 100;
-    rectOffsetBottom = 125;
+    rectOffsetLeft = 30;
+    rectOffsetTop = 130;
+    rectOffsetRight = 45 + this.rectOffsetLeft;
+    rectOffsetBottom = 15 + this.rectOffsetTop;
     world;
+    cameraEasingSpeed = 0.05; // Geschwindigkeit der Kamera-Anpassung (0.05-0.15 ist gut)
 
     imagesIdle = [
         '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
@@ -118,17 +119,22 @@ class Character extends MovableObjects {
             }
         }, 100); // Häufigere Überprüfung, aber nicht zu oft
         setInterval(() => {
-            if (this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX + 100) {
+            // Maximale Character-Position rechts: Level-Ende - Character-Breite
+            const maxCharacterX = this.world.level.levelEndX - this.width;
+            // Minimale Character-Position links: Level-Start
+            const minCharacterX = this.world.level.levelStartX;
+
+            if (this.world.keyboard.RIGHT && this.x < maxCharacterX) {
                 this.moveRight();
             }
-            if (this.world.keyboard.LEFT && this.x > -1340) {
+            if (this.world.keyboard.LEFT && this.x > minCharacterX) {
                 this.moveLeft(true);
             }
             if (this.world.keyboard.UP && !this.isAboveGround(this.groundLevel)) {
                 this.jump(8);
                 this.currentImage = 0;
             }
-            this.world.camera_x = -this.x + 100;
+            this.updateCamera();
         }, 1000 / 60);
         setInterval(() => {
             if (this.isDead()) {
@@ -150,6 +156,46 @@ class Character extends MovableObjects {
             }
         }, 150);
 
+    }
+
+    /**
+     * Aktualisiert die Kamera-Position basierend auf der Character-Position und Bewegungsrichtung
+     * Die Kamera folgt dem Character asymmetrisch mit sanfter Transition (Easing)
+     */
+    updateCamera() {
+        const canvasWidth = 720; // Standard Canvas-Breite
+        const offsetFromEdge = 50; // Abstand vom Rand
+
+        // Berechne die minimale Kamera-Position (am Level-Start)
+        const minCameraX = -this.world.level.levelStartX;
+
+        // Berechne die maximale Kamera-Position (am Level-Ende)
+        const maxCameraX = -(this.world.level.levelEndX - canvasWidth);
+
+        let targetCameraX;
+
+        // Asymmetrische Kamera basierend auf Bewegungsrichtung
+        if (this.otherDirection) {
+            // Character läuft nach links: Character bleibt rechts (100px + Character-Breite vom rechten Rand)
+            targetCameraX = -this.x + (canvasWidth - offsetFromEdge - this.width);
+        } else {
+            // Character läuft nach rechts: Character bleibt links (100px vom linken Rand)
+            targetCameraX = -this.x + offsetFromEdge;
+        }
+
+        // Begrenze die Ziel-Kamera-Position an beiden Level-Enden
+        targetCameraX = Math.min(Math.max(targetCameraX, maxCameraX), minCameraX);
+
+        // Sanfte Kamera-Transition (Easing): Kamera gleitet zur Zielposition
+        // Je näher die Kamera am Ziel ist, desto langsamer bewegt sie sich
+        const currentCameraX = this.world.camera_x;
+        const cameraDiff = targetCameraX - currentCameraX;
+
+        // Easing: Bewege die Kamera einen Teil der Distanz (z.B. 8% pro Frame)
+        const newCameraX = currentCameraX + (cameraDiff * this.cameraEasingSpeed);
+
+        // Runde auf ganze Pixel, um schwarze Striche zwischen Hintergrundbildern zu vermeiden
+        this.world.camera_x = Math.round(newCameraX);
     }
 }
 
