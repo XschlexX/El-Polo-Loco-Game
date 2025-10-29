@@ -1,5 +1,81 @@
 let levelStart = -1440;
 let levelEnd = 2880;
+let chickenAmount = 10;
+let bottleAmount = 15;
+
+/**
+ * Generiert Hintergrund-Objekte für das Level
+ * @returns {Array} Array von BackgroundObject Objekten
+ */
+function generateBackgrounds() {
+    const backgrounds = [];
+    const layers = [
+        '../assets/img/5_background/layers/air.png',
+        '../assets/img/5_background/layers/3_third_layer/',
+        '../assets/img/5_background/layers/2_second_layer/',
+        '../assets/img/5_background/layers/1_first_layer/'
+    ];
+
+    // Generiere Hintergründe von -1440 bis 2160 (alle 720px)
+    for (let x = levelStart; x <= levelEnd; x += 720) {
+        const imageIndex = ((x - levelStart) / 720) % 2 + 1; // Wechselt zwischen 1 und 2
+
+        backgrounds.push(new BackgroundObject(layers[0], x)); // Air layer
+        backgrounds.push(new BackgroundObject(layers[1] + imageIndex + '.png', x));
+        backgrounds.push(new BackgroundObject(layers[2] + imageIndex + '.png', x));
+        backgrounds.push(new BackgroundObject(layers[3] + imageIndex + '.png', x));
+    }
+
+    return backgrounds;
+}
+
+/**
+ * Generiert Wolken für das Level
+ * @returns {Array} Array von Cloud Objekten
+ */
+function generateClouds() {
+    const clouds = [];
+    const cloudSpacing = 1440;
+    const cloudCount = 12;
+
+    for (let i = 0; i < cloudCount; i++) {
+        clouds.push(new Cloud(300 + cloudSpacing * i));
+    }
+
+    return clouds;
+}
+
+/**
+ * Generiert Status-Bars für das Level
+ * @returns {Array} Array von StatusBar Objekten
+ */
+function generateStatusBars() {
+    const statusBars = [];
+    const barTypes = ['imagesHealthBar', 'imagesBottleBar', 'imagesCoinBar', 'imagesHealthBarEndboss'];
+
+    barTypes.forEach(barType => {
+        for (let i = 0; i < 3; i++) {
+            statusBars.push(new StatusBar(barType, i));
+        }
+    });
+
+    return statusBars;
+}
+
+/**
+ * Generiert Chickens für das Level
+ * @param {number} count - Anzahl der Chickens
+ * @returns {Array} Array von Chicken Objekten
+ */
+function generateChickens(count) {
+    const chickens = [];
+
+    for (let i = 0; i < count; i++) {
+        chickens.push(new Chicken(levelEnd));
+    }
+
+    return chickens;
+}
 
 
 /**
@@ -50,66 +126,13 @@ const level1 = new Level(
         levelStart,
         levelEnd
     ],
+    generateBackgrounds(),
+    generateClouds(),
+    generateStatusBars(),
+    generateChickens(chickenAmount), // Anzahl der Chickens
     [
-        new BackgroundObject('../assets/img/5_background/layers/air.png', -1440),
-        new BackgroundObject('../assets/img/5_background/layers/3_third_layer/1.png', -1440),
-        new BackgroundObject('../assets/img/5_background/layers/2_second_layer/1.png', -1440),
-        new BackgroundObject('../assets/img/5_background/layers/1_first_layer/1.png', -1440),
-        new BackgroundObject('../assets/img/5_background/layers/air.png', -720),
-        new BackgroundObject('../assets/img/5_background/layers/3_third_layer/2.png', -720),
-        new BackgroundObject('../assets/img/5_background/layers/2_second_layer/2.png', -720),
-        new BackgroundObject('../assets/img/5_background/layers/1_first_layer/2.png', -720),
-        new BackgroundObject('../assets/img/5_background/layers/air.png', 0),
-        new BackgroundObject('../assets/img/5_background/layers/3_third_layer/1.png', 0),
-        new BackgroundObject('../assets/img/5_background/layers/2_second_layer/1.png', 0),
-        new BackgroundObject('../assets/img/5_background/layers/1_first_layer/1.png', 0),
-        new BackgroundObject('../assets/img/5_background/layers/air.png', 720),
-        new BackgroundObject('../assets/img/5_background/layers/3_third_layer/2.png', 720),
-        new BackgroundObject('../assets/img/5_background/layers/2_second_layer/2.png', 720),
-        new BackgroundObject('../assets/img/5_background/layers/1_first_layer/2.png', 720),
-        new BackgroundObject('../assets/img/5_background/layers/air.png', 1440),
-        new BackgroundObject('../assets/img/5_background/layers/3_third_layer/1.png', 1440),
-        new BackgroundObject('../assets/img/5_background/layers/2_second_layer/1.png', 1440),
-        new BackgroundObject('../assets/img/5_background/layers/1_first_layer/1.png', 1440),
-        new BackgroundObject('../assets/img/5_background/layers/air.png', 2160),
-        new BackgroundObject('../assets/img/5_background/layers/3_third_layer/2.png', 2160),
-        new BackgroundObject('../assets/img/5_background/layers/2_second_layer/2.png', 2160),
-        new BackgroundObject('../assets/img/5_background/layers/1_first_layer/2.png', 2160),
-    ],
-    [
-        new Cloud(300),
-        new Cloud(300 + 1440),
-        new Cloud(300 + 1440 * 2),
-        new Cloud(300 + 1440 * 3),
-        new Cloud(300 + 1440 * 4),
-        new Cloud(300 + 1440 * 5),
-        new Cloud(300 + 1440 * 6),
-        new Cloud(300 + 1440 * 7),
-        new Cloud(300 + 1440 * 8),
-        new Cloud(300 + 1440 * 9),
-        new Cloud(300 + 1440 * 10),
-        new Cloud(300 + 1440 * 11)
-    ],
-    [
-        new StatusBar('imagesHealthBar', 0),
-        new StatusBar('imagesHealthBar', 1),
-        new StatusBar('imagesHealthBar', 2),
-        new StatusBar('imagesBottleBar', 0),
-        new StatusBar('imagesBottleBar', 1),
-        new StatusBar('imagesBottleBar', 2),
-        new StatusBar('imagesCoinBar', 0),
-        new StatusBar('imagesCoinBar', 1),
-        new StatusBar('imagesCoinBar', 2),
-        new StatusBar('imagesHealthBarEndboss', 0),
-        new StatusBar('imagesHealthBarEndboss', 1),
-        new StatusBar('imagesHealthBarEndboss', 2)
-    ],
-    [
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
         new Endboss()
     ],
-    generateBottlesWithMinDistance(15, 100) // 8 Flaschen mit 200px Mindestabstand
+    generateBottlesWithMinDistance(bottleAmount, 100) // 8 Flaschen mit 200px Mindestabstand
 
 );

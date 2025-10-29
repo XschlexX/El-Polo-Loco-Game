@@ -70,6 +70,7 @@ class World {
                 } else if (!this.character.isHurt()) {
                     // Normale Kollision von der Seite - Character nimmt Schaden
                     this.character.hit();
+                    this.character.resetSleepTimer(); // Sleep-Timer zurücksetzen wenn getroffen
 
                     // Wenn es ein Endboss ist, aktiviere Ramming-Modus (nur wenn nicht bereits ramming)
                     if (enemy instanceof Endboss && enemy.onCharacterCollision && !enemy.ramming.isActive) {

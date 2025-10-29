@@ -13,7 +13,8 @@ class Chicken extends MovableObjects {
     animationInterval;
     opacity = 1;
     movingLeft = true; // Startrichtung: nach links
-    minX = -1440; // Linke Grenze (Level-Start)
+    minX; // Linke Grenze (wird aus Level geladen)
+    maxX; // Rechte Grenze (Startposition)
 
     imagesWalk = [
         '../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -27,12 +28,11 @@ class Chicken extends MovableObjects {
 
 
 
-    constructor() {
+    constructor(levelEnd) {
         super();
         this.loadImage('../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
-        this.x = 500 + Math.random() * 500;
-        this.maxX = this.x; // Rechte Grenze = Startposition
-        this.speed = 0.25 + Math.random() * .9;
+        this.x = 200 + Math.random() * (levelEnd + 1000);
+        this.speed = 0.25 + Math.random() * 1.9;
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesDead);
         this.animate();
@@ -41,14 +41,23 @@ class Chicken extends MovableObjects {
     animate() {
         this.moveInterval = setInterval(() => {
             if (!this.isDead()) {
+                // Lade Level-Grenzen dynamisch, wenn world verfügbar ist
+                if (this.world && this.minX === undefined) {
+                    this.minX = this.world.level.levelStartX;
+                }
+
                 if (this.movingLeft) {
                     this.x -= this.speed; // Nach links bewegen
                     this.otherDirection = false; // Nach links = nicht gespiegelt
                     // Richtungswechsel wenn linke Grenze erreicht
-                    if (this.x <= this.minX) {
+                    if (this.minX !== undefined && this.x <= this.minX) {
                         this.movingLeft = false;
                     }
                 } else {
+                    if (this.world && this.maxX === undefined) {
+                        this.maxX = this.world.level.levelEndX - this.width;
+                    }
+
                     this.x += this.speed; // Nach rechts bewegen
                     this.otherDirection = true; // Nach rechts = gespiegelt
                     // Richtungswechsel wenn rechte Grenze erreicht

@@ -1,5 +1,5 @@
 class CollectableBottle extends MovableObjects {
-    height = 70;
+    height = 60;
     width = this.height * 0.6;
     groundLevel = 430 - this.height;
     y = this.groundLevel;
@@ -19,7 +19,8 @@ class CollectableBottle extends MovableObjects {
     constructor(x) {
         super();
         // X-Position als Parameter übergeben oder random falls nicht angegeben
-        this.x = x !== undefined ? x : 200 + Math.random() * 1700;
+        this.x = x;
+        this.y = this.y + Math.random() * 40;
 
         // Lade Bilder
         this.loadImage(this.imagesIdle[0]);
@@ -33,6 +34,6 @@ class CollectableBottle extends MovableObjects {
         // Sanfte Animations-Wechsel zwischen den beiden Flaschen-Bildern
         setInterval(() => {
             this.playAnimation(this.imagesIdle);
-        }, 300); // Alle 300ms wechseln für eine ruhige Animation
+        }, 500); // Alle 300ms wechseln für eine ruhige Animation
     }
 }

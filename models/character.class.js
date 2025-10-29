@@ -102,20 +102,12 @@ class Character extends MovableObjects {
     }
 
     animate() {
-        let sleepTimer;
-        const resetSleepTimer = () => {
-            clearTimeout(sleepTimer);
-            this.sleep = false;
-            sleepTimer = setTimeout(() => {
-                this.sleep = true;
-            }, 3000);
-        };
-
-        resetSleepTimer();
+        this.sleepTimer = null;
+        this.resetSleepTimer();
 
         setInterval(() => {
             if (this.world.keyboard.ANY) {
-                resetSleepTimer();
+                this.resetSleepTimer();
             }
         }, 100); // Häufigere Überprüfung, aber nicht zu oft
         setInterval(() => {
@@ -156,6 +148,18 @@ class Character extends MovableObjects {
             }
         }, 150);
 
+    }
+
+    /**
+     * Setzt den Sleep-Timer zurück
+     * Wird aufgerufen bei Tastendruck oder wenn der Character getroffen wird
+     */
+    resetSleepTimer() {
+        clearTimeout(this.sleepTimer);
+        this.sleep = false;
+        this.sleepTimer = setTimeout(() => {
+            this.sleep = true;
+        }, 3000);
     }
 
     /**
