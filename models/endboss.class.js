@@ -536,4 +536,35 @@ class Endboss extends MovableObjects {
         }
     }
 
+    /**
+     * ON BOTTLE HIT
+     * Wird aufgerufen wenn Endboss von einer Flasche getroffen wird
+     * 
+     * ABLAUF:
+     * 1. Prüft ob Alert/Attack bereits läuft (dann nichts tun)
+     * 2. Dreht Endboss zum Character
+     * 3. Triggert Alert-Animation die dann zu Attack führt
+     * 
+     * WICHTIG:
+     * - Funktioniert auch wenn Character außerhalb der Sichtweite ist
+     * - Überschreibt Patrol-Modus
+     * - Startet komplette Alert → Attack → Chase Sequenz
+     */
+    onBottleHit() {
+        // Ignoriere wenn bereits in Alert/Attack/Chase Sequenz
+        if (this.state.hasPlayedAlert || this.state.isPlayingAlert || this.state.isPlayingAttack) {
+            return;
+        }
+
+        // Drehe Endboss in Richtung des Characters
+        if (this.world && this.world.character) {
+            const character = this.world.character;
+            this.otherDirection = character.x > this.x;
+        }
+
+        // Triggere Alert-Animation (führt dann zu Attack und Chase)
+        this.state.hasPlayedAlert = false; // Reset für Neustart
+        this.playAlertAnimationOnce();
+    }
+
 }
