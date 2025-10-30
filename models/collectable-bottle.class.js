@@ -1,4 +1,4 @@
-class CollectableBottle extends MovableObjects {
+class CollectableBottle extends CollectableObject {
     height = 60;
     width = this.height * 0.6;
     groundLevel = 430 - this.height;
@@ -11,7 +11,7 @@ class CollectableBottle extends MovableObjects {
     rectOffsetRight = 10 + this.rectOffsetLeft;
 
     // Animations-Bilder
-    imagesIdle = [
+    images = [
         '../assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
         '../assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
     ];
@@ -22,18 +22,16 @@ class CollectableBottle extends MovableObjects {
         this.x = x;
         this.y = this.y + Math.random() * 40;
 
+        // Zufällige Reihenfolge der Bilder (50% Chance für umgekehrte Reihenfolge)
+        if (Math.random() > 0.5) {
+            this.images = [...this.images].reverse();
+        }
+
         // Lade Bilder
-        this.loadImage(this.imagesIdle[0]);
-        this.loadImages(this.imagesIdle);
+        this.loadImage(this.images[0]);
+        this.loadImages(this.images);
 
         // Starte Animation
-        this.animate();
-    }
-
-    animate() {
-        // Sanfte Animations-Wechsel zwischen den beiden Flaschen-Bildern
-        setInterval(() => {
-            this.playAnimation(this.imagesIdle);
-        }, 500); // Alle 300ms wechseln für eine ruhige Animation
+        this.animate(500);
     }
 }

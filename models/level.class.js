@@ -5,10 +5,11 @@ class Level {
     backgroundObjects;
     statusBars;
     collectableBottles;
+    collectableCoins;
     levelStartX; // Level beginnt hier (erstes Hintergrundbild)
     levelEndX; // Level endet hier (letztes Hintergrundbild)
 
-    constructor(levelDistance, backgroundObjects, clouds, statusBars, enemies, endboss, collectableBottles) {
+    constructor(levelDistance, backgroundObjects, clouds, statusBars, enemies, endboss, collectableBottles, collectableCoins) {
         this.levelStartX = levelDistance[0];
         this.levelEndX = levelDistance[1];
         this.backgroundObjects = backgroundObjects;
@@ -17,5 +18,7 @@ class Level {
         this.statusBars = statusBars;
         // this.endboss = endboss[0]; // Erste Endboss aus dem Array
         this.collectableBottles = collectableBottles || []; // Optional, falls nicht übergeben
+        this.collectableCoins = collectableCoins || [];
+
     }
 }

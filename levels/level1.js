@@ -138,6 +138,9 @@ const level1 = new Level(
     [
         new Endboss(levelEnd),
     ],
-    generateBottlesWithMinDistance(bottleAmount, 100) // 8 Flaschen mit 200px Mindestabstand
+    generateBottlesWithMinDistance(bottleAmount, 100), // 8 Flaschen mit 200px Mindestabstand
+    [
+        new CollectableCoin(200)
+    ]
 
 );
