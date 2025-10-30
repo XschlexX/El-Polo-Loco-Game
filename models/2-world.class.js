@@ -99,7 +99,7 @@ class World {
                 if (bottle.isColliding(enemy) && !bottle.hasSplashed) {
                     bottle.splash(); // Flasche zerbricht
                     enemy.hit(); // Gegner nimmt Schaden
-                    
+
                     // Wenn es ein Endboss ist, triggere Alert/Attack Sequenz
                     if (enemy instanceof Endboss && enemy.onBottleHit) {
                         enemy.onBottleHit();
