@@ -1,7 +1,12 @@
 let levelStart = -1440;
 let levelEnd = 2880;
-let chickenAmount = 10;
+let characterHP;
+let smallChickenAmount;
+let bigChickenAmount = 10;
+let coinsAmount;
 let bottleAmount = 15;
+let endbossHP;
+
 
 /**
  * Generiert Hintergrund-Objekte für das Level
@@ -129,9 +134,9 @@ const level1 = new Level(
     generateBackgrounds(),
     generateClouds(),
     generateStatusBars(),
-    generateChickens(chickenAmount), // Anzahl der Chickens
+    generateChickens(bigChickenAmount), // Anzahl der Chickens
     [
-        new Endboss()
+        new Endboss(levelEnd),
     ],
     generateBottlesWithMinDistance(bottleAmount, 100) // 8 Flaschen mit 200px Mindestabstand
 

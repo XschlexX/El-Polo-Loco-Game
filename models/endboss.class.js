@@ -2,10 +2,11 @@ class Endboss extends MovableObjects {
     // Basis-Properties (von Parent geerbt: x, y, width, height, energy, etc.)
     height = 400;
     width = this.height * 0.8;
-    groundLevel = 450 - this.height;
-    y = this.groundLevel;
-    startX = 1200;
-    x = this.startX;
+    groundLevel = 450;
+    y = this.groundLevel - this.height;
+    startX;
+    levelEnd;
+
     energy = 50;
     rectOffsetTop = 70;
     rectOffsetBottom = 15 + this.rectOffsetTop;
@@ -24,7 +25,7 @@ class Endboss extends MovableObjects {
     ramming = {
         isActive: false,         // Ramm-Modus aktiv?
         direction: 1,            // 1 = rechts, -1 = links
-        distance: this.width * 1.5,  // Wie weit nach Kollision weiterlaufen
+        distance: this.width * 1.3,  // Wie weit nach Kollision weiterlaufen
         distanceTraveled: 0      // Wie weit bereits gelaufen
     };
 
@@ -119,7 +120,7 @@ class Endboss extends MovableObjects {
      * 3. Lädt alle Animations-Bilder in den Cache
      * 4. Startet die animate() Methode
      */
-    constructor() {
+    constructor(levelEnd) {
         super();
         this.loadImage(this.imagesWalk[0]);
         this.loadImages(this.imagesWalk);
@@ -128,6 +129,9 @@ class Endboss extends MovableObjects {
         this.loadImages(this.imagesAttackRun);
         this.loadImages(this.imagesHurt);
         this.loadImages(this.imagesDead);
+        this.levelEnd = levelEnd;
+        this.startX = levelEnd - 500;
+        this.x = this.startX;
         this.animate();
     }
 
@@ -197,9 +201,10 @@ class Endboss extends MovableObjects {
                 this.x += this.movement.speed;
                 this.otherDirection = true;
                 // Prüfe ob rechte Grenze erreicht
-                if (this.x >= this.startX + this.movement.moveDistance) {
+                if (this.x >= this.startX + this.movement.moveDistance || (this.x + this.width) >= this.levelEnd) {
                     this.movement.movingRight = false; // Wechsle Richtung
                 }
+                // console.log(this.x);
             } else {
                 // Laufe nach links
                 this.x -= this.movement.speed;
@@ -208,6 +213,7 @@ class Endboss extends MovableObjects {
                 if (this.x <= this.startX) {
                     this.movement.movingRight = true; // Wechsle Richtung
                 }
+                // console.log(this.x);
             }
         }, 1000 / 60); // 60 FPS für flüssige Bewegung
 

@@ -8,6 +8,7 @@ class World {
     camera_x = 0;
     throwableObjects = [];
     lastThrow;
+    showDebugInfo = true; // Debug-Modus Ein/Aus (F2 zum Umschalten)
 
 
     constructor(canvas, keyboard) {
@@ -20,6 +21,7 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
+        this.setupDebugToggle(); // Debug-Toggle einrichten
     }
 
     setWorld() {
@@ -32,6 +34,19 @@ class World {
         });
         // this.level.character = this.character;
         // this.statusBar.setPercentage(this.character.energy);
+    }
+
+    /**
+     * SETUP DEBUG TOGGLE
+     * Richtet die F2-Taste ein um Debug-Infos ein/auszuschalten
+     */
+    setupDebugToggle() {
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F2') {
+                this.showDebugInfo = !this.showDebugInfo;
+                console.log('Debug Info:', this.showDebugInfo ? 'AN' : 'AUS');
+            }
+        });
     }
 
 
@@ -156,6 +171,11 @@ class World {
         this.addObjectsToMap(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
 
+        // Debug-Infos zeichnen (wenn aktiviert)
+        if (this.showDebugInfo) {
+            this.drawDebugInfo();
+        }
+
         let self = this;
         requestAnimationFrame(() => self.draw());
     }
@@ -192,6 +212,42 @@ class World {
     flipImageBack(mo) {
         this.ctx.restore();
         mo.x = -mo.x;
+    }
+
+    /**
+     * DRAW DEBUG INFO
+     * Zeichnet Debug-Informationen über den Endboss
+     */
+    drawDebugInfo() {
+        const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
+
+        if (endboss) {
+            this.ctx.save();
+            this.ctx.font = '16px Arial';
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillRect(10, 10, 260, 170);
+
+            this.ctx.fillStyle = 'lime';
+            this.ctx.fillText('=== ENDBOSS DEBUG INFO ===', 20, 30);
+            this.ctx.fillStyle = 'white';
+
+            // Zeige x + width wenn nach rechts, sonst nur x
+            const displayX = endboss.otherDirection ?
+                Math.round(endboss.x + endboss.width) :
+                Math.round(endboss.x);
+
+            this.ctx.fillText(`X Position: ${displayX}`, 20, 55);
+            this.ctx.fillText(`StartX: ${Math.round(endboss.startX)}`, 20, 75);
+            this.ctx.fillText(`Level End: ${Math.round(endboss.levelEnd)}`, 20, 95);
+            this.ctx.fillText(`Energy: ${endboss.energy}`, 20, 115);
+            this.ctx.fillText(`State: ${endboss.state.isChasing ? 'CHASING' : 'PATROL'}`, 20, 135);
+            this.ctx.fillText(`Direction: ${endboss.otherDirection ? 'RECHTS →' : '← LINKS'}`, 20, 155);
+
+            this.ctx.fillStyle = 'yellow';
+            this.ctx.font = '12px Arial';
+            this.ctx.fillText('Drücke F2 zum Ausblenden', 20, 175);
+            this.ctx.restore();
+        }
     }
 
 }
