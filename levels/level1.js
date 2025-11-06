@@ -3,7 +3,7 @@ let levelEnd = 2880;
 let characterHP;
 let smallChickenAmount;
 let bigChickenAmount = 10;
-let coinsAmount;
+let coinsAmount = 0;
 let bottleAmount = 15;
 let endbossHP;
 
@@ -126,6 +126,49 @@ function generateBottlesWithMinDistance(count, minDistance) {
     return bottles;
 }
 
+/**
+ * Generiert Münzen mit Mindestabstand zueinander im Bereich levelStart bis levelEnd
+ * @param {number} count - Anzahl der Münzen
+ * @param {number} minDistance - Mindestabstand in Pixeln
+ * @returns {Array} Array von CollectableCoin Objekten
+ */
+function generateCoinsWithMinDistance(count, minDistance) {
+    const coins = [];
+    const minX = levelStart;
+    const maxX = levelEnd - 50;
+
+    for (let i = 0; i < count; i++) {
+        let newX;
+        let validPosition = false;
+        let attempts = 0;
+        const maxAttempts = 500; // Mehr Versuche
+
+        while (!validPosition && attempts < maxAttempts) {
+            newX = minX + Math.random() * (maxX - minX);
+            validPosition = true;
+
+            // Prüfe Abstand zu allen existierenden Münzen
+            for (let coin of coins) {
+                if (Math.abs(newX - coin.x) < minDistance) {
+                    validPosition = false;
+                    break;
+                }
+            }
+            attempts++;
+        }
+
+        // Nur hinzufügen wenn gültige Position gefunden wurde
+        if (validPosition) {
+            const coin = new CollectableCoin(newX);
+            coins.push(coin);
+        } else {
+            console.warn(`Konnte Münze ${i + 1} nicht mit Mindestabstand platzieren`);
+        }
+    }
+
+    return coins;
+}
+
 const level1 = new Level(
     [
         levelStart,
@@ -139,8 +182,6 @@ const level1 = new Level(
         new Endboss(levelEnd),
     ],
     generateBottlesWithMinDistance(bottleAmount, 100), // 8 Flaschen mit 200px Mindestabstand
-    [
-        new CollectableCoin(200)
-    ]
+    generateCoinsWithMinDistance(coinsAmount, 50) // Münzen mit 100px Mindestabstand
 
 );

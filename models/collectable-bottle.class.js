@@ -32,6 +32,6 @@ class CollectableBottle extends CollectableObject {
         this.loadImages(this.images);
 
         // Starte Animation
-        this.animate(500);
+        this.animate(500, 1000);
     }
 }

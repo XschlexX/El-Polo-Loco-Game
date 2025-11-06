@@ -18,15 +18,14 @@ class CollectableCoin extends CollectableObject {
 
     constructor(x) {
         super();
-        // X-Position als Parameter übergeben oder random falls nicht angegeben
         this.x = x;
-        this.y = this.y + Math.random() * 40;
+        this.y = this.groundLevel - Math.random() * 160;
 
         // Lade Bilder
         this.loadImage(this.images[0]);
         this.loadImages(this.images);
 
         // Starte Animation
-        this.animate(200);
+        this.animate(300, 1000);
     }
 }
