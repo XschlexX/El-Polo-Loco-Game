@@ -169,19 +169,23 @@ function generateCoinsWithMinDistance(count, minDistance) {
     return coins;
 }
 
-const level1 = new Level(
-    [
-        levelStart,
-        levelEnd
-    ],
-    generateBackgrounds(),
-    generateClouds(),
-    generateStatusBars(),
-    generateChickens(bigChickenAmount), // Anzahl der Chickens
-    [
-        new Endboss(levelEnd),
-    ],
-    generateBottlesWithMinDistance(bottleAmount, 100), // 8 Flaschen mit 200px Mindestabstand
-    generateCoinsWithMinDistance(coinsAmount, 50) // Münzen mit 100px Mindestabstand
+let level1;
+function createLevel1() {
 
-);
+    level1 = new Level(
+        [
+            levelStart,
+            levelEnd
+        ],
+        generateBackgrounds(),
+        generateClouds(),
+        generateStatusBars(),
+        generateChickens(bigChickenAmount), // Anzahl der Chickens
+        [
+            new Endboss(levelEnd),
+        ],
+        generateBottlesWithMinDistance(bottleAmount, 100), // 8 Flaschen mit 200px Mindestabstand
+        generateCoinsWithMinDistance(coinsAmount, 50) // Münzen mit 100px Mindestabstand
+
+    );
+}
