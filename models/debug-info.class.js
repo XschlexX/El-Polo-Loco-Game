@@ -1,8 +1,23 @@
 class DebugInfo extends DrawableObject {
     world;
+    showDebugInfo = true; // Debug-Modus Ein/Aus (F2 zum Umschalten)
 
     constructor() {
         super();
+        this.setupDebugToggle();
+    }
+
+    /**
+     * SETUP DEBUG TOGGLE
+     * Richtet die F2-Taste ein um Debug-Infos ein/auszuschalten
+     */
+    setupDebugToggle() {
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F2') {
+                this.showDebugInfo = !this.showDebugInfo;
+                console.log('Debug Info:', this.showDebugInfo ? 'AN' : 'AUS');
+            }
+        });
     }
 
     /**
@@ -11,7 +26,7 @@ class DebugInfo extends DrawableObject {
      */
     draw(ctx) {
         // Nur zeichnen wenn world existiert und Debug aktiviert ist
-        if (!this.world || !this.world.showDebugInfo) {
+        if (!this.world || !this.showDebugInfo) {
             return;
         }
 

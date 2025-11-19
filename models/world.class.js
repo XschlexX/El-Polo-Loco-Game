@@ -8,7 +8,6 @@ class World {
     camera_x = 0;
     throwableObjects = [];
     lastThrow;
-    showDebugInfo = true; // Debug-Modus Ein/Aus (F2 zum Umschalten)
 
 
     constructor(canvas, keyboard) {
@@ -21,7 +20,6 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
-        this.setupDebugToggle(); // Debug-Toggle einrichten
     }
 
     setWorld() {
@@ -36,19 +34,6 @@ class World {
         // Setze world-Referenz für DebugInfo
         this.level.debugInfo.forEach(debug => {
             debug.world = this;
-        });
-    }
-
-    /**
-     * SETUP DEBUG TOGGLE
-     * Richtet die F2-Taste ein um Debug-Infos ein/auszuschalten
-     */
-    setupDebugToggle() {
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'F2') {
-                this.showDebugInfo = !this.showDebugInfo;
-                console.log('Debug Info:', this.showDebugInfo ? 'AN' : 'AUS');
-            }
         });
     }
 
