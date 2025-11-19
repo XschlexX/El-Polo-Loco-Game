@@ -16,6 +16,17 @@
     /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
+/* rye-regular - latin */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Rye';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../assets/fonts/rye-v17-latin-regular.woff2') format('woff2');
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -23,28 +34,56 @@ body {
     flex-direction: column;
     text-align: center;
     height: 100vh;
+    font-family: 'Rye', cursive;
     background-image: url(../assets/img/5_background/desert_sunset.jpeg);
     background-repeat: no-repeat;
     background-size: cover;
 }
 
 h1 {
-    font-family: 'Smokum', serif;
+    /* font-family: 'Smokum', serif; */
     font-size: 3em;
 }
 
 .startscreen {
     height: 480px;
     width: 720px;
+    background-image: url(../assets/img/9_intro_outro_screens/start/startscreen_2.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
 }
 
-.startscreen img {
+/* .startscreen img {
     height: 100%;
     width: 100%;
-}
+} */
 
 canvas {
     /* width: 720px;
     height: 480px; */
     background: black;
+}
+
+.startscreen-controls {
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.button {
+    background: linear-gradient(to bottom, #ffa500, #ffde00, #ffa500);
+    border: none;
+    border-radius: 12px;
+    color: black;
+    padding: 8px 15px;
+    /* text-align: center; */
+    text-decoration: none;
+    font-family: inherit;
+    /* font-family: 'Smokum', sans-serif; */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
 }

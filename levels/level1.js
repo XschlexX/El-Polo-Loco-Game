@@ -3,7 +3,7 @@ let levelEnd = 2880;
 let characterHP;
 let smallChickenAmount;
 let bigChickenAmount = 10;
-let coinsAmount = 0;
+let coinsAmount = 30;
 let bottleAmount = 15;
 let endbossHP;
 
@@ -184,8 +184,14 @@ function createLevel1() {
         [
             new Endboss(levelEnd),
         ],
-        generateBottlesWithMinDistance(bottleAmount, 100), // 8 Flaschen mit 200px Mindestabstand
-        generateCoinsWithMinDistance(coinsAmount, 50) // Münzen mit 100px Mindestabstand
+        [
+            new GameTimer()
+        ],
+        [
+            new DebugInfo()
+        ],
+        generateBottlesWithMinDistance(bottleAmount, 100), // Flaschen mit Mindestabstand
+        generateCoinsWithMinDistance(coinsAmount, 50) // Münzen mit Mindestabstand
 
     );
 }

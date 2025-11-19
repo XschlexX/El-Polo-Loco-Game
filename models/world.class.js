@@ -32,8 +32,11 @@ class World {
         this.level.enemies.forEach(enemy => {
             enemy.world = this;
         });
-        // this.level.character = this.character;
-        // this.statusBar.setPercentage(this.character.energy);
+
+        // Setze world-Referenz für DebugInfo
+        this.level.debugInfo.forEach(debug => {
+            debug.world = this;
+        });
     }
 
     /**
@@ -163,6 +166,13 @@ class World {
 
         this.ctx.translate(-this.camera_x, 0);
         this.addObjectsToMap(this.level.statusBars);
+        this.addObjectsToMap(this.level.gameTimer);
+
+        // Debug-Info zeichnen (falls vorhanden)
+        if (this.level.debugInfo && this.level.debugInfo.length > 0) {
+            this.addObjectsToMap(this.level.debugInfo);
+        }
+
         this.ctx.translate(this.camera_x, 0);
 
         this.addToMap(this.character);
@@ -171,11 +181,6 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
-
-        // Debug-Infos zeichnen (wenn aktiviert)
-        if (this.showDebugInfo) {
-            this.drawDebugInfo();
-        }
 
         let self = this;
         requestAnimationFrame(() => self.draw());
@@ -213,42 +218,6 @@ class World {
     flipImageBack(mo) {
         this.ctx.restore();
         mo.x = -mo.x;
-    }
-
-    /**
-     * DRAW DEBUG INFO
-     * Zeichnet Debug-Informationen über den Endboss
-     */
-    drawDebugInfo() {
-        const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
-
-        if (endboss) {
-            this.ctx.save();
-            this.ctx.font = '16px Arial';
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            this.ctx.fillRect(10, 10, 260, 170);
-
-            this.ctx.fillStyle = 'lime';
-            this.ctx.fillText('=== ENDBOSS DEBUG INFO ===', 20, 30);
-            this.ctx.fillStyle = 'white';
-
-            // Zeige x + width wenn nach rechts, sonst nur x
-            const displayX = endboss.otherDirection ?
-                Math.round(endboss.x + endboss.width) :
-                Math.round(endboss.x);
-
-            this.ctx.fillText(`X Position: ${displayX}`, 20, 55);
-            this.ctx.fillText(`StartX: ${Math.round(endboss.startX)}`, 20, 75);
-            this.ctx.fillText(`Level End: ${Math.round(endboss.levelEnd)}`, 20, 95);
-            this.ctx.fillText(`Energy: ${endboss.energy}`, 20, 115);
-            this.ctx.fillText(`State: ${endboss.state.isChasing ? 'CHASING' : 'PATROL'}`, 20, 135);
-            this.ctx.fillText(`Direction: ${endboss.otherDirection ? 'RECHTS →' : '← LINKS'}`, 20, 155);
-
-            this.ctx.fillStyle = 'yellow';
-            this.ctx.font = '12px Arial';
-            this.ctx.fillText('Drücke F2 zum Ausblenden', 20, 175);
-            this.ctx.restore();
-        }
     }
 
 }

@@ -1,8 +1,11 @@
 function startScreenTemplate() {
     return /*html*/`
         <div id="startscreen" class="startscreen">
-            <img class="startscreen-img" src="../assets/img/9_intro_outro_screens/start/startscreen_2.png">
-            <button onclick="startGame()">START GAME</button>
+            <div class="startscreen-controls">
+                <button class="button" onclick="startGame()">START GAME</button>
+                <button class="button" onclick="startGame()">CONTROLS</button>
+                <button class="button" onclick="startGame()">INFO</button>
+            </div>
         </div>
     `;
 }
