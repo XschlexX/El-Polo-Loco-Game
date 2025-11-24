@@ -35,7 +35,7 @@ body {
     text-align: center;
     height: 100vh;
     font-family: 'Rye', cursive;
-    background-image: url(../assets/img/5_background/desert_sunset.jpeg);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url(../assets/img/5_background/desert_sunset.jpeg);
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -52,6 +52,18 @@ h1 {
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-position: center;
+    border-radius: 8px;
+}
+
+.controls {
+    height: 480px;
+    width: 720px;
+    background-image: url(../assets/img/5_background/first_half_background.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+    border-radius: 8px;
+    filter: blur(5px);
 }
 
 /* .startscreen img {
@@ -63,6 +75,7 @@ canvas {
     /* width: 720px;
     height: 480px; */
     background: black;
+    border-radius: 8px;
 }
 
 .startscreen-controls {

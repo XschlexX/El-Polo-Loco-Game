@@ -8,3 +8,7 @@ function startGame() {
     createLevel1();
     world = new World(canvas, keyboard);
 }
+
+function showControlScreen() {
+    document.getElementById('canvas_container').innerHTML = controlsScreenTemplate();
+}

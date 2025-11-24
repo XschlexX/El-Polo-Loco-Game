@@ -1,6 +1,6 @@
 class DebugInfo extends DrawableObject {
     world;
-    showDebugInfo = true; // Debug-Modus Ein/Aus (F2 zum Umschalten)
+    showDebugInfo = false; // Debug-Modus Ein/Aus (F2 zum Umschalten)
 
     constructor() {
         super();
