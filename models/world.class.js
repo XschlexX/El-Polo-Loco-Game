@@ -1,6 +1,6 @@
 class World {
 
-    character = new Character(keyboard);
+    character;
     level = level1;
     canvas;
     ctx;
@@ -15,6 +15,8 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.lastThrow = new Date().getTime();
+        this.character = this.level.character; // Character aus dem Level holen
+        this.character.world = this; // World-Referenz setzen
         window.world = this;
 
         this.draw();

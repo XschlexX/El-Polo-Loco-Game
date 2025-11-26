@@ -87,8 +87,9 @@ class Character extends MovableObjects {
         '../assets/img/2_character_pepe/5_dead/D-57.png'
     ];
 
-    constructor() {
+    constructor(initialEnergy) {
         super();
+        this.energy = initialEnergy || 1000; // Setze HP basierend auf Parameter oder Standard 1000
         this.loadImage(this.imagesIdle[0]);
         this.loadImages(this.imagesIdle);
         this.loadImages(this.imagesLongIdle);
@@ -106,11 +107,14 @@ class Character extends MovableObjects {
         this.resetSleepTimer();
 
         setInterval(() => {
-            if (this.world.keyboard.ANY) {
+            if (this.world && this.world.keyboard && this.world.keyboard.ANY) {
                 this.resetSleepTimer();
             }
         }, 100); // Häufigere Überprüfung, aber nicht zu oft
         setInterval(() => {
+            // Warte bis world gesetzt ist
+            if (!this.world) return;
+            
             // Maximale Character-Position rechts: Level-Ende - Character-Breite
             const maxCharacterX = this.world.level.levelEndX - this.width;
             // Minimale Character-Position links: Level-Start
@@ -129,6 +133,9 @@ class Character extends MovableObjects {
             this.updateCamera();
         }, 1000 / 60);
         setInterval(() => {
+            // Warte bis world gesetzt ist
+            if (!this.world) return;
+            
             if (this.isDead()) {
                 this.playAnimation(this.imagesDead);
             } else if (this.isHurt()) {
