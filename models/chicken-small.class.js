@@ -1,5 +1,5 @@
-class Chicken extends MovableObjects {
-    height = 75;
+class ChickenSmall extends MovableObjects {
+    height = 45;
     width = this.height * 0.8;
     groundLevel = 435 - this.height;
     y = this.groundLevel;
@@ -17,20 +17,20 @@ class Chicken extends MovableObjects {
     maxX; // Rechte Grenze (Startposition)
 
     imagesWalk = [
-        '../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
-        '../assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
-        '../assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
+        '../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
+        '../assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
+        '../assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
     ];
 
     imagesDead = [
-        '../assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
+        '../assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
 
 
 
     constructor(levelEnd) {
         super();
-        this.loadImage('../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
+        this.loadImage('../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.x = 200 + Math.random() * (levelEnd + 1000);
         this.speed = 0.25 + Math.random() * 1.9;
         this.loadImages(this.imagesWalk);

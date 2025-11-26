@@ -128,6 +128,21 @@ function generateChickens(count) {
     return chickens;
 }
 
+/**
+ * Generiert kleine Chickens für das Level
+ * @param {number} count - Anzahl der kleinen Chickens
+ * @returns {Array} Array von ChickenSmall Objekten
+ */
+function generateSmallChickens(count) {
+    const chickens = [];
+
+    for (let i = 0; i < count; i++) {
+        chickens.push(new ChickenSmall(levelEnd));
+    }
+
+    return chickens;
+}
+
 
 /**
  * Generiert Flaschen mit Mindestabstand zueinander im Bereich levelStart bis levelEnd
