@@ -9,6 +9,10 @@ function startGame() {
     world = new World(canvas, keyboard);
 }
 
+function showInfoScreen() {
+    document.getElementById('canvas_container').innerHTML = infoScreenTemplate();
+}
+
 function showControlScreen() {
     document.getElementById('canvas_container').innerHTML = controlsScreenTemplate();
 }

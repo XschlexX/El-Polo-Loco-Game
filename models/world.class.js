@@ -152,6 +152,7 @@ class World {
         this.ctx.translate(-this.camera_x, 0);
         this.addObjectsToMap(this.level.statusBars);
         this.addObjectsToMap(this.level.gameTimer);
+        this.addObjectsToMap(this.level.levelDisplay);
 
         // Debug-Info zeichnen (falls vorhanden)
         if (this.level.debugInfo && this.level.debugInfo.length > 0) {

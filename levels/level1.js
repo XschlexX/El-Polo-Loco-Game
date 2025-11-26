@@ -6,6 +6,7 @@ let bigChickenAmount = 10;
 let coinsAmount = 30;
 let bottleAmount = 15;
 let endbossHP;
+let levelNumber = 44;
 
 
 /**
@@ -191,7 +192,10 @@ function createLevel1() {
             new DebugInfo()
         ],
         generateBottlesWithMinDistance(bottleAmount, 100), // Flaschen mit Mindestabstand
-        generateCoinsWithMinDistance(coinsAmount, 50) // Münzen mit Mindestabstand
+        generateCoinsWithMinDistance(coinsAmount, 50), // Münzen mit Mindestabstand
+        [
+            new LevelDisplay(levelNumber) // Level 1 Anzeige
+        ]
 
     );
 }
