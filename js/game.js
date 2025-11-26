@@ -143,7 +143,6 @@ function generateSmallChickens(count) {
     return chickens;
 }
 
-
 /**
  * Generiert Flaschen mit Mindestabstand zueinander im Bereich levelStart bis levelEnd
  * @param {number} count - Anzahl der Flaschen
