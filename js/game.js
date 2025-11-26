@@ -118,11 +118,11 @@ function generateStatusBars() {
  * @param {number} count - Anzahl der Chickens
  * @returns {Array} Array von Chicken Objekten
  */
-function generateChickens(count) {
+function generateChickens(count, chickenSpeed) {
     const chickens = [];
 
     for (let i = 0; i < count; i++) {
-        chickens.push(new Chicken(levelEnd));
+        chickens.push(new Chicken(levelEnd, chickenSpeed));
     }
 
     return chickens;
@@ -133,11 +133,11 @@ function generateChickens(count) {
  * @param {number} count - Anzahl der kleinen Chickens
  * @returns {Array} Array von ChickenSmall Objekten
  */
-function generateSmallChickens(count) {
+function generateSmallChickens(count, chickenSpeed) {
     const chickens = [];
 
     for (let i = 0; i < count; i++) {
-        chickens.push(new ChickenSmall(levelEnd));
+        chickens.push(new ChickenSmall(levelEnd, chickenSpeed));
     }
 
     return chickens;

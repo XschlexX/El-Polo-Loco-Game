@@ -1,8 +1,9 @@
 let levelStart = -1440;
 let levelEnd = 2880;
 let characterHP = 100; // HP für Level 1
-let smallChickenAmount = 5; // Anzahl der kleinen Hühner
+let smallChickenAmount = 10; // Anzahl der kleinen Hühner
 let bigChickenAmount = 10;
+let chickenSpeed = 5;
 let coinsAmount = 30;
 let bottleAmount = 15;
 let endbossHP;
@@ -20,9 +21,9 @@ function createLevel1() {
         generateBackgrounds(),
         generateClouds(),
         generateStatusBars(),
-        [...generateSmallChickens(smallChickenAmount), ...generateChickens(bigChickenAmount)], // Kleine und große Chickens kombiniert
+        [...generateSmallChickens(smallChickenAmount, chickenSpeed), ...generateChickens(bigChickenAmount, chickenSpeed)], // Kleine und große Chickens kombiniert
         [
-            new Endboss(levelEnd),
+            new Endboss(levelEnd, endbossHP),
         ],
         [
             new GameTimer()

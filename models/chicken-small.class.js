@@ -5,7 +5,6 @@ class ChickenSmall extends MovableObjects {
     y = this.groundLevel;
     rectOffsetTop = 1;
     rectOffsetBottom = 5 + this.rectOffsetTop;
-    energy = 10;
     world;
     markedForDeletion = false;
     isDying = false;
@@ -28,11 +27,11 @@ class ChickenSmall extends MovableObjects {
 
 
 
-    constructor(levelEnd) {
+    constructor(levelEnd, chickenSpeed) {
         super();
         this.loadImage('../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.x = 200 + Math.random() * (levelEnd + 1000);
-        this.speed = 0.25 + Math.random() * 1.9;
+        this.speed = 0.25 + Math.random() * chickenSpeed;
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesDead);
         this.animate();
