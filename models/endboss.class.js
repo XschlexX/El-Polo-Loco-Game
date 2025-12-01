@@ -156,9 +156,27 @@ class Endboss extends MovableObjects {
             // REGEL 2: RAMMING-MODUS (nach Kollision mit Character)
             // Wird durch onCharacterCollision() aktiviert
             if (this.ramming.isActive) {
-                // Laufe in Ramm-Richtung weiter mit Chasing-Geschwindigkeit
-                this.x += this.movement.chasingSpeed * this.ramming.direction;
-                this.ramming.distanceTraveled += this.movement.chasingSpeed;
+                // Berechne neue Position
+                const newX = this.x + (this.movement.chasingSpeed * this.ramming.direction);
+
+                // Prüfe Level-Grenzen
+                const minX = this.world ? this.world.level.levelStartX : 0;
+                const maxX = this.world ? this.world.level.levelEndX - this.width : this.levelEnd - this.width;
+
+                // Bewege nur wenn innerhalb der Grenzen
+                if (newX >= minX && newX <= maxX) {
+                    this.x = newX;
+                    this.ramming.distanceTraveled += this.movement.chasingSpeed;
+                } else {
+                    // Level-Grenze erreicht - beende Ramming sofort
+                    this.ramming.isActive = false;
+                    this.ramming.distanceTraveled = 0;
+                    this.otherDirection = !this.otherDirection;
+                    this.state.isChasing = this.canSeeCharacter();
+                    this.state.hasPlayedAlert = true;
+                    this.state.hasPlayedAttack = true;
+                    return;
+                }
 
                 // Prüfe ob die Ramm-Distanz erreicht wurde
                 if (this.ramming.distanceTraveled >= this.ramming.distance) {
@@ -179,15 +197,25 @@ class Endboss extends MovableObjects {
             if (this.state.isChasing && this.world && this.world.character) {
                 const character = this.world.character;
 
+                // Level-Grenzen
+                const minX = this.world.level.levelStartX;
+                const maxX = this.world.level.levelEndX - this.width;
+
                 // Bewege dich zum Character hin
                 if (character.x > this.x) {
                     // Character ist rechts → Laufe nach rechts
-                    this.x += this.movement.chasingSpeed;
+                    const newX = this.x + this.movement.chasingSpeed;
+                    if (newX <= maxX) {
+                        this.x = newX;
+                    }
                     this.otherDirection = true;
                     this.ramming.direction = 1;  // Speichere Richtung für Ramming
                 } else {
                     // Character ist links → Laufe nach links
-                    this.x -= this.movement.chasingSpeed;
+                    const newX = this.x - this.movement.chasingSpeed;
+                    if (newX >= minX) {
+                        this.x = newX;
+                    }
                     this.otherDirection = false;
                     this.ramming.direction = -1;  // Speichere Richtung für Ramming
                 }

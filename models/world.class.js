@@ -8,6 +8,8 @@ class World {
     camera_x = 0;
     throwableObjects = [];
     lastThrow;
+    settingsButton;
+    settingsOverlay;
 
 
     constructor(canvas, keyboard) {
@@ -19,9 +21,16 @@ class World {
         this.character.world = this; // World-Referenz setzen
         window.world = this;
 
+        // Erstelle Settings-Button und Overlay
+        this.settingsButton = new SettingsButton();
+        this.settingsButton.world = this;
+        this.settingsOverlay = new SettingsOverlay();
+        this.settingsOverlay.world = this;
+
         this.draw();
         this.setWorld();
         this.run();
+        this.setupCanvasListeners();
     }
 
     setWorld() {
@@ -156,6 +165,9 @@ class World {
         this.addObjectsToMap(this.level.gameTimer);
         this.addObjectsToMap(this.level.levelDisplay);
 
+        // Zeichne Settings-Button
+        this.settingsButton.draw(this.ctx);
+
         // Debug-Info zeichnen (falls vorhanden)
         if (this.level.debugInfo && this.level.debugInfo.length > 0) {
             this.addObjectsToMap(this.level.debugInfo);
@@ -169,6 +181,9 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
+
+        // Zeichne Settings-Overlay (falls sichtbar)
+        this.settingsOverlay.draw(this.ctx);
 
         let self = this;
         requestAnimationFrame(() => self.draw());
@@ -206,6 +221,55 @@ class World {
     flipImageBack(mo) {
         this.ctx.restore();
         mo.x = -mo.x;
+    }
+
+    setupCanvasListeners() {
+        // Click-Event für Settings-Button und Overlay
+        this.canvas.addEventListener('click', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            // Prüfe zuerst Overlay-Buttons
+            const action = this.settingsOverlay.handleClick(mouseX, mouseY);
+            if (action === 'exit') {
+                this.exitGame();
+            } else if (action === 'restart') {
+                startGame();
+            } else if (action === 'resume') {
+                this.settingsOverlay.hide();
+            } else if (!this.settingsOverlay.isVisible && this.settingsButton.isClicked(mouseX, mouseY)) {
+                // Öffne Settings nur wenn Overlay nicht sichtbar ist
+                this.settingsOverlay.show();
+            }
+        });
+
+        // Mousemove-Event für Hover-Effekt
+        this.canvas.addEventListener('mousemove', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            // Prüfe Overlay-Buttons zuerst
+            const overlayHovered = this.settingsOverlay.handleHover(mouseX, mouseY);
+            const buttonHovered = this.settingsButton.isHovering(mouseX, mouseY);
+
+            if (overlayHovered || buttonHovered) {
+                this.canvas.style.cursor = 'pointer';
+            } else {
+                this.canvas.style.cursor = 'default';
+            }
+        });
+    }
+
+    exitGame() {
+        // Stoppe alle Game-Loops
+        location.reload(); // Lädt die Seite neu und beendet das Spiel
+    }
+
+    restartGame() {
+        // Starte das Spiel neu
+        location.reload(); // Lädt die Seite neu und startet das Spiel von vorne
     }
 
 }

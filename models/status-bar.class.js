@@ -68,6 +68,11 @@ class StatusBar extends DrawableObject {
         this.setPosition();
         this.loadImage(this[statusbar][type]);
 
+        // Setze initiale Breite für Bottle-Bar sofort auf 0, damit sie nicht voll angezeigt wird
+        if (statusbar === 'imagesBottleBar' && type === 1) {
+            this.width = 0;
+        }
+
         // Initialisierung je nach Statusbar-Typ
         if (statusbar === 'imagesHealthBar' || statusbar === 'imagesBottleBar' || statusbar === 'imagesCoinBar') {
             this.setCharacter();
@@ -81,7 +86,8 @@ class StatusBar extends DrawableObject {
             if (world) {
                 this.character = world.character;
                 if (this.statusbar === 'imagesBottleBar') {
-                    this.multiplier = this.width / this.character.bottles;
+                    // Multiplier basiert auf Maximum (10 Bottles) und maximaler Breite (200px)
+                    this.multiplier = 200 / 10;
                 } else {
                     this.multiplier = this.width / this.character.energy;
                 }

@@ -1,9 +1,9 @@
 class GameTimer extends DrawableObject {
     startTime;
-    x = 490;
-    y = 50;
-    width = 200;
+    width = 120;
     height = 30;
+    y = 70;   // Unter Level Display (Level Display: y=10 + height=50 + gap=10)
+    x = 720 / 2 - this.width / 2;  // Zentriert unter Level Display (Level Display: x=320, width=80, Timer: width=200)
 
     constructor() {
         super();
@@ -40,18 +40,22 @@ class GameTimer extends DrawableObject {
     draw(ctx) {
         ctx.save();
 
-        // Hintergrund
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        // Hintergrund mit abgerundeten Ecken
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.beginPath();
+        this.drawRoundedRect(ctx, this.x, this.y, this.width, this.height, 8);
+        ctx.fill();
 
-        // Rahmen
-        ctx.strokeStyle = '#dabc45';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
+        // // Rahmen mit abgerundeten Ecken
+        // ctx.strokeStyle = '#dabc45';
+        // ctx.lineWidth = 2;
+        // ctx.beginPath();
+        // this.drawRoundedRect(ctx, this.x, this.y, this.width, this.height, 8);
+        // ctx.stroke();
 
         // Text
-        ctx.font = 'bold 18px Arial';
-        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 18px Rye, Arial';
+        ctx.fillStyle = '#FFD700';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(
@@ -61,5 +65,18 @@ class GameTimer extends DrawableObject {
         );
 
         ctx.restore();
+    }
+
+    drawRoundedRect(ctx, x, y, width, height, radius) {
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
     }
 }

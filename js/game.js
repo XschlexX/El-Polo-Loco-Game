@@ -156,8 +156,8 @@ function generateSmallChickens(count, chickenSpeed) {
  */
 function generateBottlesWithMinDistance(count, minDistance) {
     const bottles = [];
-    const minX = levelStart;
-    const maxX = levelEnd - 50;
+    const minX = levelStart + 50;
+    const maxX = levelEnd - 100;
 
     for (let i = 0; i < count; i++) {
         let newX;
@@ -199,8 +199,8 @@ function generateBottlesWithMinDistance(count, minDistance) {
  */
 function generateCoinsWithMinDistance(count, minDistance) {
     const coins = [];
-    const minX = levelStart;
-    const maxX = levelEnd - 50;
+    const minX = levelStart + 50;
+    const maxX = levelEnd - 100;
 
     for (let i = 0; i < count; i++) {
         let newX;

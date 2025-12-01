@@ -21,13 +21,13 @@ class LevelDisplay extends DrawableObject {
         ctx.fill();
 
         // Text "LEVEL"
-        ctx.font = 'bold 12px Arial';
-        ctx.fillStyle = '#FFA500';
+        ctx.font = 'bold 12px Rye, Arial';
+        ctx.fillStyle = '#FFD700';
         ctx.textAlign = 'center';
         ctx.fillText('LEVEL', this.x + this.width / 2, this.y + 18);
 
         // Level-Nummer
-        ctx.font = 'bold 24px Arial';
+        ctx.font = 'bold 24px Rye, Arial';
         ctx.fillStyle = '#FFD700';
         ctx.fillText(this.levelNumber, this.x + this.width / 2, this.y + 42);
 
