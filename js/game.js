@@ -102,7 +102,12 @@ function generateClouds() {
  */
 function generateStatusBars() {
     const statusBars = [];
-    const barTypes = ['imagesHealthBar', 'imagesBottleBar', 'imagesCoinBar', 'imagesHealthBarEndboss'];
+    const barTypes = ['imagesHealthBar', 'imagesBottleBar', 'imagesHealthBarEndboss'];
+
+    // Füge imagesCoinBar nur hinzu, wenn Münzen im Level vorhanden sind
+    if (coinsAmount > 0) {
+        barTypes.splice(2, 0, 'imagesCoinBar'); // Füge an Position 2 ein (nach BottleBar, vor EndbossBar)
+    }
 
     barTypes.forEach(barType => {
         for (let i = 0; i < 3; i++) {

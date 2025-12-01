@@ -1,12 +1,12 @@
-let levelStart = -1440;
-let levelEnd = 2880;
+let levelStart = -720;
+let levelEnd = 2160;
 let characterHP = 100; // HP für Level 1
-let smallChickenAmount = 10; // Anzahl der kleinen Hühner
+let smallChickenAmount = 0; // Anzahl der kleinen Hühner
 let bigChickenAmount = 10;
-let chickenSpeed = 5;
-let coinsAmount = 30;
-let bottleAmount = 15;
-let endbossHP;
+let chickenSpeed = 2;
+let coinsAmount = 0;
+let bottleAmount = 10;
+let endbossHP = 50;
 let levelNumber = 1; // Level-Nummer
 
 let level1;
@@ -17,7 +17,7 @@ function createLevel1() {
             levelStart,
             levelEnd
         ],
-        new Character(characterHP), // Character mit level-spezifischer HP
+        new Character(characterHP),
         generateBackgrounds(),
         generateClouds(),
         generateStatusBars(),
