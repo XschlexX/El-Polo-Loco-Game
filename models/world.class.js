@@ -10,6 +10,7 @@ class World {
     lastThrow;
     settingsButton;
     settingsOverlay;
+    soundManager;
 
 
     constructor(canvas, keyboard) {
@@ -19,6 +20,7 @@ class World {
         this.lastThrow = new Date().getTime();
         this.character = this.level.character; // Character aus dem Level holen
         this.character.world = this; // World-Referenz setzen
+        this.soundManager = window.soundManager;
         window.world = this;
 
         // Erstelle Settings-Button und Overlay

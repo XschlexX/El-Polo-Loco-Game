@@ -3,9 +3,12 @@ function startScreenTemplate() {
         <div id="startscreen" class="startscreen">
             <div class="startscreen-controls">
                 <button class="button" onclick="showInfoScreen()">INFO</button>
-            <button class="button" onclick="showControlScreen()">CONTROLS</button>
+                <button class="button" onclick="showControlScreen()">CONTROLS</button>
             </div>
             <button class="button fz32" onclick="startGame()">START GAME</button>
+            <button onclick="enableSound()" class="unmute-button">
+                🔊 Enable Sound
+            </button>
         </div>
     `;
 }

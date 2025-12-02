@@ -3,10 +3,14 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let soundManager;
+
 
 function init() {
+    console.log('INIT() called!');
+    window.soundManager = new SoundManager();  // ← Füge 'window.' hinzu!
+    console.log('SoundManager created:', window.soundManager);
     startScreen();
-
 }
 
 window.addEventListener('keydown', (e) => {

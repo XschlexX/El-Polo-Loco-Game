@@ -12,15 +12,12 @@ class SoundManager {
         // TODO: Hier fügst du die Sounds hinzu
         // Beispiel: this.addSound('jump', 'sounds/effects/jump.mp3');
         this.addSound('menuTheme', 'sounds/music/menu-theme.mp3');
-        this.addSound('gameTheme', 'sounds/music/game-theme.mp3');
+        this.addSound('gameTheme', 'sounds/music/game-theme1.mp3');
         this.addSound('endbossTheme', 'sounds/music/endboss-theme.mp3');
         this.addSound('characterJump', 'sounds/effects/character-jump.mp3');
         this.addSound('characterLand', 'sounds/effects/character-land.mp3');
         this.addSound('characterRun', 'sounds/effects/character-run.mp3');
         this.addSound('characterHurt', 'sounds/effects/character-hurt.wav');
-        this.addSound('coin', 'sounds/effects/coin-collect.wav');
-        this.addSound('stomp', 'sounds/effects/stomp.mp3');
-        this.addSound('background', 'sounds/background.mp3');
     }
 
     /**
@@ -47,5 +44,32 @@ class SoundManager {
             // Browser blockiert manchmal Autoplay
             console.warn(`Fehler beim Abspielen von "${name}":`, err);
         });
+    }
+
+    /**
+ * Spielt Musik in einer Endlosschleife
+ */
+    playMusic(name) {
+        if (!this.sounds[name]) {
+            console.warn(`Sound "${name}" nicht gefunden`);
+            return;
+        }
+
+        const sound = this.sounds[name];
+        sound.loop = true;  // ← Wichtig: Endlosschleife!
+        sound.play().catch(err => {
+            console.warn(`Fehler beim Abspielen von "${name}":`, err);
+        });
+    }
+
+    /**
+     * Stoppt Musik
+     */
+    stopMusic(name) {
+        if (!this.sounds[name]) return;
+
+        const sound = this.sounds[name];
+        sound.pause();
+        sound.currentTime = 0;  // Zurück zum Anfang
     }
 }
