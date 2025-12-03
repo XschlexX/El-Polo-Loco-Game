@@ -11,24 +11,31 @@ class SoundManager {
     initializeSounds() {
         // TODO: Hier fügst du die Sounds hinzu
         // Beispiel: this.addSound('jump', 'sounds/effects/jump.mp3');
-        this.addSound('menuTheme', 'sounds/music/menu-theme.mp3');
-        this.addSound('gameTheme', 'sounds/music/game-theme1.mp3');
-        this.addSound('endbossTheme', 'sounds/music/endboss-theme.mp3');
-        this.addSound('characterJump', 'sounds/effects/character-jump.mp3');
-        this.addSound('characterLand', 'sounds/effects/character-land.mp3');
-        this.addSound('characterRun', 'sounds/effects/character-run.mp3');
-        this.addSound('characterHurt', 'sounds/effects/character-hurt.wav');
-        this.addSound('bottleCollect', 'sounds/effects/bottle-collect.mp3');
-        this.addSound('bottleThrow', 'sounds/effects/bottle-throw.mp3');
-        this.addSound('bottleSplash', 'sounds/effects/bottle-splash.mp3');
+        this.addSound('menuTheme', 'sounds/music/menu-theme.mp3', 0.5);
+        this.addSound('gameTheme', 'sounds/music/game-theme1.mp3', 0.5);
+        this.addSound('endbossTheme', 'sounds/music/endboss-theme.mp3', 0.5);
+        this.addSound('characterJump', 'sounds/effects/character-jump.mp3', 0.2);
+        this.addSound('characterLand', 'sounds/effects/character-land.mp3', 0.3);  // Leiser!
+        this.addSound('characterRun', 'sounds/effects/character-run.mp3', 0.3);
+        this.addSound('characterHurt', 'sounds/effects/character-hurt.wav', 0.6);
+        this.addSound('characterSleep', 'sounds/effects/character-sleep.mp3', 0.3);
+        this.addSound('chickenDead', 'sounds/effects/enemies/chicken-dead.mp3', 1.0);  // Volle Lautstärke!
+        this.addSound('chickenSmallDead', 'sounds/effects/enemies/chicken-small-dead.mp3', 1.0);
+        this.addSound('bottleCollect', 'sounds/effects/bottle-collect.mp3', 0.2);
+        this.addSound('bottleThrow', 'sounds/effects/bottle-throw.mp3', 0.4);
+        this.addSound('bottleSplash', 'sounds/effects/bottle-splash.mp3', 0.6);
     }
 
     /**
      * Fügt einen Sound hinzu
+     * @param {string} name - Name des Sounds
+     * @param {string} path - Pfad zur Sound-Datei
+     * @param {number} volume - Lautstärke (0.0 - 1.0), Standard: 1.0
      */
-    addSound(name, path) {
+    addSound(name, path, volume = 1.0) {
         const audio = new Audio(path);
         audio.preload = 'auto'; // Lädt Sound im Voraus
+        audio.volume = volume;  // Setze Lautstärke
         this.sounds[name] = audio;
     }
 

@@ -4,12 +4,12 @@ class Character extends MovableObjects {
     groundLevel = 445 - this.height;
     x = 50;
     y = this.groundLevel;
-    // y = 0;
     speed = 5;
     energy = 500;
     bottles = 10;
     sleep = false;
     isRunSoundPlaying = false;  // Track ob Run-Sound läuft
+    isSleepSoundPlaying = false;  // Track ob Sleep-Sound läuft
     wasAboveGround = false;  // Track ob Character in der Luft war
     rectOffsetLeft = 30;
     rectOffsetTop = 130;
@@ -126,7 +126,7 @@ class Character extends MovableObjects {
             if (this.wasAboveGround && !isNowAboveGround && !this.isDead()) {
                 this.world.soundManager.play('characterLand');
             }
-            
+
             // Update wasAboveGround für nächsten Frame
             this.wasAboveGround = isNowAboveGround;
 
@@ -166,6 +166,7 @@ class Character extends MovableObjects {
             }
             this.updateCamera();
         }, 1000 / 60);
+
         setInterval(() => {
             // Warte bis world gesetzt ist
             if (!this.world) return;
@@ -198,8 +199,20 @@ class Character extends MovableObjects {
     resetSleepTimer() {
         clearTimeout(this.sleepTimer);
         this.sleep = false;
+
+        // Stoppe Sleep-Sound wenn Character aufwacht
+        if (this.isSleepSoundPlaying && this.world && this.world.soundManager) {
+            this.world.soundManager.stopMusic('characterSleep');
+            this.isSleepSoundPlaying = false;
+        }
+
         this.sleepTimer = setTimeout(() => {
             this.sleep = true;
+            // Spiele Sleep-Sound im Loop ab
+            if (this.world && this.world.soundManager) {
+                this.world.soundManager.playMusic('characterSleep');
+                this.isSleepSoundPlaying = true;
+            }
         }, 3000);
     }
 

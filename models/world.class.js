@@ -78,17 +78,22 @@ class World {
             }
 
             if (this.character.isColliding(enemy)) {
-                // Prüfe ob Character von oben auf das Huhn springt
-                if (this.isJumpingOnEnemy(this.character, enemy)) {
+                // Prüfe zuerst, ob der Charakter von oben auf den Gegner springt
+                const isJumpingOnEnemy = this.isJumpingOnEnemy(this.character, enemy);
+
+                if (isJumpingOnEnemy) {
                     // Character springt auf Gegner - Gegner stirbt
                     enemy.hit();
-                    this.character.jump(4); // Kleiner Bounce-Effekt
-                } else if (!this.character.isHurt()) {
+                    // Kleiner Bounce-Effekt
+                    this.character.jump(4);
+                }
+                // Nur Schaden nehmen, wenn es KEIN Sprung von oben war
+                else if (!this.character.isHurt() && !isJumpingOnEnemy) {
                     // Normale Kollision von der Seite - Character nimmt Schaden
                     this.character.hit();
-                    this.character.resetSleepTimer(); // Sleep-Timer zurücksetzen wenn getroffen
+                    this.character.resetSleepTimer();
 
-                    // Wenn es ein Endboss ist, aktiviere Ramming-Modus (nur wenn nicht bereits ramming)
+                    // Wenn es ein Endboss ist, aktiviere Ramming-Modus
                     if (enemy instanceof Endboss && enemy.onCharacterCollision && !enemy.ramming.isActive) {
                         enemy.onCharacterCollision();
                     }
@@ -98,10 +103,28 @@ class World {
     }
 
     isJumpingOnEnemy(character, enemy) {
-        // Prüfe ob Character von oben kommt (fällt), über dem Gegner ist UND in der Luft ist
-        return character.speedY < 0 &&
-            character.isAboveGround(character.groundLevel) &&
-            character.y + character.height - character.rectOffsetBottom < enemy.y + enemy.rectOffsetTop + 20;
+        // Charakter Positionen
+        const characterBottom = character.y + character.height - character.rectOffsetBottom;
+        const characterFeetY = character.y + character.height;
+
+        // Gegner Positionen
+        const enemyTop = enemy.y + enemy.rectOffsetTop;
+        const enemyBottom = enemy.y + enemy.height - enemy.rectOffsetBottom;
+        const enemyMiddle = enemy.y + (enemy.height / 2);
+
+        // Prüfe ob:
+        // 1. Character fällt (speedY > 0)
+        // 2. Character's Füße sind über der Oberkante des Gegners
+        // 3. Character's Füße sind unterhalb der Mitte des Gegners
+        // 4. Character ist horizontal über dem Gegner
+        const isFalling = character.speedY > 0;
+        const isAboveEnemyTop = characterBottom < enemyMiddle; // Untere Hälfte des Gegners
+        const isNotTooFarAbove = characterBottom > enemyTop - 30; // Etwas mehr Toleranz nach oben
+        const isHorizontallyAligned =
+            (character.x + character.width - character.rectOffsetRight) > enemy.x &&
+            character.x < (enemy.x + enemy.width - enemy.rectOffsetRight);
+
+        return isFalling && isAboveEnemyTop && isNotTooFarAbove && isHorizontallyAligned;
     }
 
     checkBottleCollisions() {
@@ -149,7 +172,7 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.bottles--; // Reduziere Flaschenanzahl
             this.lastThrow = new Date().getTime();
-            
+
             // Spiele Throw-Sound ab
             if (this.soundManager) {
                 this.soundManager.play('bottleThrow');

@@ -1,10 +1,5 @@
 function startScreen() {
-    console.log('startScreen() called');
-    console.log('soundManager before template:', window.soundManager);  // ← NEU
-
     document.getElementById('game_container').innerHTML = startScreenTemplate();
-
-    console.log('soundManager after template:', window.soundManager);  // ← NEU
 }
 
 function startGame() {

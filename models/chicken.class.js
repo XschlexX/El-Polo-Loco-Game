@@ -84,6 +84,11 @@ class Chicken extends MovableObjects {
             // Stoppe alle Intervals
             clearInterval(this.moveInterval);
             clearInterval(this.animationInterval);
+            
+            // Spiele Chicken-Dead-Sound ab
+            if (this.world && this.world.soundManager) {
+                this.world.soundManager.play('chickenDead');
+            }
 
             // Fade-Out-Effekt über 2 Sekunden
             let fadeInterval = setInterval(() => {

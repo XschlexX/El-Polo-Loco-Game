@@ -3,8 +3,10 @@ class ChickenSmall extends MovableObjects {
     width = this.height * 0.8;
     groundLevel = 435 - this.height;
     y = this.groundLevel;
-    rectOffsetTop = 1;
-    rectOffsetBottom = 5 + this.rectOffsetTop;
+    rectOffsetTop = -5;  // Keine Reduzierung oben! Volle Höhe
+    rectOffsetBottom = 0;  // Keine Reduzierung unten! Volle Höhe
+    rectOffsetLeft = 0;  // Keine Reduzierung links! Volle Breite
+    rectOffsetRight = 0;  // Keine Reduzierung rechts! Volle Breite
     world;
     markedForDeletion = false;
     isDying = false;
@@ -84,6 +86,11 @@ class ChickenSmall extends MovableObjects {
             // Stoppe alle Intervals
             clearInterval(this.moveInterval);
             clearInterval(this.animationInterval);
+
+            // Spiele Small-Chicken-Dead-Sound ab
+            if (this.world && this.world.soundManager) {
+                this.world.soundManager.play('chickenSmallDead');
+            }
 
             // Fade-Out-Effekt über 2 Sekunden
             let fadeInterval = setInterval(() => {

@@ -19,6 +19,7 @@ class MovableObjects extends DrawableObject {
                 this.speedY -= this.acceleration;
             } else {
                 this.y = groundLevel;
+                this.speedY = 0; // Wichtig: Geschwindigkeit zurücksetzen, wenn wir auf dem Boden sind
             }
         }, 1000 / 60);
     }
