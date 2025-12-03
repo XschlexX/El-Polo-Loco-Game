@@ -40,6 +40,10 @@ class MovableObjects extends DrawableObject {
             this.energy = 0;
         } else {
             this.lastHit = new Date().getTime();
+            // Spiele Hurt-Sound ab (nur für Character!)
+            if (this.world && this.world.soundManager && this instanceof Character) {
+                this.world.soundManager.play('characterHurt');
+            }
         }
     }
 

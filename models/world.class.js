@@ -134,6 +134,10 @@ class World {
                 if (this.character.bottles > 10) {
                     this.character.bottles = 10; // Maximum 10 Flaschen
                 }
+                // Spiele Collect-Sound ab
+                if (this.soundManager) {
+                    this.soundManager.play('bottleCollect');
+                }
             }
         });
     }
@@ -145,6 +149,11 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.bottles--; // Reduziere Flaschenanzahl
             this.lastThrow = new Date().getTime();
+            
+            // Spiele Throw-Sound ab
+            if (this.soundManager) {
+                this.soundManager.play('bottleThrow');
+            }
         }
     }
 
@@ -240,9 +249,19 @@ class World {
                 startGame();
             } else if (action === 'resume') {
                 this.settingsOverlay.hide();
+                // Stoppe Menu-Musik und setze Game-Musik fort
+                if (this.soundManager) {
+                    this.soundManager.stopMusic('menuTheme');
+                    this.soundManager.resumeMusic('gameTheme');  // ← Resume statt play!
+                }
             } else if (!this.settingsOverlay.isVisible && this.settingsButton.isClicked(mouseX, mouseY)) {
                 // Öffne Settings nur wenn Overlay nicht sichtbar ist
                 this.settingsOverlay.show();
+                // Pausiere Game-Musik und starte Menu-Musik
+                if (this.soundManager) {
+                    this.soundManager.pauseMusic('gameTheme');  // ← Pause statt stop!
+                    this.soundManager.playMusic('menuTheme');
+                }
             }
         });
 

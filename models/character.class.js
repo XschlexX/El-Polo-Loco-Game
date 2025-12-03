@@ -6,9 +6,11 @@ class Character extends MovableObjects {
     y = this.groundLevel;
     // y = 0;
     speed = 5;
-    energy = 1000;
+    energy = 500;
     bottles = 10;
     sleep = false;
+    isRunSoundPlaying = false;  // Track ob Run-Sound läuft
+    wasAboveGround = false;  // Track ob Character in der Luft war
     rectOffsetLeft = 30;
     rectOffsetTop = 130;
     rectOffsetRight = 45 + this.rectOffsetLeft;
@@ -112,6 +114,37 @@ class Character extends MovableObjects {
                 this.resetSleepTimer();
             }
         }, 100); // Häufigere Überprüfung, aber nicht zu oft
+
+        // Sound-Kontrolle für Run-Sound und Landing
+        setInterval(() => {
+            if (!this.world || !this.world.soundManager) return;
+
+            const isRunning = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround(this.groundLevel) && !this.isDead();
+            const isNowAboveGround = this.isAboveGround(this.groundLevel);
+
+            // Landing Detection: War in der Luft und ist jetzt am Boden
+            if (this.wasAboveGround && !isNowAboveGround && !this.isDead()) {
+                this.world.soundManager.play('characterLand');
+            }
+            
+            // Update wasAboveGround für nächsten Frame
+            this.wasAboveGround = isNowAboveGround;
+
+            if (isRunning) {
+                // Spiele Run-Sound im Loop ab (falls noch nicht läuft)
+                if (!this.isRunSoundPlaying) {
+                    this.world.soundManager.playMusic('characterRun');
+                    this.isRunSoundPlaying = true;
+                }
+            } else {
+                // Stoppe Run-Sound
+                if (this.isRunSoundPlaying) {
+                    this.world.soundManager.stopMusic('characterRun');
+                    this.isRunSoundPlaying = false;
+                }
+            }
+        }, 100);
+
         setInterval(() => {
             // Warte bis world gesetzt ist
             if (!this.world) return;

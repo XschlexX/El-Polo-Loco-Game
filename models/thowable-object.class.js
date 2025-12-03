@@ -90,6 +90,11 @@ class ThrowableObject extends MovableObjects {
             this.hasSplashed = true;
             this.currentImage = 0; // Reset für Splash-Animation
             this.stopMovement(); // Stoppe horizontale Bewegung
+            
+            // Spiele Splash-Sound ab
+            if (this.world && this.world.soundManager) {
+                this.world.soundManager.play('bottleSplash');
+            }
         }
     }
 
