@@ -1,5 +1,4 @@
 class World {
-
     character;
     level = level1;
     canvas;
@@ -11,7 +10,6 @@ class World {
     settingsButton;
     settingsOverlay;
     soundManager;
-
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -50,13 +48,12 @@ class World {
         });
     }
 
-
-
     run() {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowableObject();
             this.checkBottleCollection(); // Prüfe ob Character Flaschen einsammelt
+            this.checkCoinCollection(); // Prüfe ob Character Münzen einsammelt
         }, 200);
 
         // Häufigere Prüfung der Flaschen-Kollisionen für bessere Treffergenauigkeit
@@ -157,9 +154,24 @@ class World {
                 if (this.character.bottles > 10) {
                     this.character.bottles = 10; // Maximum 10 Flaschen
                 }
+                console.log('🍾 Bottle collected! Total bottles:', this.character.bottles);
                 // Spiele Collect-Sound ab
                 if (this.soundManager) {
                     this.soundManager.play('bottleCollect');
+                }
+            }
+        });
+    }
+
+    checkCoinCollection() {
+        this.level.collectableCoins.forEach((coin, index) => {
+            if (this.character.isColliding(coin) && this.character.coins < 10) {
+                // Character sammelt Münze ein
+                this.level.collectableCoins.splice(index, 1); // Entferne Münze aus Level
+                this.character.coins++; // Erhöhe Münzenanzahl
+                // Spiele Collect-Sound ab
+                if (this.soundManager) {
+                    this.soundManager.play('coinCollect'); // Benutze gleichen Sound wie Flaschen
                 }
             }
         });

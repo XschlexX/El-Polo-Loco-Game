@@ -34,18 +34,25 @@ class DebugInfo extends DrawableObject {
         if (this.world.character) {
             const char = this.world.character;
             const isAboveGround = char.isAboveGround(char.groundLevel);
+            const fieldX = 10;
+            const fieldY = 120;
+            const fieldWidth = 300;
+            const fieldHeight = 100;
+            const textGap = 15;
 
             ctx.save();
-            ctx.font = '16px Arial';
+            ctx.font = '14px Arial';
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(10, 10, 300, 100);
+            ctx.fillRect(fieldX, fieldY, fieldWidth, fieldHeight);
 
             ctx.fillStyle = 'white';
             ctx.textAlign = 'left';
-            ctx.fillText('Character Debug:', 20, 30);
-            ctx.fillText(`Position: (${char.x.toFixed(1)}, ${char.y.toFixed(1)})`, 20, 50);
-            ctx.fillText(`speedY: ${char.speedY.toFixed(2)}`, 20, 70);
-            ctx.fillText(`isAboveGround: ${isAboveGround}`, 20, 90);
+            ctx.fillText('Character Debug:', fieldX + textGap, fieldY + 15);
+            ctx.fillText(`Position: (${char.x.toFixed(1)}, ${char.y.toFixed(1)})`, fieldX + textGap, fieldY + textGap * 2);
+            ctx.fillText(`bottles: ${char.bottles}`, fieldX + textGap, fieldY + textGap * 3);
+            ctx.fillText(`coins: ${char.coins}`, fieldX + textGap, fieldY + textGap * 4);
+            ctx.fillText(`speedY: ${char.speedY.toFixed(2)}`, fieldX + textGap, fieldY + textGap * 5);
+            ctx.fillText(`isAboveGround: ${isAboveGround}`, fieldX + textGap, fieldY + textGap * 6);
             ctx.restore();
         }
 

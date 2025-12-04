@@ -6,7 +6,8 @@ class Character extends MovableObjects {
     y = this.groundLevel;
     speed = 5;
     energy = 500;
-    bottles = 10;
+    bottles = 0;
+    coins = 0;
     sleep = false;
     isRunSoundPlaying = false;  // Track ob Run-Sound läuft
     isSleepSoundPlaying = false;  // Track ob Sleep-Sound läuft

@@ -17,13 +17,14 @@ class SoundManager {
         this.addSound('characterJump', 'sounds/effects/character-jump.mp3', 0.2);
         this.addSound('characterLand', 'sounds/effects/character-land.mp3', 0.3);  // Leiser!
         this.addSound('characterRun', 'sounds/effects/character-run.mp3', 0.3);
-        this.addSound('characterHurt', 'sounds/effects/character-hurt.wav', 0.6);
+        this.addSound('characterHurt', 'sounds/effects/character-hurt.mp3', 0.6);
         this.addSound('characterSleep', 'sounds/effects/character-sleep.mp3', 0.3);
         this.addSound('chickenDead', 'sounds/effects/enemies/chicken-dead.mp3', 1.0);  // Volle Lautstärke!
         this.addSound('chickenSmallDead', 'sounds/effects/enemies/chicken-small-dead.mp3', 1.0);
         this.addSound('bottleCollect', 'sounds/effects/bottle-collect.mp3', 0.2);
         this.addSound('bottleThrow', 'sounds/effects/bottle-throw.mp3', 0.4);
         this.addSound('bottleSplash', 'sounds/effects/bottle-splash.mp3', 0.6);
+        this.addSound('coinCollect', 'sounds/effects/coin-collect.mp3', 0.4);
     }
 
     /**

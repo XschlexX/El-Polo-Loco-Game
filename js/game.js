@@ -104,14 +104,14 @@ function generateClouds() {
  */
 function generateStatusBars() {
     const statusBars = [];
-    const barTypes = ['imagesHealthBar', 'imagesBottleBar', 'imagesHealthBarEndboss'];
-
-    // Füge imagesCoinBar nur hinzu, wenn Münzen im Level vorhanden sind
-    if (coinsAmount > 0) {
-        barTypes.splice(2, 0, 'imagesCoinBar'); // Füge an Position 2 ein (nach BottleBar, vor EndbossBar)
-    }
+    const barTypes = ['imagesHealthBar', 'imagesBottleBar', 'imagesCoinBar', 'imagesHealthBarEndboss'];
 
     barTypes.forEach(barType => {
+        // Überspringe imagesCoinBar wenn keine Münzen im Level
+        if (barType === 'imagesCoinBar' && coinsAmount === 0) {
+            return; // Skippe diese Bar
+        }
+        
         for (let i = 0; i < 3; i++) {
             statusBars.push(new StatusBar(barType, i));
         }

@@ -26,6 +26,7 @@ class StatusBar extends DrawableObject {
     x = 30;
     y = 20;
     width = 200;
+    maxWidth = 200;
     height = 20;
     gap = 35;
     statusbar;
@@ -42,7 +43,7 @@ class StatusBar extends DrawableObject {
         this.loadImage(this[statusbar][type]);
 
         // Setze initiale Breite für Bottle-Bar sofort auf 0, damit sie nicht voll angezeigt wird
-        if (statusbar === 'imagesBottleBar' && type === 1) {
+        if (statusbar === 'imagesBottleBar' && type === 1 || statusbar === 'imagesCoinBar' && type === 1) {
             this.width = 0;
         }
 
@@ -60,9 +61,11 @@ class StatusBar extends DrawableObject {
                 this.character = world.character;
                 if (this.statusbar === 'imagesBottleBar') {
                     // Multiplier basiert auf Maximum (10 Bottles) und maximaler Breite (200px)
-                    this.multiplier = 200 / 10;
+                    this.multiplier = this.maxWidth / 10;
+                } else if (this.statusbar === 'imagesCoinBar') {
+                    this.multiplier = this.maxWidth / 10;
                 } else {
-                    this.multiplier = this.width / this.character.energy;
+                    this.multiplier = this.maxWidth / this.character.energy;
                 }
                 this.setWidth();
             } else {
@@ -93,6 +96,8 @@ class StatusBar extends DrawableObject {
                 this.width = this.character.energy * this.multiplier;
             } else if (this.statusbar === 'imagesBottleBar' && this.type === 1) {
                 this.width = this.character.bottles * this.multiplier;
+            } else if (this.statusbar === 'imagesCoinBar' && this.type === 1) {
+                this.width = this.character.coins * this.multiplier;
             }
         }, 100);
     }
