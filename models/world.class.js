@@ -29,7 +29,7 @@ class World {
 
         this.draw();
         this.setWorld();
-        this.run();
+        this.runGame();
         this.setupCanvasListeners();
     }
 
@@ -48,7 +48,7 @@ class World {
         });
     }
 
-    run() {
+    runGame() {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowableObject();
@@ -75,17 +75,15 @@ class World {
             }
 
             if (this.character.isColliding(enemy)) {
-                // Prüfe zuerst, ob der Charakter von oben auf den Gegner springt
-                const isJumpingOnEnemy = this.isJumpingOnEnemy(this.character, enemy);
+                // Prüfe zuerst, ob der Charakter von oben auf den Gegner springt (NUR für normale Feinde, nicht für Endboss!)
+                const isJumpingOnEnemy = !(enemy instanceof Endboss) && this.isJumpingOnEnemy(this.character, enemy);
 
                 if (isJumpingOnEnemy) {
                     // Character springt auf Gegner - Gegner stirbt
                     enemy.hit();
                     // Kleiner Bounce-Effekt
                     this.character.jump(4);
-                }
-                // Nur Schaden nehmen, wenn es KEIN Sprung von oben war
-                else if (!this.character.isHurt() && !isJumpingOnEnemy) {
+                } else if (!this.character.isHurt() && !isJumpingOnEnemy) { // Nur Schaden nehmen, wenn es KEIN Sprung von oben war
                     // Normale Kollision von der Seite - Character nimmt Schaden
                     this.character.hit();
                     this.character.resetSleepTimer();
@@ -102,11 +100,11 @@ class World {
     isJumpingOnEnemy(character, enemy) {
         // Charakter Positionen
         const characterBottom = character.y + character.height - character.rectOffsetBottom;
-        const characterFeetY = character.y + character.height;
+        // const characterFeetY = character.y + character.height;
 
         // Gegner Positionen
-        const enemyTop = enemy.y + enemy.rectOffsetTop;
-        const enemyBottom = enemy.y + enemy.height - enemy.rectOffsetBottom;
+        const enemyTop = enemy.y + enemy.rectOffsetTop + 30;
+        // const enemyBottom = enemy.y + enemy.height - enemy.rectOffsetBottom;
         const enemyMiddle = enemy.y + (enemy.height / 2);
 
         // Prüfe ob:
@@ -114,14 +112,15 @@ class World {
         // 2. Character's Füße sind über der Oberkante des Gegners
         // 3. Character's Füße sind unterhalb der Mitte des Gegners
         // 4. Character ist horizontal über dem Gegner
-        const isFalling = character.speedY > 0;
+        const isFalling = character.speedY < 0;
+        // console.log('Is falling:', isFalling);
         const isAboveEnemyTop = characterBottom < enemyMiddle; // Untere Hälfte des Gegners
-        const isNotTooFarAbove = characterBottom > enemyTop - 30; // Etwas mehr Toleranz nach oben
-        const isHorizontallyAligned =
-            (character.x + character.width - character.rectOffsetRight) > enemy.x &&
-            character.x < (enemy.x + enemy.width - enemy.rectOffsetRight);
+        // const isNotTooFarAbove = characterBottom > enemyTop - 30; // Etwas mehr Toleranz nach oben
+        // const isHorizontallyAligned =
+        //     (character.x + character.width - character.rectOffsetRight) > enemy.x &&
+        //     character.x < (enemy.x + enemy.width - enemy.rectOffsetRight);
 
-        return isFalling && isAboveEnemyTop && isNotTooFarAbove && isHorizontallyAligned;
+        return isFalling && isAboveEnemyTop;
     }
 
     checkBottleCollisions() {
@@ -154,7 +153,6 @@ class World {
                 if (this.character.bottles > 10) {
                     this.character.bottles = 10; // Maximum 10 Flaschen
                 }
-                console.log('🍾 Bottle collected! Total bottles:', this.character.bottles);
                 // Spiele Collect-Sound ab
                 if (this.soundManager) {
                     this.soundManager.play('bottleCollect');

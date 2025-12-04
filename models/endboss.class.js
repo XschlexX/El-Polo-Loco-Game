@@ -38,13 +38,6 @@ class Endboss extends MovableObjects {
         isPlayingAttack: false         // Attack-Animation läuft gerade?
     };
 
-    // Rotations-Parameter
-    rotation = {
-        current: 0,              // Aktuelle Rotation in Grad
-        target: 0,               // Ziel-Rotation in Grad
-        intervalId: null         // Interval für sanfte Rotation
-    };
-
     // Interval-IDs
     intervals = {
         movement: null,
@@ -249,6 +242,10 @@ class Endboss extends MovableObjects {
         // Entscheidet welche Animation angezeigt wird basierend auf Zustand
         // WICHTIG: Läuft alle 150ms (nicht 60 FPS!)
         this.intervals.animation = setInterval(() => {
+            // PRIORITÄT 0: Wenn tot - nichts mehr machen!
+            if (this.isDead()) {
+                return;
+            }
             // PRIORITÄT 1: Tod (höchste Priorität)
             if (this.isDead()) {
                 this.handleDeathAnimation();
@@ -306,8 +303,7 @@ class Endboss extends MovableObjects {
     handleDeathAnimation() {
         if (!this.state.hasPlayedDeath) {
             this.stopAllIntervals();
-            this.img = this.imageCache[this.imagesDead[0]];
-            this.playDeathAnimationOnce();
+            this.playHurtAnimationOnce();
         }
     }
 
@@ -337,42 +333,40 @@ class Endboss extends MovableObjects {
     }
 
     /**
+     * PLAY HURT ANIMATION ONCE
+     * Spielt die Hurt-Animation ab, dann folgt die Death-Animation
+     */
+    playHurtAnimationOnce() {
+        let frameIndex = 0;
+        this.img = this.imageCache[this.imagesHurt[frameIndex]];
+
+        const hurtAnimationInterval = setInterval(() => {
+            frameIndex++;
+            if (frameIndex < this.imagesHurt.length) {
+                this.img = this.imageCache[this.imagesHurt[frameIndex]];
+            } else {
+                // Hurt-Animation beendet → Starte Death-Animation
+                clearInterval(hurtAnimationInterval);
+                this.playDeathAnimationOnce();
+            }
+        }, 150);
+    }
+
+    /**
      * PLAY DEATH ANIMATION ONCE
-     * Spielt die Tod-Animation genau einmal ab mit Rotation
-     * 
-     * ABLAUF:
-     * Frame 0: Erstes Bild, starte Rotation zu 45°
-     * Frame 1: Zweites Bild, starte Rotation zu 45°
-     * Frame 2: Drittes Bild, setze Rotation auf 0°
-     * 
-     * Animation läuft einmal durch, dann stoppt das Interval
+     * Spielt die Tod-Animation ab OHNE Rotation
+     * Wird nach Hurt-Animation aufgerufen
      */
     playDeathAnimationOnce() {
         this.state.hasPlayedDeath = true;
         let frameIndex = 0;
 
         this.img = this.imageCache[this.imagesDead[frameIndex]];
-        this.rotation.current = 0;
-        this.rotation.target = 45;
-        this.smoothRotate();
 
         const deathAnimationInterval = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesDead.length) {
                 this.img = this.imageCache[this.imagesDead[frameIndex]];
-
-                if (frameIndex === 1) {
-                    this.rotation.current = 0;
-                    this.rotation.target = 45;
-                    this.smoothRotate();
-                } else if (frameIndex === 2) {
-                    if (this.rotation.intervalId) {
-                        clearInterval(this.rotation.intervalId);
-                        this.rotation.intervalId = null;
-                    }
-                    this.rotation.current = 0;
-                    this.rotation.target = 0;
-                }
             } else {
                 clearInterval(deathAnimationInterval);
             }
