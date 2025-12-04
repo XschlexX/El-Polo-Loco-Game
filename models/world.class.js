@@ -138,6 +138,10 @@ class World {
                     // Wenn es ein Endboss ist, triggere Alert/Attack Sequenz
                     if (enemy instanceof Endboss && enemy.onBottleHit) {
                         enemy.onBottleHit();
+                        // Spiele Endboss-Hurt Sound ab
+                        if (this.soundManager) {
+                            this.soundManager.play('endbossHurt');
+                        }
                     }
                 }
             });

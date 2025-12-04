@@ -14,7 +14,7 @@ class SoundManager {
         this.addSound('menuTheme', 'sounds/music/menu-theme.mp3', 0.5);
         this.addSound('gameTheme', 'sounds/music/game-theme1.mp3', 0.5);
         this.addSound('endbossTheme', 'sounds/music/endboss-theme.mp3', 0.5);
-        this.addSound('characterJump', 'sounds/effects/character-jump.mp3', 0.2);
+        this.addSound('characterJump', 'sounds/effects/character-jump.mp3', 0.1);
         this.addSound('characterLand', 'sounds/effects/character-land.mp3', 0.3);  // Leiser!
         this.addSound('characterRun', 'sounds/effects/character-run.mp3', 0.3);
         this.addSound('characterHurt', 'sounds/effects/character-hurt.mp3', 0.6);
@@ -25,6 +25,9 @@ class SoundManager {
         this.addSound('bottleThrow', 'sounds/effects/bottle-throw.mp3', 0.4);
         this.addSound('bottleSplash', 'sounds/effects/bottle-splash.mp3', 0.6);
         this.addSound('coinCollect', 'sounds/effects/coin-collect.mp3', 0.4);
+        this.addSound('endbossHurt', 'sounds/effects/enemies/endboss-hurt.mp3', 0.4);
+        this.addSound('endbossAngry', 'sounds/effects/enemies/endboss-angry.mp3', 1);
+        this.addSound('endbossDead', 'sounds/effects/enemies/endboss-dead.mp3', 0.1);
     }
 
     /**

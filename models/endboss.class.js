@@ -398,6 +398,11 @@ class Endboss extends MovableObjects {
         this.state.isPlayingDeath = true;
         let frameIndex = 0;
 
+        // Spiele Endboss-Death Sound ab
+        if (this.world && this.world.soundManager) {
+            this.world.soundManager.play('endbossDead');
+        }
+
         this.img = this.imageCache[this.imagesDead[frameIndex]];
 
         this.intervals.death = setInterval(() => {
@@ -566,6 +571,11 @@ class Endboss extends MovableObjects {
         this.state.hasPlayedAttack = true;
         this.state.isPlayingAttack = true;
         let frameIndex = 0;
+
+        // Spiele Endboss-Angry Sound ab (Boss greift an)
+        if (this.world && this.world.soundManager) {
+            this.world.soundManager.play('endbossAngry');
+        }
 
         this.img = this.imageCache[this.imagesAttack[frameIndex]];
 
