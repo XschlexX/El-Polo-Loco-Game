@@ -6,9 +6,6 @@ function startScreenTemplate() {
                 <button class="button" onclick="showControlScreen()">CONTROLS</button>
             </div>
             <button class="button fz32" onclick="startGame()">START GAME</button>
-            <button onclick="enableSound()" class="unmute-button">
-                🔊 Enable Sound
-            </button>
         </div>
     `;
 }
@@ -61,11 +58,14 @@ function infoScreenTemplate() {
 function controlsScreenTemplate() {
     return /*html*/`
         <div id="controls" class="all-screens">
-            <img src="../assets/img/5_background/first_half_background.png" alt="Controls">
-            <div class="controls-text">
-                <h2>Controls</h2>
-                <p>Help Pepe, the brave Mexican, navigate through the desert! Collect coins and bottles, dodge enemies, and defeat the dangerous endboss.</p>
-                <p>Use the arrow keys to move and jump. Throw bottles with the spacebar to fight your opponents. Good luck on your adventure!</p>
+            <img class="background-image" src="../assets/img/5_background/first_half_background.png" alt="Controls">
+            <div class="screen-container">
+                <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
+                    <img src="../assets/icon/unmute.png" alt="unmute">
+                </button>
+                <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
+                    <img src="../assets/icon/mute.png" alt="mute">
+                </button>
             </div>
             <button class="button" onclick="startScreen()">BACK</button>
         </div>

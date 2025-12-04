@@ -108,7 +108,6 @@ class Endboss extends MovableObjects {
         '../assets/img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
 
-
     /**
      * CONSTRUCTOR
      * Wird beim Erstellen eines neuen Endboss-Objekts aufgerufen
@@ -645,5 +644,4 @@ class Endboss extends MovableObjects {
         this.state.hasPlayedAlert = false; // Reset für Neustart
         this.playAlertAnimationOnce();
     }
-
 }

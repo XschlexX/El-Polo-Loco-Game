@@ -25,10 +25,25 @@ function showControlScreen() {
 
 function enableSound() {
     window.soundManager.playMusic('menuTheme');
+}
 
-    // Button ausblenden nach dem Klick
-    const button = document.querySelector('.unmute-button');
-    if (button) {
-        button.style.display = 'none';
+function disableSound() {
+    window.soundManager.muteAll();
+}
+
+function toggleSoundButton() {
+    const unmuteBtn = document.getElementById('unmute-btn');
+    const muteBtn = document.getElementById('mute-btn');
+
+    if (unmuteBtn.style.display === 'none') {
+        // Mute-Button ist sichtbar, switch to Unmute
+        unmuteBtn.style.display = 'block';
+        muteBtn.style.display = 'none';
+        disableSound();
+    } else {
+        // Unmute-Button ist sichtbar, switch to Mute
+        unmuteBtn.style.display = 'none';
+        muteBtn.style.display = 'block';
+        enableSound();
     }
 }

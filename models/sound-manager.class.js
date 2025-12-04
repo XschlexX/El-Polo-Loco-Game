@@ -113,4 +113,21 @@ class SoundManager {
         sound.loop = true;
         this.play(name, false);  // Nutzt play() ohne restart!
     }
+
+    /**
+     * Deaktiviert alle Sounds
+     */
+    muteAll() {
+        Object.values(this.sounds).forEach(sound => {
+            sound.pause();
+            sound.currentTime = 0;
+        });
+    }
+
+    /**
+     * Aktiviert alle Sounds wieder
+     */
+    unmuteAll() {
+        // Diese Methode ist optional - könnte für zukünftige Nutzung dienen
+    }
 }
