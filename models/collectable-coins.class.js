@@ -5,10 +5,10 @@ class CollectableCoin extends CollectableObject {
     y = this.groundLevel;
 
     // Kollisions-Offsets
-    rectOffsetTop = this.height * 0.35;
-    rectOffsetBottom = this.height * 0.35 + this.rectOffsetTop;
-    rectOffsetLeft = this.width * 0.35;
-    rectOffsetRight = this.width * 0.35 + this.rectOffsetLeft;
+    hitBoxLeft = this.width * 0.35;
+    hitBoxTop = this.height * 0.35;
+    hitBoxRight = this.width * 0.35 + this.hitBoxLeft;
+    hitBoxBottom = this.height * 0.35 + this.hitBoxTop;
 
     // Animations-Bilder
     images = [

@@ -56,7 +56,7 @@ class DrawableObject {
         if (this instanceof Character || this instanceof Chicken || this instanceof ChickenSmall || this instanceof Endboss || this instanceof ThrowableObject || this instanceof CollectableBottle || this instanceof CollectableCoin) {
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'red';
-            ctx.strokeRect(this.x + this.rectOffsetLeft, this.y + this.rectOffsetTop, this.width - this.rectOffsetRight, this.height - this.rectOffsetBottom);
+            ctx.strokeRect(this.x + this.hitBoxLeft, this.y + this.hitBoxTop, this.width - this.hitBoxRight, this.height - this.hitBoxBottom);
         }
     }
 

@@ -99,12 +99,12 @@ class World {
 
     isJumpingOnEnemy(character, enemy) {
         // Charakter Positionen
-        const characterBottom = character.y + character.height - character.rectOffsetBottom;
+        const characterBottom = character.y + character.height - character.hitBoxBottom;
         // const characterFeetY = character.y + character.height;
 
         // Gegner Positionen
-        const enemyTop = enemy.y + enemy.rectOffsetTop + 30;
-        // const enemyBottom = enemy.y + enemy.height - enemy.rectOffsetBottom;
+        const enemyTop = enemy.y + enemy.hitBoxTop + 30;
+        // const enemyBottom = enemy.y + enemy.height - enemy.hitBoxBottom;
         const enemyMiddle = enemy.y + (enemy.height / 2);
 
         // Prüfe ob:
@@ -117,8 +117,8 @@ class World {
         const isAboveEnemyTop = characterBottom < enemyMiddle; // Untere Hälfte des Gegners
         // const isNotTooFarAbove = characterBottom > enemyTop - 30; // Etwas mehr Toleranz nach oben
         // const isHorizontallyAligned =
-        //     (character.x + character.width - character.rectOffsetRight) > enemy.x &&
-        //     character.x < (enemy.x + enemy.width - enemy.rectOffsetRight);
+        //     (character.x + character.width - character.hitBoxRight) > enemy.x &&
+        //     character.x < (enemy.x + enemy.width - enemy.hitBoxRight);
 
         return isFalling && isAboveEnemyTop;
     }

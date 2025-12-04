@@ -12,10 +12,12 @@ class Character extends MovableObjects {
     isRunSoundPlaying = false;  // Track ob Run-Sound läuft
     isSleepSoundPlaying = false;  // Track ob Sleep-Sound läuft
     wasAboveGround = false;  // Track ob Character in der Luft war
-    rectOffsetLeft = 30;
-    rectOffsetTop = 130;
-    rectOffsetRight = 45 + this.rectOffsetLeft;
-    rectOffsetBottom = 15 + this.rectOffsetTop;
+
+    hitBoxLeft = 30;
+    hitBoxTop = 130;
+    hitBoxRight = 45 + this.hitBoxLeft;
+    hitBoxBottom = 15 + this.hitBoxTop;
+
     world;
     cameraEasingSpeed = 0.05; // Geschwindigkeit der Kamera-Anpassung (0.05-0.15 ist gut)
 

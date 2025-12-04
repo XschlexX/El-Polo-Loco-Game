@@ -3,8 +3,10 @@ class Chicken extends MovableObjects {
     width = this.height * 0.8;
     groundLevel = 435 - this.height;
     y = this.groundLevel;
-    rectOffsetTop = 1;
-    rectOffsetBottom = 5 + this.rectOffsetTop;
+    hitBoxLeft = 0;
+    hitBoxTop = 1;
+    hitBoxRight = 0;
+    hitBoxBottom = 5 + this.hitBoxTop;
     world;
     markedForDeletion = false;
     isDying = false;

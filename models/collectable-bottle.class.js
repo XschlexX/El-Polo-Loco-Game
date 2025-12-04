@@ -5,10 +5,10 @@ class CollectableBottle extends CollectableObject {
     y = this.groundLevel;
 
     // Kollisions-Offsets
-    rectOffsetTop = 10;
-    rectOffsetBottom = 10 + this.rectOffsetTop;
-    rectOffsetLeft = 10;
-    rectOffsetRight = 10 + this.rectOffsetLeft;
+    hitBoxLeft = 10;
+    hitBoxTop = 10;
+    hitBoxRight = 10 + this.hitBoxLeft;
+    hitBoxBottom = 10 + this.hitBoxTop;
 
     // Animations-Bilder
     images = [

@@ -7,10 +7,11 @@ class Endboss extends MovableObjects {
     startX;
     levelEnd;
     energy;
-    rectOffsetTop = 70;
-    rectOffsetBottom = 15 + this.rectOffsetTop;
-    rectOffsetLeft = 40;
-    rectOffsetRight = 40 + this.rectOffsetLeft;
+    hitBoxLeft = 40;
+    hitBoxTop = 70;
+    hitBoxRight = 40 + this.hitBoxLeft;
+    hitBoxBottom = 15 + this.hitBoxTop;
+
 
     // Bewegungs-Parameter
     movement = {
@@ -35,13 +36,19 @@ class Endboss extends MovableObjects {
         hasPlayedAttack: false,        // Attack-Animation bereits gespielt?
         hasPlayedDeath: false,         // Death-Animation bereits gespielt?
         isPlayingAlert: false,         // Alert-Animation läuft gerade?
-        isPlayingAttack: false         // Attack-Animation läuft gerade?
+        isPlayingAttack: false,        // Attack-Animation läuft gerade?
+        isPlayingHurt: false,          // Hurt-Animation läuft gerade?
+        isPlayingDeath: false          // Death-Animation läuft gerade?
     };
 
     // Interval-IDs
     intervals = {
         movement: null,
-        animation: null
+        animation: null,
+        alert: null,
+        attack: null,
+        hurt: null,
+        death: null
     };
 
     imagesWalk = [
@@ -242,10 +249,6 @@ class Endboss extends MovableObjects {
         // Entscheidet welche Animation angezeigt wird basierend auf Zustand
         // WICHTIG: Läuft alle 150ms (nicht 60 FPS!)
         this.intervals.animation = setInterval(() => {
-            // PRIORITÄT 0: Wenn tot - nichts mehr machen!
-            if (this.isDead()) {
-                return;
-            }
             // PRIORITÄT 1: Tod (höchste Priorität)
             if (this.isDead()) {
                 this.handleDeathAnimation();
@@ -295,16 +298,31 @@ class Endboss extends MovableObjects {
      * Startet die Tod-Animation wenn der Endboss stirbt (energy <= 0)
      * 
      * ABLAUF:
-     * 1. Prüft ob Tod-Animation bereits gespielt wurde
+     * 1. Prüft ob Tod-Animation bereits läuft oder gespielt wurde
      * 2. Stoppt ALLE laufenden Intervals (Movement, Animation, Rotation)
-     * 3. Setzt das erste Death-Bild
-     * 4. Startet playDeathAnimationOnce()
+     * 3. Stoppt alle laufenden Animationen (Alert, Attack)
+     * 4. Startet Hurt-Animation gefolgt von Death-Animation
      */
     handleDeathAnimation() {
-        if (!this.state.hasPlayedDeath) {
-            this.stopAllIntervals();
-            this.playHurtAnimationOnce();
+        // Verhindere mehrfache Ausführung
+        if (this.state.hasPlayedDeath || this.state.isPlayingHurt || this.state.isPlayingDeath) {
+            return;
         }
+
+        // Markiere dass Tod-Sequenz gestartet wurde
+        this.state.hasPlayedDeath = true;
+
+        // Stoppe ALLE Intervals
+        this.stopAllIntervals();
+
+        // Stoppe alle State-Flags für laufende Animationen
+        this.state.isPlayingAlert = false;
+        this.state.isPlayingAttack = false;
+        this.state.isChasing = false;
+        this.ramming.isActive = false;
+
+        // Starte Hurt → Death Sequenz
+        this.playHurtAnimationOnce();
     }
 
     /**
@@ -315,7 +333,10 @@ class Endboss extends MovableObjects {
      * Stoppt:
      * - Movement Interval (Bewegung)
      * - Animation Interval (Animations-Steuerung)
-     * - Rotation Interval (sanfte Rotation bei Tod)
+     * - Alert Interval (Alert-Animation)
+     * - Attack Interval (Attack-Animation)
+     * - Hurt Interval (Hurt-Animation)
+     * - Death Interval (Death-Animation)
      */
     stopAllIntervals() {
         if (this.intervals.movement) {
@@ -326,27 +347,43 @@ class Endboss extends MovableObjects {
             clearInterval(this.intervals.animation);
             this.intervals.animation = null;
         }
-        if (this.rotation.intervalId) {
-            clearInterval(this.rotation.intervalId);
-            this.rotation.intervalId = null;
+        if (this.intervals.alert) {
+            clearInterval(this.intervals.alert);
+            this.intervals.alert = null;
+        }
+        if (this.intervals.attack) {
+            clearInterval(this.intervals.attack);
+            this.intervals.attack = null;
+        }
+        if (this.intervals.hurt) {
+            clearInterval(this.intervals.hurt);
+            this.intervals.hurt = null;
+        }
+        if (this.intervals.death) {
+            clearInterval(this.intervals.death);
+            this.intervals.death = null;
         }
     }
 
     /**
      * PLAY HURT ANIMATION ONCE
      * Spielt die Hurt-Animation ab, dann folgt die Death-Animation
+     * Wird nur beim Tod aufgerufen
      */
     playHurtAnimationOnce() {
+        this.state.isPlayingHurt = true;
         let frameIndex = 0;
         this.img = this.imageCache[this.imagesHurt[frameIndex]];
 
-        const hurtAnimationInterval = setInterval(() => {
+        this.intervals.hurt = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesHurt.length) {
                 this.img = this.imageCache[this.imagesHurt[frameIndex]];
             } else {
                 // Hurt-Animation beendet → Starte Death-Animation
-                clearInterval(hurtAnimationInterval);
+                clearInterval(this.intervals.hurt);
+                this.intervals.hurt = null;
+                this.state.isPlayingHurt = false;
                 this.playDeathAnimationOnce();
             }
         }, 150);
@@ -358,17 +395,19 @@ class Endboss extends MovableObjects {
      * Wird nach Hurt-Animation aufgerufen
      */
     playDeathAnimationOnce() {
-        this.state.hasPlayedDeath = true;
+        this.state.isPlayingDeath = true;
         let frameIndex = 0;
 
         this.img = this.imageCache[this.imagesDead[frameIndex]];
 
-        const deathAnimationInterval = setInterval(() => {
+        this.intervals.death = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesDead.length) {
                 this.img = this.imageCache[this.imagesDead[frameIndex]];
             } else {
-                clearInterval(deathAnimationInterval);
+                clearInterval(this.intervals.death);
+                this.intervals.death = null;
+                this.state.isPlayingDeath = false;
             }
         }, 150);
     }
@@ -482,13 +521,14 @@ class Endboss extends MovableObjects {
         let frameIndex = 0;
         this.img = this.imageCache[this.imagesAlert[frameIndex]];
 
-        const alertAnimationInterval = setInterval(() => {
+        this.intervals.alert = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesAlert.length) {
                 this.img = this.imageCache[this.imagesAlert[frameIndex]];
             } else {
                 // Alert-Animation beendet
-                clearInterval(alertAnimationInterval);
+                clearInterval(this.intervals.alert);
+                this.intervals.alert = null;
                 this.state.isPlayingAlert = false;
                 this.handleAttackAnimation(); // Starte Attack
             }
@@ -529,13 +569,14 @@ class Endboss extends MovableObjects {
 
         this.img = this.imageCache[this.imagesAttack[frameIndex]];
 
-        const attackAnimationInterval = setInterval(() => {
+        this.intervals.attack = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesAttack.length) {
                 this.img = this.imageCache[this.imagesAttack[frameIndex]];
             } else {
                 // Attack-Animation beendet
-                clearInterval(attackAnimationInterval);
+                clearInterval(this.intervals.attack);
+                this.intervals.attack = null;
                 this.state.isPlayingAttack = false;
                 this.state.isChasing = true; // STARTE VERFOLGUNG!
             }

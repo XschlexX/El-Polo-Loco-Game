@@ -11,10 +11,10 @@ class ThrowableObject extends MovableObjects {
     throwSpeed = 5;
     markedForDeletion = false;
     // Collision Box Offsets für bessere Treffergenauigkeit
-    // rectOffsetLeft = -15;
-    // rectOffsetRight = -15;
-    // rectOffsetTop = -15;
-    // rectOffsetBottom = -25;
+    // hitBoxLeft = -15;
+    // hitBoxRight = -15;
+    // hitBoxTop = -15;
+    // hitBoxBottom = -25;
 
     imagesRotate = [
         '../assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
@@ -90,7 +90,7 @@ class ThrowableObject extends MovableObjects {
             this.hasSplashed = true;
             this.currentImage = 0; // Reset für Splash-Animation
             this.stopMovement(); // Stoppe horizontale Bewegung
-            
+
             // Spiele Splash-Sound ab
             if (this.world && this.world.soundManager) {
                 this.world.soundManager.play('bottleSplash');
@@ -116,11 +116,11 @@ class ThrowableObject extends MovableObjects {
     throw(x, y) {
         let throwDirection = this.character.otherDirection ? -this.throwSpeed : this.throwSpeed;
         if (!this.character.otherDirection) {
-            this.x = x + this.character.width - this.character.rectOffsetLeft;
+            this.x = x + this.character.width - this.character.hitBoxLeft;
         } else {
-            this.x = x + this.character.rectOffsetLeft - this.width;
+            this.x = x + this.character.hitBoxLeft - this.width;
         }
-        this.y = y + this.character.rectOffsetTop;
+        this.y = y + this.character.hitBoxTop;
         this.speedY = 9;
         this.applyGravity(this.groundLevel);
         this.throwInterval = setInterval(() => {

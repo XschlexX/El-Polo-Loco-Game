@@ -3,10 +3,10 @@ class ChickenSmall extends MovableObjects {
     width = this.height * 0.8;
     groundLevel = 435 - this.height;
     y = this.groundLevel;
-    rectOffsetTop = -5;  // Keine Reduzierung oben! Volle Höhe
-    rectOffsetBottom = 0;  // Keine Reduzierung unten! Volle Höhe
-    rectOffsetLeft = 0;  // Keine Reduzierung links! Volle Breite
-    rectOffsetRight = 0;  // Keine Reduzierung rechts! Volle Breite
+    hitBoxLeft = 0;     // Keine Reduzierung links! Volle Breite
+    hitBoxTop = -5;     // Keine Reduzierung oben! Volle Höhe
+    hitBoxRight = 0;    // Keine Reduzierung rechts! Volle Breite
+    hitBoxBottom = 0;   // Keine Reduzierung unten! Volle Höhe
     world;
     markedForDeletion = false;
     isDying = false;

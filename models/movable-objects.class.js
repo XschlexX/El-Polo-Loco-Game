@@ -6,10 +6,10 @@ class MovableObjects extends DrawableObject {
     acceleration = 0.3;
     energy = 10;
     lastHit = 0;
-    rectOffsetLeft = 0;
-    rectOffsetTop = 0;
-    rectOffsetRight = 0;
-    rectOffsetBottom = 0;
+    hitBoxLeft = 0;
+    hitBoxTop = 0;
+    hitBoxRight = 0;
+    hitBoxBottom = 0;
 
 
     applyGravity(groundLevel) {
@@ -29,10 +29,10 @@ class MovableObjects extends DrawableObject {
     }
 
     isColliding(mo) {
-        return (this.x + this.rectOffsetLeft + this.width - this.rectOffsetRight) > (mo.x + mo.rectOffsetLeft) &&
-            (this.y + this.rectOffsetTop + this.height - this.rectOffsetBottom) > (mo.y + mo.rectOffsetTop) &&
-            (this.x + this.rectOffsetLeft) < (mo.x + mo.rectOffsetLeft + mo.width - mo.rectOffsetRight) &&
-            (this.y + this.rectOffsetTop) < (mo.y + mo.rectOffsetTop + mo.height - mo.rectOffsetBottom);
+        return (this.x + this.hitBoxLeft + this.width - this.hitBoxRight) > (mo.x + mo.hitBoxLeft) &&
+            (this.y + this.hitBoxTop + this.height - this.hitBoxBottom) > (mo.y + mo.hitBoxTop) &&
+            (this.x + this.hitBoxLeft) < (mo.x + mo.hitBoxLeft + mo.width - mo.hitBoxRight) &&
+            (this.y + this.hitBoxTop) < (mo.y + mo.hitBoxTop + mo.height - mo.hitBoxBottom);
     }
 
     hit() {
