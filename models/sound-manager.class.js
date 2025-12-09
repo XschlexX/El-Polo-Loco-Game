@@ -1,5 +1,6 @@
 class SoundManager {
     sounds = {}; // Hier werden alle Sounds gespeichert: { 'jump': Audio-Objekt, 'hurt': Audio-Objekt }
+    loopSounds = ['menuTheme', 'gameTheme', 'endbossTheme', 'characterRun', 'characterSleep', 'endbossAngry']; // Liste der Loop-Sounds
 
     constructor() {
         this.initializeSounds();
@@ -121,6 +122,36 @@ class SoundManager {
         Object.values(this.sounds).forEach(sound => {
             sound.pause();
             sound.currentTime = 0;
+        });
+    }
+
+    /**
+     * Pausiert alle Sounds (für Settings-Overlay)
+     */
+    pauseAllSounds() {
+        Object.values(this.sounds).forEach(sound => {
+            sound.pause();
+        });
+    }
+
+    /**
+     * Setzt alle Sounds fort die vorher liefen
+     * Nur Loop-Sounds (gameTheme, characterRun, endbossAngry) werden fortgesetzt
+     * Kurze Effekt-Sounds (bottleCollect, bottleThrow, etc.) werden NICHT fortgesetzt
+     */
+    resumeAllSounds() {
+        Object.keys(this.sounds).forEach(soundName => {
+            // Nur Loop-Sounds fortsetzen!
+            if (this.loopSounds.includes(soundName)) {
+                const sound = this.sounds[soundName];
+                // Nur fortsetzen wenn Sound vorher gespielt wurde (currentTime > 0)
+                // UND wenn er pausiert ist
+                if (sound.currentTime > 0 && sound.paused) {
+                    sound.play().catch(err => {
+                        console.warn(`Fehler beim Fortsetzen:`, err);
+                    });
+                }
+            }
         });
     }
 

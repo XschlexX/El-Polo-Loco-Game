@@ -13,7 +13,7 @@ class MovableObjects extends DrawableObject {
 
 
     applyGravity(groundLevel) {
-        const intervalId = setInterval(() => {
+        const gravityCallback = () => {
             if (this.isAboveGround(groundLevel)) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
@@ -21,8 +21,9 @@ class MovableObjects extends DrawableObject {
                 this.y = groundLevel;
                 this.speedY = 0; // Wichtig: Geschwindigkeit zurücksetzen, wenn wir auf dem Boden sind
             }
-        }, 1000 / 60);
-        GlobalIntervalManager.register(intervalId, 'applyGravity', this, 1000 / 60);
+        };
+        const intervalId = setInterval(gravityCallback, 1000 / 60);
+        GlobalIntervalManager.register(intervalId, 'applyGravity', this, 1000 / 60, gravityCallback);
     }
 
     isAboveGround(groundLevel) {

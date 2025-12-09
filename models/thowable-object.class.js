@@ -56,7 +56,7 @@ class ThrowableObject extends MovableObjects {
     }
 
     animate() {
-        const intervalId = setInterval(() => {
+        const animationCallback = () => {
             if (!this.hasSplashed && this.isAboveGround(this.groundLevel)) {
                 this.playAnimation(this.imagesRotate);
             } else if (!this.hasSplashed && !this.isAboveGround(this.groundLevel)) {
@@ -82,8 +82,9 @@ class ThrowableObject extends MovableObjects {
             }
             this.height = this.img.naturalHeight * 0.2;
             this.width = this.img.naturalWidth * 0.2;
-        }, 50);
-        GlobalIntervalManager.register(intervalId, 'ThrowableObject animation', this, 50);
+        };
+        const intervalId = setInterval(animationCallback, 50);
+        GlobalIntervalManager.register(intervalId, 'ThrowableObject animation', this, 50, animationCallback);
     }
 
     splash() {
@@ -124,10 +125,11 @@ class ThrowableObject extends MovableObjects {
         this.y = y + this.character.hitBoxTop;
         this.speedY = 9;
         this.applyGravity(this.groundLevel);
-        this.throwInterval = setInterval(() => {
+        const throwCallback = () => {
             this.x += throwDirection;
-        }, 1000 / 60);
-        GlobalIntervalManager.register(this.throwInterval, 'ThrowableObject throw', this, 1000 / 60);
+        };
+        this.throwInterval = setInterval(throwCallback, 1000 / 60);
+        GlobalIntervalManager.register(this.throwInterval, 'ThrowableObject throw', this, 1000 / 60, throwCallback);
 
         // console.log(this.character.otherDirection);
     }

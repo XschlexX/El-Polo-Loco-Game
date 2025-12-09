@@ -112,15 +112,16 @@ class Character extends MovableObjects {
         this.sleepTimer = null;
         this.resetSleepTimer();
 
-        const interval1 = setInterval(() => {
+        const interval1Callback = () => {
             if (this.world && this.world.keyboard && this.world.keyboard.ANY) {
                 this.resetSleepTimer();
             }
-        }, 100); // Häufigere Überprüfung, aber nicht zu oft
-        GlobalIntervalManager.register(interval1, 'Character sleep reset check', this, 100);
+        };
+        const interval1 = setInterval(interval1Callback, 100); // Häufigere Überprüfung, aber nicht zu oft
+        GlobalIntervalManager.register(interval1, 'Character sleep reset check', this, 100, interval1Callback);
 
         // Sound-Kontrolle für Run-Sound und Landing
-        const interval2 = setInterval(() => {
+        const interval2Callback = () => {
             if (!this.world || !this.world.soundManager) return;
 
             const isRunning = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround(this.groundLevel) && !this.isDead();
@@ -147,10 +148,11 @@ class Character extends MovableObjects {
                     this.isRunSoundPlaying = false;
                 }
             }
-        }, 100);
-        GlobalIntervalManager.register(interval2, 'Character sound control', this, 100);
+        };
+        const interval2 = setInterval(interval2Callback, 100);
+        GlobalIntervalManager.register(interval2, 'Character sound control', this, 100, interval2Callback);
 
-        const interval3 = setInterval(() => {
+        const interval3Callback = () => {
             // Warte bis world gesetzt ist
             if (!this.world) return;
 
@@ -170,10 +172,11 @@ class Character extends MovableObjects {
                 this.currentImage = 0;
             }
             this.updateCamera();
-        }, 1000 / 60);
-        GlobalIntervalManager.register(interval3, 'Character movement control', this, 1000 / 60);
+        };
+        const interval3 = setInterval(interval3Callback, 1000 / 60);
+        GlobalIntervalManager.register(interval3, 'Character movement control', this, 1000 / 60, interval3Callback);
 
-        const interval4 = setInterval(() => {
+        const interval4Callback = () => {
             // Warte bis world gesetzt ist
             if (!this.world) return;
 
@@ -194,8 +197,9 @@ class Character extends MovableObjects {
                     this.playAnimation(this.imagesIdle);
                 }
             }
-        }, 150);
-        GlobalIntervalManager.register(interval4, 'Character animation control', this, 150);
+        };
+        const interval4 = setInterval(interval4Callback, 150);
+        GlobalIntervalManager.register(interval4, 'Character animation control', this, 150, interval4Callback);
 
     }
 
@@ -204,7 +208,10 @@ class Character extends MovableObjects {
      * Wird aufgerufen bei Tastendruck oder wenn der Character getroffen wird
      */
     resetSleepTimer() {
-        clearTimeout(this.sleepTimer);
+        // Clear old timeout if exists
+        if (this.sleepTimer) {
+            GlobalIntervalManager.clearTimeout(this.sleepTimer, 'Character sleep timer');
+        }
         this.sleep = false;
 
         // Stoppe Sleep-Sound wenn Character aufwacht
@@ -213,14 +220,16 @@ class Character extends MovableObjects {
             this.isSleepSoundPlaying = false;
         }
 
-        this.sleepTimer = setTimeout(() => {
+        const sleepCallback = () => {
             this.sleep = true;
             // Spiele Sleep-Sound im Loop ab
             if (this.world && this.world.soundManager) {
                 this.world.soundManager.playMusic('characterSleep');
                 this.isSleepSoundPlaying = true;
             }
-        }, 3000);
+        };
+        this.sleepTimer = setTimeout(sleepCallback, 3000);
+        GlobalIntervalManager.registerTimeout(this.sleepTimer, 'Character sleep timer', this, 3000, sleepCallback);
     }
 
     /**

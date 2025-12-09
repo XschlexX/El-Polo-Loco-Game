@@ -4,10 +4,11 @@ class CollectableObject extends MovableObjects {
         // Sanfte Animations-Wechsel zwischen den beiden Flaschen-Bildern
         const randomDelay = Math.random() * delay;
         setTimeout(() => {
-            const intervalId = setInterval(() => {
+            const animationCallback = () => {
                 this.playAnimation(this.images);
-            }, interval);
-            GlobalIntervalManager.register(intervalId, 'CollectableObject animation', this, interval);
+            };
+            const intervalId = setInterval(animationCallback, interval);
+            GlobalIntervalManager.register(intervalId, 'CollectableObject animation', this, interval, animationCallback);
         }, randomDelay);
     }
 }

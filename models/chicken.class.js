@@ -38,7 +38,7 @@ class Chicken extends MovableObjects {
     }
 
     animate() {
-        const moveInterval = setInterval(() => {
+        const moveCallback = () => {
             if (!this.isDead()) {
                 // Lade Level-Grenzen dynamisch, wenn world verfügbar ist
                 if (this.world && this.minX === undefined) {
@@ -65,17 +65,19 @@ class Chicken extends MovableObjects {
                     }
                 }
             }
-        }, 1000 / 60);
-        GlobalIntervalManager.register(moveInterval, 'Chicken movement', this, 1000 / 60);
+        };
+        const moveInterval = setInterval(moveCallback, 1000 / 60);
+        GlobalIntervalManager.register(moveInterval, 'Chicken movement', this, 1000 / 60, moveCallback);
 
-        const animationInterval = setInterval(() => {
+        const animationCallback = () => {
             if (this.isDead()) {
                 this.playDeadAnimation();
             } else {
                 this.playAnimation(this.imagesWalk);
             }
-        }, 150);
-        GlobalIntervalManager.register(animationInterval, 'Chicken animation', this, 150);
+        };
+        const animationInterval = setInterval(animationCallback, 150);
+        GlobalIntervalManager.register(animationInterval, 'Chicken animation', this, 150, animationCallback);
     }
 
     playDeadAnimation() {
@@ -92,7 +94,7 @@ class Chicken extends MovableObjects {
             }
 
             // Fade-Out-Effekt über 2 Sekunden
-            let fadeInterval = setInterval(() => {
+            const fadeCallback = () => {
                 this.opacity -= 0.02; // Reduziere Opacity
                 if (this.opacity <= 0) {
                     this.opacity = 0;
@@ -100,8 +102,9 @@ class Chicken extends MovableObjects {
                     this.markedForDeletion = true; // Erst NACH Fade-Out markieren
                     this.removeFromWorld();
                 }
-            }, 40); // Alle 40ms (ergibt ca. 2 Sekunden für komplettes Fade-Out)
-            GlobalIntervalManager.register(fadeInterval, 'Chicken fade-out', this, 40);
+            };
+            let fadeInterval = setInterval(fadeCallback, 40); // Alle 40ms (ergibt ca. 2 Sekunden für komplettes Fade-Out)
+            GlobalIntervalManager.register(fadeInterval, 'Chicken fade-out', this, 40, fadeCallback);
         }
     }
 

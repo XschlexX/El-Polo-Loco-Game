@@ -49,19 +49,21 @@ class World {
     }
 
     runGame() {
-        const collisionIntervalId = setInterval(() => {
+        const collisionCallback = () => {
             this.checkCollisions();
             this.checkThrowableObject();
             this.checkBottleCollection(); // Prüfe ob Character Flaschen einsammelt
             this.checkCoinCollection(); // Prüfe ob Character Münzen einsammelt
-        }, 200);
-        GlobalIntervalManager.register(collisionIntervalId, 'World collision checks', this, 200);
+        };
+        const collisionIntervalId = setInterval(collisionCallback, 200);
+        GlobalIntervalManager.register(collisionIntervalId, 'World collision checks', this, 200, collisionCallback);
 
         // Häufigere Prüfung der Flaschen-Kollisionen für bessere Treffergenauigkeit
-        const bottleIntervalId = setInterval(() => {
+        const bottleCallback = () => {
             this.checkBottleCollisions();
-        }, 50);
-        GlobalIntervalManager.register(bottleIntervalId, 'World bottle collision checks', this, 50);
+        };
+        const bottleIntervalId = setInterval(bottleCallback, 50);
+        GlobalIntervalManager.register(bottleIntervalId, 'World bottle collision checks', this, 50, bottleCallback);
     }
 
     checkCollisions() {
@@ -287,20 +289,10 @@ class World {
             } else if (action === 'restart') {
                 startGame();
             } else if (action === 'resume') {
-                this.settingsOverlay.hide();
-                // Stoppe Menu-Musik und setze Game-Musik fort
-                if (this.soundManager) {
-                    this.soundManager.stopMusic('menuTheme');
-                    this.soundManager.resumeMusic('gameTheme');  // ← Resume statt play!
-                }
+                this.resumeGame();
             } else if (!this.settingsOverlay.isVisible && this.settingsButton.isClicked(mouseX, mouseY)) {
                 // Öffne Settings nur wenn Overlay nicht sichtbar ist
-                this.settingsOverlay.show();
-                // Pausiere Game-Musik und starte Menu-Musik
-                if (this.soundManager) {
-                    this.soundManager.pauseMusic('gameTheme');  // ← Pause statt stop!
-                    this.soundManager.playMusic('menuTheme');
-                }
+                this.pauseGame();
             }
         });
 
@@ -330,6 +322,42 @@ class World {
     restartGame() {
         // Starte das Spiel neu
         location.reload(); // Lädt die Seite neu und startet das Spiel von vorne
+    }
+
+    pauseGame() {
+        console.log('[World] Pausing game...');
+
+        // 1. Zeige Settings-Overlay
+        this.settingsOverlay.show();
+
+        // 2. Pausiere alle Intervals
+        GlobalIntervalManager.pauseAll();
+
+        // 3. Pausiere alle Sounds und starte menuTheme
+        if (this.soundManager) {
+            this.soundManager.pauseAllSounds();
+            this.soundManager.playMusic('menuTheme');
+        }
+
+        console.log('[World] Game paused');
+    }
+
+    resumeGame() {
+        console.log('[World] Resuming game...');
+
+        // 1. Verstecke Settings-Overlay
+        this.settingsOverlay.hide();
+
+        // 2. Setze alle Intervals fort
+        GlobalIntervalManager.resumeAll();
+
+        // 3. Stoppe menuTheme und setze Spiel-Sounds fort
+        if (this.soundManager) {
+            this.soundManager.stopMusic('menuTheme');
+            this.soundManager.resumeAllSounds();
+        }
+
+        console.log('[World] Game resumed');
     }
 
 }

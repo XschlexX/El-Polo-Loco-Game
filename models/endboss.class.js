@@ -134,30 +134,23 @@ class Endboss extends MovableObjects {
      */
     animate() {
         // ==================== MOVEMENT INTERVAL (60 FPS) ====================
-        // Steuert die X-Position des Endboss basierend auf seinem aktuellen Zustand
-        const movementInterval = setInterval(() => {
+        // Steuert die Bewegungslogik des Endboss
+        const movementCallback = () => {
             // REGEL 1: Während Alert/Attack-Animation stillstehen
-            // Der Endboss bewegt sich NICHT während diese Animationen laufen
             if (this.state.isPlayingAlert || this.state.isPlayingAttack) {
-                return; // Stoppe Bewegung, gehe zum nächsten Frame
+                return;
             }
 
             // REGEL 2: RAMMING-MODUS (nach Kollision mit Character)
-            // Wird durch onCharacterCollision() aktiviert
             if (this.ramming.isActive) {
-                // Berechne neue Position
                 const newX = this.x + (this.movement.chasingSpeed * this.ramming.direction);
-
-                // Prüfe Level-Grenzen
                 const minX = this.world ? this.world.level.levelStartX : 0;
                 const maxX = this.world ? this.world.level.levelEndX - this.width : this.levelEnd - this.width;
 
-                // Bewege nur wenn innerhalb der Grenzen
                 if (newX >= minX && newX <= maxX) {
                     this.x = newX;
                     this.ramming.distanceTraveled += this.movement.chasingSpeed;
                 } else {
-                    // Level-Grenze erreicht - beende Ramming sofort
                     this.ramming.isActive = false;
                     this.ramming.distanceTraveled = 0;
                     this.otherDirection = !this.otherDirection;
@@ -167,121 +160,90 @@ class Endboss extends MovableObjects {
                     return;
                 }
 
-                // Prüfe ob die Ramm-Distanz erreicht wurde
                 if (this.ramming.distanceTraveled >= this.ramming.distance) {
-                    // RAMMING BEENDET:
-                    this.ramming.isActive = false;           // Ramming ausschalten
-                    this.ramming.distanceTraveled = 0;       // Distanz zurücksetzen
-                    this.otherDirection = !this.otherDirection; // Drehe um 180°
-                    this.state.isChasing = this.canSeeCharacter();            // HIER: Gehe in Chasing-Modus
-                    // PROBLEM: Flags werden IMMER gesetzt, auch wenn Character weg ist!
+                    this.ramming.isActive = false;
+                    this.ramming.distanceTraveled = 0;
+                    this.otherDirection = !this.otherDirection;
+                    this.state.isChasing = this.canSeeCharacter();
                     this.state.hasPlayedAlert = true;
                     this.state.hasPlayedAttack = true;
                 }
-                return; // Keine weiteren Bewegungen ausführen
+                return;
             }
 
             // REGEL 3: CHASING-MODUS (Verfolge den Character)
-            // Wird durch playAttackAnimationOnce() aktiviert
             if (this.state.isChasing && this.world && this.world.character) {
                 const character = this.world.character;
-
-                // Level-Grenzen
                 const minX = this.world.level.levelStartX;
                 const maxX = this.world.level.levelEndX - this.width;
 
-                // Bewege dich zum Character hin
                 if (character.x > this.x) {
-                    // Character ist rechts → Laufe nach rechts
                     const newX = this.x + this.movement.chasingSpeed;
                     if (newX <= maxX) {
                         this.x = newX;
                     }
                     this.otherDirection = true;
-                    this.ramming.direction = 1;  // Speichere Richtung für Ramming
+                    this.ramming.direction = 1;
                 } else {
-                    // Character ist links → Laufe nach links
                     const newX = this.x - this.movement.chasingSpeed;
                     if (newX >= minX) {
                         this.x = newX;
                     }
                     this.otherDirection = false;
-                    this.ramming.direction = -1;  // Speichere Richtung für Ramming
+                    this.ramming.direction = -1;
                 }
-                return; // Keine Patrol-Bewegung ausführen
+                return;
             }
 
             // REGEL 4: PATROL-MODUS (Standard-Verhalten)
-            // Läuft nur wenn NICHT Alert/Attack/Ramming/Chasing aktiv ist
             if (this.movement.movingRight) {
-                // Laufe nach rechts
                 this.x += this.movement.speed;
                 this.otherDirection = true;
-                // Prüfe ob rechte Grenze erreicht
                 if (this.x >= this.startX + this.movement.moveDistance || (this.x + this.width) >= this.levelEnd) {
-                    this.movement.movingRight = false; // Wechsle Richtung
+                    this.movement.movingRight = false;
                 }
-                // console.log(this.x);
             } else {
-                // Laufe nach links
                 this.x -= this.movement.speed;
                 this.otherDirection = false;
-                // Prüfe ob linke Grenze (Startposition) erreicht
                 if (this.x <= this.startX) {
-                    this.movement.movingRight = true; // Wechsle Richtung
+                    this.movement.movingRight = true;
                 }
-                // console.log(this.x);
             }
-        }, 1000 / 60); // 60 FPS für flüssige Bewegung
-        GlobalIntervalManager.register(movementInterval, 'Endboss movement', this, 1000 / 60);
+        };
+        const movementInterval = setInterval(movementCallback, 1000 / 60);
+        GlobalIntervalManager.register(movementInterval, 'Endboss movement', this, 1000 / 60, movementCallback);
 
         // ==================== ANIMATION INTERVAL (150ms) ====================
-        // Entscheidet welche Animation angezeigt wird basierend auf Zustand
-        // WICHTIG: Läuft alle 150ms (nicht 60 FPS!)
-        const animationInterval = setInterval(() => {
-            // PRIORITÄT 1: Tod (höchste Priorität)
+        const animationCallback = () => {
             if (this.isDead()) {
                 this.handleDeathAnimation();
             }
-            // PRIORITÄT 2: Alert-Animation läuft gerade (tue nichts, wird in playAlertAnimationOnce gesteuert)
             else if (this.state.isPlayingAlert) {
                 // Alert-Animation läuft - keine neue Animation starten
             }
-            // PRIORITÄT 3: Attack-Animation läuft gerade (tue nichts, wird in playAttackAnimationOnce gesteuert)
             else if (this.state.isPlayingAttack) {
                 // Attack-Animation läuft - keine neue Animation starten
             }
-            // PRIORITÄT 4: Character in Sichtweite UND Alert noch nicht gespielt → Starte Alert
             else if (!this.state.hasPlayedAlert && this.canSeeCharacter()) {
-                this.handleAlertAnimation(); // Startet Alert → dann Attack → dann Chasing
+                this.handleAlertAnimation();
             }
-            // PRIORITÄT 5: Character außer Sichtweite → RESET
-            // HIER IST DAS PROBLEM!
             else if (!this.canSeeCharacter() && (this.state.hasPlayedAlert || this.state.hasPlayedAttack) && !this.ramming.isActive && !this.state.isChasing) {
-                // Setze ALLE Flags zurück wenn:
-                // - Character nicht sichtbar
-                // - Alert oder Attack wurde gespielt
-                // - NICHT im Ramming
-                // - NICHT im Chasing
-                // PROBLEM: Nach Ramming ist isChasing = true, aber Character evtl. nicht mehr sichtbar!
                 this.state.hasPlayedAlert = false;
                 this.state.hasPlayedAttack = false;
                 this.state.isChasing = false;
             }
-            // PRIORITÄT 6: Hurt-Animation
             else if (this.isHurt()) {
                 this.playAnimation(this.imagesHurt);
             }
-            // PRIORITÄT 7: Chasing/Ramming Animation (AggressiveLook)
             else if (this.state.isChasing || this.ramming.isActive) {
                 this.playAnimation(this.imagesAttackRun);
             }
-            // PRIORITÄT 8: Standard Patrol Walk Animation
             else {
                 this.playAnimation(this.imagesWalk);
             }
-        }, 150);
-        GlobalIntervalManager.register(animationInterval, 'Endboss animation', this, 150);
+        };
+        const animationInterval = setInterval(animationCallback, 150);
+        GlobalIntervalManager.register(animationInterval, 'Endboss animation', this, 150, animationCallback);
     }
 
     /**
@@ -305,6 +267,11 @@ class Endboss extends MovableObjects {
 
         // Stoppe ALLE Intervals
         this.stopAllIntervals();
+
+        // Stoppe Endboss-Angry Sound (Attack-Mode Sound)
+        if (this.world && this.world.soundManager) {
+            this.world.soundManager.stopMusic('endbossAngry');
+        }
 
         // Stoppe alle State-Flags für laufende Animationen
         this.state.isPlayingAlert = false;
@@ -337,18 +304,18 @@ class Endboss extends MovableObjects {
         let frameIndex = 0;
         this.img = this.imageCache[this.imagesHurt[frameIndex]];
 
-        const hurtInterval = setInterval(() => {
+        const hurtCallback = () => {
             frameIndex++;
             if (frameIndex < this.imagesHurt.length) {
                 this.img = this.imageCache[this.imagesHurt[frameIndex]];
             } else {
-                // Hurt-Animation beendet → Starte Death-Animation
                 GlobalIntervalManager.clear(hurtInterval, 'Endboss hurt');
                 this.state.isPlayingHurt = false;
                 this.playDeathAnimationOnce();
             }
-        }, 150);
-        GlobalIntervalManager.register(hurtInterval, 'Endboss hurt animation', this, 150);
+        };
+        const hurtInterval = setInterval(hurtCallback, 150);
+        GlobalIntervalManager.register(hurtInterval, 'Endboss hurt animation', this, 150, hurtCallback);
     }
 
     /**
@@ -367,7 +334,7 @@ class Endboss extends MovableObjects {
 
         this.img = this.imageCache[this.imagesDead[frameIndex]];
 
-        const deathInterval = setInterval(() => {
+        const deathCallback = () => {
             frameIndex++;
             if (frameIndex < this.imagesDead.length) {
                 this.img = this.imageCache[this.imagesDead[frameIndex]];
@@ -375,41 +342,9 @@ class Endboss extends MovableObjects {
                 GlobalIntervalManager.clear(deathInterval, 'Endboss death');
                 this.state.isPlayingDeath = false;
             }
-        }, 150);
-        GlobalIntervalManager.register(deathInterval, 'Endboss death animation', this, 150);
-    }
-
-    /**
-     * SMOOTH ROTATE
-     * Rotiert das Bild sanft von rotation.current zu rotation.target
-     * Wird bei Tod-Animation verwendet für visuellen Effekt
-     * 
-     * ABLAUF:
-     * 1. Stoppt vorherige Rotation falls aktiv
-     * 2. Berechnet Rotationsschritte für 150ms bei 60 FPS
-     * 3. Aktualisiert rotation.current schrittweise
-     * 4. Stoppt wenn Ziel-Rotation erreicht ist
-     */
-    smoothRotate() {
-        if (this.rotation.intervalId) {
-            GlobalIntervalManager.clear(this.rotation.intervalId, 'Endboss rotation');
-        }
-
-        const duration = 150;
-        const fps = 60;
-        const totalFrames = (duration / 1000) * fps;
-        const rotationStep = (this.rotation.target - this.rotation.current) / totalFrames;
-
-        this.rotation.intervalId = setInterval(() => {
-            if (Math.abs(this.rotation.target - this.rotation.current) > Math.abs(rotationStep)) {
-                this.rotation.current += rotationStep;
-            } else {
-                this.rotation.current = this.rotation.target;
-                GlobalIntervalManager.clear(this.rotation.intervalId, 'Endboss rotation');
-                this.rotation.intervalId = null;
-            }
-        }, 1000 / fps);
-        GlobalIntervalManager.register(this.rotation.intervalId, 'Endboss rotation', this, 1000 / fps);
+        };
+        const deathInterval = setInterval(deathCallback, 150);
+        GlobalIntervalManager.register(deathInterval, 'Endboss death animation', this, 150, deathCallback);
     }
 
     /**
@@ -489,18 +424,18 @@ class Endboss extends MovableObjects {
         let frameIndex = 0;
         this.img = this.imageCache[this.imagesAlert[frameIndex]];
 
-        const alertInterval = setInterval(() => {
+        const alertCallback = () => {
             frameIndex++;
             if (frameIndex < this.imagesAlert.length) {
                 this.img = this.imageCache[this.imagesAlert[frameIndex]];
             } else {
-                // Alert-Animation beendet
                 GlobalIntervalManager.clear(alertInterval, 'Endboss alert');
                 this.state.isPlayingAlert = false;
-                this.handleAttackAnimation(); // Starte Attack
+                this.handleAttackAnimation();
             }
-        }, 150);
-        GlobalIntervalManager.register(alertInterval, 'Endboss alert animation', this, 150);
+        };
+        const alertInterval = setInterval(alertCallback, 150);
+        GlobalIntervalManager.register(alertInterval, 'Endboss alert animation', this, 150, alertCallback);
     }
 
     /**
@@ -535,25 +470,25 @@ class Endboss extends MovableObjects {
         this.state.isPlayingAttack = true;
         let frameIndex = 0;
 
-        // Spiele Endboss-Angry Sound ab (Boss greift an)
+        // Spiele Endboss-Angry Sound im Loop ab (solange Attack-Mode aktiv ist)
         if (this.world && this.world.soundManager) {
-            this.world.soundManager.play('endbossAngry');
+            this.world.soundManager.playMusic('endbossAngry');
         }
 
         this.img = this.imageCache[this.imagesAttack[frameIndex]];
 
-        const attackInterval = setInterval(() => {
+        const attackCallback = () => {
             frameIndex++;
             if (frameIndex < this.imagesAttack.length) {
                 this.img = this.imageCache[this.imagesAttack[frameIndex]];
             } else {
-                // Attack-Animation beendet
                 GlobalIntervalManager.clear(attackInterval, 'Endboss attack');
                 this.state.isPlayingAttack = false;
-                this.state.isChasing = true; // STARTE VERFOLGUNG!
+                this.state.isChasing = true;
             }
-        }, 150);
-        GlobalIntervalManager.register(attackInterval, 'Endboss attack animation', this, 150);
+        };
+        const attackInterval = setInterval(attackCallback, 150);
+        GlobalIntervalManager.register(attackInterval, 'Endboss attack animation', this, 150, attackCallback);
     }
 
     /**
