@@ -10,8 +10,6 @@ class Chicken extends MovableObjects {
     world;
     markedForDeletion = false;
     isDying = false;
-    moveInterval;
-    animationInterval;
     opacity = 1;
     movingLeft = true; // Startrichtung: nach links
     minX; // Linke Grenze (wird aus Level geladen)
@@ -40,7 +38,7 @@ class Chicken extends MovableObjects {
     }
 
     animate() {
-        this.moveInterval = setInterval(() => {
+        const moveInterval = setInterval(() => {
             if (!this.isDead()) {
                 // Lade Level-Grenzen dynamisch, wenn world verfügbar ist
                 if (this.world && this.minX === undefined) {
@@ -68,14 +66,16 @@ class Chicken extends MovableObjects {
                 }
             }
         }, 1000 / 60);
+        GlobalIntervalManager.register(moveInterval, 'Chicken movement', this, 1000 / 60);
 
-        this.animationInterval = setInterval(() => {
+        const animationInterval = setInterval(() => {
             if (this.isDead()) {
                 this.playDeadAnimation();
             } else {
                 this.playAnimation(this.imagesWalk);
             }
         }, 150);
+        GlobalIntervalManager.register(animationInterval, 'Chicken animation', this, 150);
     }
 
     playDeadAnimation() {
@@ -83,10 +83,9 @@ class Chicken extends MovableObjects {
             this.isDying = true;
             // Lade das Dead-Bild direkt aus dem Cache
             this.img = this.imageCache[this.imagesDead[0]];
-            // Stoppe alle Intervals
-            clearInterval(this.moveInterval);
-            clearInterval(this.animationInterval);
-            
+            // Stoppe alle Intervals dieses Objekts
+            GlobalIntervalManager.clearByOwner(this);
+
             // Spiele Chicken-Dead-Sound ab
             if (this.world && this.world.soundManager) {
                 this.world.soundManager.play('chickenDead');
@@ -97,11 +96,12 @@ class Chicken extends MovableObjects {
                 this.opacity -= 0.02; // Reduziere Opacity
                 if (this.opacity <= 0) {
                     this.opacity = 0;
-                    clearInterval(fadeInterval);
+                    GlobalIntervalManager.clear(fadeInterval, 'Chicken fade');
                     this.markedForDeletion = true; // Erst NACH Fade-Out markieren
                     this.removeFromWorld();
                 }
             }, 40); // Alle 40ms (ergibt ca. 2 Sekunden für komplettes Fade-Out)
+            GlobalIntervalManager.register(fadeInterval, 'Chicken fade-out', this, 40);
         }
     }
 

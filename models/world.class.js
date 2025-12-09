@@ -49,17 +49,19 @@ class World {
     }
 
     runGame() {
-        setInterval(() => {
+        const collisionIntervalId = setInterval(() => {
             this.checkCollisions();
             this.checkThrowableObject();
             this.checkBottleCollection(); // Prüfe ob Character Flaschen einsammelt
             this.checkCoinCollection(); // Prüfe ob Character Münzen einsammelt
         }, 200);
+        GlobalIntervalManager.register(collisionIntervalId, 'World collision checks', this, 200);
 
         // Häufigere Prüfung der Flaschen-Kollisionen für bessere Treffergenauigkeit
-        setInterval(() => {
+        const bottleIntervalId = setInterval(() => {
             this.checkBottleCollisions();
         }, 50);
+        GlobalIntervalManager.register(bottleIntervalId, 'World bottle collision checks', this, 50);
     }
 
     checkCollisions() {

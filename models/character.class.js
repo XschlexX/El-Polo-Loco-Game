@@ -112,14 +112,15 @@ class Character extends MovableObjects {
         this.sleepTimer = null;
         this.resetSleepTimer();
 
-        setInterval(() => {
+        const interval1 = setInterval(() => {
             if (this.world && this.world.keyboard && this.world.keyboard.ANY) {
                 this.resetSleepTimer();
             }
         }, 100); // Häufigere Überprüfung, aber nicht zu oft
+        GlobalIntervalManager.register(interval1, 'Character sleep reset check', this, 100);
 
         // Sound-Kontrolle für Run-Sound und Landing
-        setInterval(() => {
+        const interval2 = setInterval(() => {
             if (!this.world || !this.world.soundManager) return;
 
             const isRunning = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround(this.groundLevel) && !this.isDead();
@@ -147,8 +148,9 @@ class Character extends MovableObjects {
                 }
             }
         }, 100);
+        GlobalIntervalManager.register(interval2, 'Character sound control', this, 100);
 
-        setInterval(() => {
+        const interval3 = setInterval(() => {
             // Warte bis world gesetzt ist
             if (!this.world) return;
 
@@ -169,8 +171,9 @@ class Character extends MovableObjects {
             }
             this.updateCamera();
         }, 1000 / 60);
+        GlobalIntervalManager.register(interval3, 'Character movement control', this, 1000 / 60);
 
-        setInterval(() => {
+        const interval4 = setInterval(() => {
             // Warte bis world gesetzt ist
             if (!this.world) return;
 
@@ -192,6 +195,7 @@ class Character extends MovableObjects {
                 }
             }
         }, 150);
+        GlobalIntervalManager.register(interval4, 'Character animation control', this, 150);
 
     }
 

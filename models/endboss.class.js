@@ -41,16 +41,6 @@ class Endboss extends MovableObjects {
         isPlayingDeath: false          // Death-Animation läuft gerade?
     };
 
-    // Interval-IDs
-    intervals = {
-        movement: null,
-        animation: null,
-        alert: null,
-        attack: null,
-        hurt: null,
-        death: null
-    };
-
     imagesWalk = [
         '../assets/img/4_enemie_boss_chicken/1_walk/G1.png',
         '../assets/img/4_enemie_boss_chicken/1_walk/G2.png',
@@ -145,7 +135,7 @@ class Endboss extends MovableObjects {
     animate() {
         // ==================== MOVEMENT INTERVAL (60 FPS) ====================
         // Steuert die X-Position des Endboss basierend auf seinem aktuellen Zustand
-        this.intervals.movement = setInterval(() => {
+        const movementInterval = setInterval(() => {
             // REGEL 1: Während Alert/Attack-Animation stillstehen
             // Der Endboss bewegt sich NICHT während diese Animationen laufen
             if (this.state.isPlayingAlert || this.state.isPlayingAttack) {
@@ -243,11 +233,12 @@ class Endboss extends MovableObjects {
                 // console.log(this.x);
             }
         }, 1000 / 60); // 60 FPS für flüssige Bewegung
+        GlobalIntervalManager.register(movementInterval, 'Endboss movement', this, 1000 / 60);
 
         // ==================== ANIMATION INTERVAL (150ms) ====================
         // Entscheidet welche Animation angezeigt wird basierend auf Zustand
         // WICHTIG: Läuft alle 150ms (nicht 60 FPS!)
-        this.intervals.animation = setInterval(() => {
+        const animationInterval = setInterval(() => {
             // PRIORITÄT 1: Tod (höchste Priorität)
             if (this.isDead()) {
                 this.handleDeathAnimation();
@@ -290,6 +281,7 @@ class Endboss extends MovableObjects {
                 this.playAnimation(this.imagesWalk);
             }
         }, 150);
+        GlobalIntervalManager.register(animationInterval, 'Endboss animation', this, 150);
     }
 
     /**
@@ -329,39 +321,10 @@ class Endboss extends MovableObjects {
      * Stoppt alle laufenden Intervals des Endboss
      * Wird aufgerufen wenn der Endboss stirbt
      * 
-     * Stoppt:
-     * - Movement Interval (Bewegung)
-     * - Animation Interval (Animations-Steuerung)
-     * - Alert Interval (Alert-Animation)
-     * - Attack Interval (Attack-Animation)
-     * - Hurt Interval (Hurt-Animation)
-     * - Death Interval (Death-Animation)
+     * Verwendet den GlobalIntervalManager um alle Intervals dieses Objekts zu stoppen
      */
     stopAllIntervals() {
-        if (this.intervals.movement) {
-            clearInterval(this.intervals.movement);
-            this.intervals.movement = null;
-        }
-        if (this.intervals.animation) {
-            clearInterval(this.intervals.animation);
-            this.intervals.animation = null;
-        }
-        if (this.intervals.alert) {
-            clearInterval(this.intervals.alert);
-            this.intervals.alert = null;
-        }
-        if (this.intervals.attack) {
-            clearInterval(this.intervals.attack);
-            this.intervals.attack = null;
-        }
-        if (this.intervals.hurt) {
-            clearInterval(this.intervals.hurt);
-            this.intervals.hurt = null;
-        }
-        if (this.intervals.death) {
-            clearInterval(this.intervals.death);
-            this.intervals.death = null;
-        }
+        GlobalIntervalManager.clearByOwner(this);
     }
 
     /**
@@ -374,18 +337,18 @@ class Endboss extends MovableObjects {
         let frameIndex = 0;
         this.img = this.imageCache[this.imagesHurt[frameIndex]];
 
-        this.intervals.hurt = setInterval(() => {
+        const hurtInterval = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesHurt.length) {
                 this.img = this.imageCache[this.imagesHurt[frameIndex]];
             } else {
                 // Hurt-Animation beendet → Starte Death-Animation
-                clearInterval(this.intervals.hurt);
-                this.intervals.hurt = null;
+                GlobalIntervalManager.clear(hurtInterval, 'Endboss hurt');
                 this.state.isPlayingHurt = false;
                 this.playDeathAnimationOnce();
             }
         }, 150);
+        GlobalIntervalManager.register(hurtInterval, 'Endboss hurt animation', this, 150);
     }
 
     /**
@@ -404,16 +367,16 @@ class Endboss extends MovableObjects {
 
         this.img = this.imageCache[this.imagesDead[frameIndex]];
 
-        this.intervals.death = setInterval(() => {
+        const deathInterval = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesDead.length) {
                 this.img = this.imageCache[this.imagesDead[frameIndex]];
             } else {
-                clearInterval(this.intervals.death);
-                this.intervals.death = null;
+                GlobalIntervalManager.clear(deathInterval, 'Endboss death');
                 this.state.isPlayingDeath = false;
             }
         }, 150);
+        GlobalIntervalManager.register(deathInterval, 'Endboss death animation', this, 150);
     }
 
     /**
@@ -429,7 +392,7 @@ class Endboss extends MovableObjects {
      */
     smoothRotate() {
         if (this.rotation.intervalId) {
-            clearInterval(this.rotation.intervalId);
+            GlobalIntervalManager.clear(this.rotation.intervalId, 'Endboss rotation');
         }
 
         const duration = 150;
@@ -442,10 +405,11 @@ class Endboss extends MovableObjects {
                 this.rotation.current += rotationStep;
             } else {
                 this.rotation.current = this.rotation.target;
-                clearInterval(this.rotation.intervalId);
+                GlobalIntervalManager.clear(this.rotation.intervalId, 'Endboss rotation');
                 this.rotation.intervalId = null;
             }
         }, 1000 / fps);
+        GlobalIntervalManager.register(this.rotation.intervalId, 'Endboss rotation', this, 1000 / fps);
     }
 
     /**
@@ -525,18 +489,18 @@ class Endboss extends MovableObjects {
         let frameIndex = 0;
         this.img = this.imageCache[this.imagesAlert[frameIndex]];
 
-        this.intervals.alert = setInterval(() => {
+        const alertInterval = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesAlert.length) {
                 this.img = this.imageCache[this.imagesAlert[frameIndex]];
             } else {
                 // Alert-Animation beendet
-                clearInterval(this.intervals.alert);
-                this.intervals.alert = null;
+                GlobalIntervalManager.clear(alertInterval, 'Endboss alert');
                 this.state.isPlayingAlert = false;
                 this.handleAttackAnimation(); // Starte Attack
             }
         }, 150);
+        GlobalIntervalManager.register(alertInterval, 'Endboss alert animation', this, 150);
     }
 
     /**
@@ -578,18 +542,18 @@ class Endboss extends MovableObjects {
 
         this.img = this.imageCache[this.imagesAttack[frameIndex]];
 
-        this.intervals.attack = setInterval(() => {
+        const attackInterval = setInterval(() => {
             frameIndex++;
             if (frameIndex < this.imagesAttack.length) {
                 this.img = this.imageCache[this.imagesAttack[frameIndex]];
             } else {
                 // Attack-Animation beendet
-                clearInterval(this.intervals.attack);
-                this.intervals.attack = null;
+                GlobalIntervalManager.clear(attackInterval, 'Endboss attack');
                 this.state.isPlayingAttack = false;
                 this.state.isChasing = true; // STARTE VERFOLGUNG!
             }
         }, 150);
+        GlobalIntervalManager.register(attackInterval, 'Endboss attack animation', this, 150);
     }
 
     /**
