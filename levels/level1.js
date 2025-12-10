@@ -7,7 +7,7 @@ let bigChickenAmount = 2;
 let chickenSpeed = 1;
 let coinsAmount = 0;
 let bottleAmount = 10;
-let endbossHP = 30;
+let endbossHP = 10;
 let levelNumber = 1; // Level-Nummer
 
 let level1;

@@ -45,21 +45,7 @@ h1 {
     font-size: 3em;
 }
 
-.startscreen {
-    height: 480px;
-    width: 720px;
-    background-image: url(../assets/img/9_intro_outro_screens/start/startscreen_2.png);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 2px solid red;
-    border-radius: 8px;
-    gap: 24px;
-}
-
+/* Screens */
 .all-screens {
     position: relative;
     height: 480px;
@@ -84,6 +70,26 @@ h1 {
     }
 }
 
+.screen-container {
+    display: flex;
+    gap: 8px;
+}
+
+.startscreen {
+    height: 480px;
+    width: 720px;
+    background-image: url(../assets/img/9_intro_outro_screens/start/startscreen_2.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid red;
+    border-radius: 8px;
+    gap: 24px;
+}
+
 .info-screen {
     display: flex;
     flex-direction: column;
@@ -100,12 +106,6 @@ h1 {
     }
 }
 
-canvas {
-    background: black;
-    border-radius: 8px;
-    border: 2px solid red;
-}
-
 .startscreen-controls {
     padding-top: 24px;
     display: flex;
@@ -113,6 +113,54 @@ canvas {
     justify-content: center;
     gap: 56px;
 }
+
+canvas {
+    background: black;
+    border-radius: 8px;
+    border: 2px solid red;
+}
+
+.you-won-screen-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+
+
+    & .you-won-screen-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        /* gap: 16px; */
+        height: 100%;
+        width: 100%;
+
+        & p {
+            font-size: 1.5em;
+            text-align: center;
+            color: orange;
+        }
+
+        & .you-won-img {
+            width: 55%;
+            /* height: 100%; */
+        }
+
+        & .you-won-screen-buttons {
+            display: flex;
+            gap: 36px;
+        }
+    }
+
+
+}
+
 
 .button {
     background: linear-gradient(to bottom, #ff9d00, #ffdb00, #ff9d00);
@@ -183,11 +231,6 @@ canvas {
     min-width: 120px;
     font-size: 16px;
     padding: 6px 16px;
-}
-
-.screen-container {
-    display: flex;
-    gap: 8px;
 }
 
 .unmute-button {

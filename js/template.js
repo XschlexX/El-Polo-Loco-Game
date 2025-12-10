@@ -10,15 +10,9 @@ function startScreenTemplate() {
     `;
 }
 
-function showCanvasTemplate() {
-    return /*html*/`
-    <canvas id="canvas" class="canvas" width="720" height="480"></canvas>
-    `;
-}
-
 function infoScreenTemplate() {
     return /*html*/`
-        <div id="infoscreen" class="all-screens">
+        <div id="info_screen" class="all-screens">
             <img src="../assets/img/5_background/first_half_background.png" alt="Info">
             <div class="info-screen">
                 <div class="info-text">
@@ -57,7 +51,7 @@ function infoScreenTemplate() {
 
 function controlsScreenTemplate() {
     return /*html*/`
-        <div id="controls" class="all-screens">
+        <div id="controls_screen" class="all-screens">
             <img class="background-image" src="../assets/img/5_background/first_half_background.png" alt="Controls">
             <div class="screen-container">
                 <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
@@ -68,6 +62,27 @@ function controlsScreenTemplate() {
                 </button>
             </div>
             <button class="button" onclick="startScreen()">BACK</button>
+        </div>
+    `;
+}
+
+function showCanvasTemplate() {
+    return /*html*/`
+    <canvas id="canvas" class="canvas" width="720" height="480"></canvas>
+    `;
+}
+
+function youWonScreenTemplate() {
+    return /*html*/`
+        <div id="you_won_screen" class="all-screens you-won-screen-overlay">
+            <div class="you-won-screen-container">
+                <p>Congratulations! You Won This Level! </p>
+                <img class="you-won-img" src="../assets/img/You won, you lost/You won A.png" alt="You won!">
+                <div class="you-won-screen-buttons">
+                    <button class="next-level-button button">Next Level</button>
+                    <button class="main-menu-button button" onclick="startScreen()">Main Menu</button>
+                </div>
+            </div>
         </div>
     `;
 }

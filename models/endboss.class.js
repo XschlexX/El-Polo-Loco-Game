@@ -240,6 +240,9 @@ class Endboss extends MovableObjects {
             }
             else {
                 this.playAnimation(this.imagesWalk);
+                if (this.world && this.world.soundManager) {
+                    this.world.soundManager.stopMusic('endbossAngry');
+                }
             }
         };
         const animationInterval = setInterval(animationCallback, 150);
@@ -341,10 +344,12 @@ class Endboss extends MovableObjects {
             } else {
                 GlobalIntervalManager.clear(deathInterval, 'Endboss death');
                 this.state.isPlayingDeath = false;
+                showYouWonScreen(1000);
             }
         };
         const deathInterval = setInterval(deathCallback, 150);
         GlobalIntervalManager.register(deathInterval, 'Endboss death animation', this, 150, deathCallback);
+
     }
 
     /**
@@ -414,6 +419,10 @@ class Endboss extends MovableObjects {
     playAlertAnimationOnce() {
         this.state.hasPlayedAlert = true;
         this.state.isPlayingAlert = true;
+
+        if (this.world && this.world.soundManager) {
+            this.world.soundManager.playMusic('endbossAngry');
+        }
 
         // Drehe Endboss in Richtung des Characters
         if (this.world && this.world.character) {

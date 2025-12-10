@@ -39,8 +39,16 @@
 <body onload="init()">
     <main>
         <h1>El Polo Loco</h1>
-        <div id="game_container"></div>
-        <div id="overlay_container"></div>
+        <div id="you_won_screen" class="all-screens you-won-screen-overlay">
+            <div class="you-won-screen-container">
+                <p>Congratulations! You won this level! </p>
+                <img class="you-won-img" src="../assets/img/You won, you lost/You won A.png" alt="You won!">
+                <div class="you-won-screen-buttons">
+                    <button id="next-level-button">Next Level</button>
+                    <button id="main-menu-button">Main Menu</button>
+                </div>
+            </div>
+        </div>
 
         <div id="you_lost_screen"></div>
 

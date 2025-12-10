@@ -1,5 +1,6 @@
 function startScreen() {
     document.getElementById('game_container').innerHTML = startScreenTemplate();
+    // document.getElementById('game_container').innerHTML = youWonScreenTemplate();
 }
 
 function startGame() {
@@ -21,6 +22,10 @@ function showInfoScreen() {
 
 function showControlScreen() {
     document.getElementById('game_container').innerHTML = controlsScreenTemplate();
+}
+
+function showYouWonScreen(delay = 0) {
+    setTimeout(() => { document.getElementById('game_container').innerHTML += youWonScreenTemplate(); }, delay);
 }
 
 function enableSound() {
