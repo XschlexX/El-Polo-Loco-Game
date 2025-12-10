@@ -37,8 +37,22 @@ class DebugInfo extends DrawableObject {
             const fieldX = 10;
             const fieldY = 120;
             const fieldWidth = 300;
-            const fieldHeight = 100;
             const textGap = 15;
+
+            // Debug-Informationen als Array definieren
+            const debugInfo = [
+                'Character Debug:',
+                `Position: (${char.x.toFixed(1)}, ${char.y.toFixed(1)})`,
+                `bottles: ${char.bottles}`,
+                `coins: ${char.coins}`,
+                `speedY: ${char.speedY.toFixed(2)}`,
+                `isAboveGround: ${isAboveGround}`,
+                `isBouncing: ${char.isBouncing}`,
+                `otherDirection: ${char.otherDirection}`
+            ];
+
+            // Höhe des Feldes basierend auf der Anzahl der Debug-Zeilen berechnen
+            const fieldHeight = debugInfo.length * textGap + 10; // +10 für etwas Padding am unteren Rand
 
             ctx.save();
             ctx.font = '14px Arial';
@@ -47,12 +61,12 @@ class DebugInfo extends DrawableObject {
 
             ctx.fillStyle = 'white';
             ctx.textAlign = 'left';
-            ctx.fillText('Character Debug:', fieldX + textGap, fieldY + 15);
-            ctx.fillText(`Position: (${char.x.toFixed(1)}, ${char.y.toFixed(1)})`, fieldX + textGap, fieldY + textGap * 2);
-            ctx.fillText(`bottles: ${char.bottles}`, fieldX + textGap, fieldY + textGap * 3);
-            ctx.fillText(`coins: ${char.coins}`, fieldX + textGap, fieldY + textGap * 4);
-            ctx.fillText(`speedY: ${char.speedY.toFixed(2)}`, fieldX + textGap, fieldY + textGap * 5);
-            ctx.fillText(`isAboveGround: ${isAboveGround}`, fieldX + textGap, fieldY + textGap * 6);
+
+            // Jede Debug-Zeile zeichnen
+            debugInfo.forEach((info, index) => {
+                ctx.fillText(info, fieldX + textGap, fieldY + textGap * (index + 1));
+            });
+
             ctx.restore();
         }
 

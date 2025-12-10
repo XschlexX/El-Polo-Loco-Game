@@ -95,6 +95,9 @@ class World {
                     // Wenn es ein Endboss ist, aktiviere Ramming-Modus
                     if (enemy instanceof Endboss && enemy.onCharacterCollision && !enemy.ramming.isActive) {
                         enemy.onCharacterCollision();
+
+                        // Bounce-Effekt für den Character nach Kollision mit Endboss
+                        this.bounceFromEndboss(this.character, enemy);
                     }
                 }
             }
@@ -125,6 +128,52 @@ class World {
         //     character.x < (enemy.x + enemy.width - enemy.hitBoxRight);
 
         return isFalling && isAboveEnemyTop;
+    }
+
+    /**
+     * Gibt dem Character einen Bounce-Effekt nach Kollision mit dem Endboss
+     * @param {Character} character - Der Character, der den Bounce-Effekt bekommt
+     * @param {Endboss} enemy - Der Endboss, mit dem kollidiert wurde
+     */
+    bounceFromEndboss(character, enemy) {
+        // Setze Character auf eine kleine Sprungbewegung
+        character.speedY = 8; // Kleiner Sprung nach oben
+
+        // Bestimme Richtung für horizontalen Bounce basierend auf Position des Endboss
+        let bounceDirection;
+        if (character.x < enemy.x) {
+            // Character ist links vom Endboss, bewege nach rechts (weg vom Endboss)
+            bounceDirection = 'left';
+        } else if (character.x > (enemy.x + enemy.width)) {
+            // Character ist rechts vom Endboss, bewege nach links (weg vom Endboss)
+            bounceDirection = 'right';
+        } else {
+            // Character ist zwischen den x-Positionen von Endboss (in der Mitte), wähle zufällige Richtung
+            bounceDirection = Math.random() > 0.5 ? 'left' : 'right';
+        }
+
+        // Setze Flag, um zu kennzeichnen, dass der Character sich im Bounce-Zustand befindet
+        character.isBouncing = true;
+
+        // Callback-Funktion für das Bounce-Intervall
+        const bounceCallback = () => {
+            if (!character.isAboveGround(character.groundLevel)) {
+                // Wenn Character wieder am Boden ist, stoppe das Intervall
+                GlobalIntervalManager.clear(bounceIntervalId, 'Character bounce effect');
+                character.isBouncing = false;
+            } else {
+                // Solange der Character in der Luft ist, bewege ihn in die richtige Richtung
+                if (bounceDirection === 'left') {
+                    character.moveLeft(false);
+                } else {
+                    character.moveRight(true);
+                }
+            }
+        };
+
+        // Starte Intervall, das den Character solange bewegt, wie er in der Luft ist
+        const bounceIntervalId = setInterval(bounceCallback, 1000 / 60); // 60 FPS, gleiche Frequenz wie die Bewegungs-Intervalle
+        GlobalIntervalManager.register(bounceIntervalId, 'Character bounce effect', this, 1000 / 60, bounceCallback);
     }
 
     checkBottleCollisions() {

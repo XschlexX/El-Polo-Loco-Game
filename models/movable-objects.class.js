@@ -67,9 +67,9 @@ class MovableObjects extends DrawableObject {
         this.currentImage++;
     }
 
-    moveRight() {
+    moveRight(directionState = false) {
         this.x += this.speed;
-        this.otherDirection = false;
+        this.otherDirection = directionState;
     }
 
     moveLeft(directionState) {
