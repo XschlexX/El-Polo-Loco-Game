@@ -29,6 +29,8 @@ class SoundManager {
         this.addSound('endbossHurt', 'sounds/effects/enemies/endboss-hurt.mp3', 0.4);
         this.addSound('endbossAngry', 'sounds/effects/enemies/endboss-angry.mp3', 1);
         this.addSound('endbossDead', 'sounds/effects/enemies/endboss-dead.mp3', 0.1);
+        this.addSound('youWon', 'sounds/win-lose/win-sound.mov', 0.5);
+
     }
 
     /**

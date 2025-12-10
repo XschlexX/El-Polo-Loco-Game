@@ -9,6 +9,7 @@ class World {
     lastThrow;
     settingsButton;
     settingsOverlay;
+    victoryOverlay;
     soundManager;
 
     constructor(canvas, keyboard) {
@@ -26,6 +27,8 @@ class World {
         this.settingsButton.world = this;
         this.settingsOverlay = new SettingsOverlay();
         this.settingsOverlay.world = this;
+        this.victoryOverlay = new VictoryOverlay();
+        this.victoryOverlay.world = this;
 
         this.draw();
         this.setWorld();
@@ -286,6 +289,9 @@ class World {
         // Zeichne Settings-Overlay (falls sichtbar)
         this.settingsOverlay.draw(this.ctx);
 
+        // Zeichne Victory-Overlay (falls sichtbar)
+        this.victoryOverlay.draw(this.ctx);
+
         let self = this;
         requestAnimationFrame(() => self.draw());
     }
@@ -331,7 +337,19 @@ class World {
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
 
-            // Prüfe zuerst Overlay-Buttons
+            // Prüfe zuerst Victory-Overlay (höchste Priorität)
+            const victoryAction = this.victoryOverlay.handleClick(mouseX, mouseY);
+            if (victoryAction === 'mainMenu') {
+                startScreen();
+                window.soundManager.playMusic('menuTheme');
+                return;
+            } else if (victoryAction === 'nextLevel') {
+                alert('Level 2 ist noch nicht implementiert!');
+                startScreen();
+                return;
+            }
+
+            // Prüfe Settings-Overlay-Buttons
             const action = this.settingsOverlay.handleClick(mouseX, mouseY);
             if (action === 'exit') {
                 this.exitGame();
@@ -351,11 +369,13 @@ class World {
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
 
-            // Prüfe Overlay-Buttons zuerst
+            // Prüfe Victory-Overlay-Buttons zuerst
+            const victoryHovered = this.victoryOverlay.handleHover(mouseX, mouseY);
+            // Prüfe Settings-Overlay-Buttons
             const overlayHovered = this.settingsOverlay.handleHover(mouseX, mouseY);
             const buttonHovered = this.settingsButton.isHovering(mouseX, mouseY);
 
-            if (overlayHovered || buttonHovered) {
+            if (victoryHovered || overlayHovered || buttonHovered) {
                 this.canvas.style.cursor = 'pointer';
             } else {
                 this.canvas.style.cursor = 'default';
@@ -407,6 +427,46 @@ class World {
         }
 
         console.log('[World] Game resumed');
+    }
+
+    stopGame() {
+        console.log('[World] Stopping game completely...');
+
+        // 1. Stoppe ALLE Intervals permanent
+        GlobalIntervalManager.clearAll();
+
+        // 2. Deaktiviere Keyboard-Inputs
+        if (this.keyboard) {
+            Object.keys(this.keyboard).forEach(key => {
+                this.keyboard[key] = false;
+            });
+        }
+
+        // 3. Stoppe alle Character-spezifischen Sounds
+        if (this.character) {
+            // Verhindere dass Character einschläft und Sleep-Sound spielt
+            this.character.isSleeping = false;
+            this.character.isIdle = false;
+            if (this.character.sleepTimer) {
+                clearTimeout(this.character.sleepTimer);
+            }
+        }
+
+        // 4. Stoppe nur Sound-Effekte, NICHT die Musik
+        if (this.soundManager) {
+            // Stoppe alle Sound-Effekte einzeln, aber nicht die Musik
+            const soundEffects = ['walking', 'jumping', 'hurt', 'bottleThrow', 'bottleSplash',
+                'chickenHit', 'bottleCollect', 'coinCollect', 'endbossHurt',
+                'endbossDead', 'snoring'];
+            soundEffects.forEach(sound => {
+                if (this.soundManager.sounds && this.soundManager.sounds[sound]) {
+                    this.soundManager.sounds[sound].pause();
+                    this.soundManager.sounds[sound].currentTime = 0;
+                }
+            });
+        }
+
+        console.log('[World] Game stopped');
     }
 
 }

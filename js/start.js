@@ -25,8 +25,28 @@ function showControlScreen() {
 }
 
 function showYouWonScreen(delay = 0) {
-    setTimeout(() => { document.getElementById('game_container').innerHTML += youWonScreenTemplate(); }, delay);
+    setTimeout(() => {
+        // Stoppe Game-Music ZUERST
+        if (window.soundManager) {
+            window.soundManager.stopMusic('gameTheme');
+            window.soundManager.stopMusic('endbossAngry');
+        }
+
+        // Stoppe das komplette Spiel (Intervals + Keyboard + Sound-Effekte)
+        if (window.world) {
+            window.world.stopGame();
+            // Zeige Victory-Overlay auf dem Canvas
+            window.world.victoryOverlay.show();
+        }
+
+        // Starte Menu-Music NACH dem Stoppen
+        if (window.soundManager) {
+            window.soundManager.play('youWon');
+        }
+    }, delay);
 }
+
+// setupYouWonButtons() wird nicht mehr benötigt - Buttons werden im Canvas-Overlay gehandhabt
 
 function enableSound() {
     window.soundManager.playMusic('menuTheme');

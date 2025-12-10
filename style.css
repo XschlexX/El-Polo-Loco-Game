@@ -45,6 +45,12 @@ h1 {
     font-size: 3em;
 }
 
+#game_container {
+    position: relative;
+    width: 720px;
+    height: 480px;
+}
+
 /* Screens */
 .all-screens {
     position: relative;
@@ -122,14 +128,16 @@ canvas {
 
 .you-won-screen-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
+    top: 2px;
+    left: 2px;
+    height: 480px;
+    width: 720px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    border-radius: 8px;
 
 
     & .you-won-screen-container {
@@ -137,24 +145,32 @@ canvas {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        /* gap: 16px; */
+        /* gap: 24px; */
         height: 100%;
         width: 100%;
+        padding: 40px;
 
         & p {
-            font-size: 1.5em;
+            font-size: 2em;
             text-align: center;
             color: orange;
+            font-weight: bold;
+            /* -webkit-text-stroke: 1px #a0220a; */
+            /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); */
+            margin: 0;
         }
 
         & .you-won-img {
-            width: 55%;
-            /* height: 100%; */
+            width: 40%;
+            max-width: 400px;
+            height: auto;
+            object-fit: contain;
         }
 
         & .you-won-screen-buttons {
             display: flex;
             gap: 36px;
+            /* margin-top: 20px; */
         }
     }
 
