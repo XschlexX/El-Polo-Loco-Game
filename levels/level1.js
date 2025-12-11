@@ -1,6 +1,6 @@
 let levelStart = -720;
 let levelEnd = 2160;
-let characterHP = 100; // HP für Level 1
+let characterHP = 20; // HP für Level 1
 let characterBottles = 0;
 let smallChickenAmount = 0; // Anzahl der kleinen Hühner
 let bigChickenAmount = 2;

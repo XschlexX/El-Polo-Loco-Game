@@ -13,7 +13,7 @@ function startScreenTemplate() {
 function infoScreenTemplate() {
     return /*html*/`
         <div id="info_screen" class="all-screens">
-            <img src="../assets/img/5_background/first_half_background.png" alt="Info">
+            <img class="background-image" src="../assets/img/5_background/first_half_background.png" alt="Info">
             <div class="info-screen">
                 <div class="info-text">
                     <h2>Info</h2>

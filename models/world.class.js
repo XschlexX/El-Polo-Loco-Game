@@ -10,6 +10,7 @@ class World {
     settingsButton;
     settingsOverlay;
     victoryOverlay;
+    defeatOverlay;
     soundManager;
 
     constructor(canvas, keyboard) {
@@ -29,6 +30,8 @@ class World {
         this.settingsOverlay.world = this;
         this.victoryOverlay = new VictoryOverlay();
         this.victoryOverlay.world = this;
+        this.defeatOverlay = new DefeatOverlay();
+        this.defeatOverlay.world = this;
 
         this.draw();
         this.setWorld();
@@ -291,6 +294,7 @@ class World {
 
         // Zeichne Victory-Overlay (falls sichtbar)
         this.victoryOverlay.draw(this.ctx);
+        this.defeatOverlay.draw(this.ctx);
 
         let self = this;
         requestAnimationFrame(() => self.draw());
@@ -349,6 +353,17 @@ class World {
                 return;
             }
 
+            // Prüfe zuerst Victory-Overlay (höchste Priorität)
+            const defeatAction = this.defeatOverlay.handleClick(mouseX, mouseY);
+            if (defeatAction === 'mainMenu') {
+                startScreen();
+                window.soundManager.playMusic('menuTheme');
+                return;
+            } else if (defeatAction === 'tryAgain') {
+                startGame();;
+                return;
+            }
+
             // Prüfe Settings-Overlay-Buttons
             const action = this.settingsOverlay.handleClick(mouseX, mouseY);
             if (action === 'exit') {
@@ -371,11 +386,12 @@ class World {
 
             // Prüfe Victory-Overlay-Buttons zuerst
             const victoryHovered = this.victoryOverlay.handleHover(mouseX, mouseY);
+            const defeatHovered = this.defeatOverlay.handleHover(mouseX, mouseY);
             // Prüfe Settings-Overlay-Buttons
             const overlayHovered = this.settingsOverlay.handleHover(mouseX, mouseY);
             const buttonHovered = this.settingsButton.isHovering(mouseX, mouseY);
 
-            if (victoryHovered || overlayHovered || buttonHovered) {
+            if (victoryHovered || defeatHovered || overlayHovered || buttonHovered) {
                 this.canvas.style.cursor = 'pointer';
             } else {
                 this.canvas.style.cursor = 'default';
@@ -430,7 +446,7 @@ class World {
     }
 
     stopGame() {
-        console.log('[World] Stopping game completely...');
+        // console.log('[World] Stopping game completely...');
 
         // 1. Stoppe ALLE Intervals permanent
         GlobalIntervalManager.clearAll();
@@ -455,18 +471,19 @@ class World {
         // 4. Stoppe nur Sound-Effekte, NICHT die Musik
         if (this.soundManager) {
             // Stoppe alle Sound-Effekte einzeln, aber nicht die Musik
-            const soundEffects = ['walking', 'jumping', 'hurt', 'bottleThrow', 'bottleSplash',
-                'chickenHit', 'bottleCollect', 'coinCollect', 'endbossHurt',
-                'endbossDead', 'snoring'];
-            soundEffects.forEach(sound => {
-                if (this.soundManager.sounds && this.soundManager.sounds[sound]) {
-                    this.soundManager.sounds[sound].pause();
-                    this.soundManager.sounds[sound].currentTime = 0;
-                }
-            });
+            // const soundEffects = ['walking', 'jumping', 'hurt', 'bottleThrow', 'bottleSplash',
+            //     'chickenHit', 'bottleCollect', 'coinCollect', 'endbossHurt',
+            //     'endbossDead', 'snoring'];
+            // soundEffects.forEach(sound => {
+            //     if (this.soundManager.sounds && this.soundManager.sounds[sound]) {
+            //         this.soundManager.sounds[sound].pause();
+            //         this.soundManager.sounds[sound].currentTime = 0;
+            //     }
+            // });
+            this.soundManager.muteAll();
         }
 
-        console.log('[World] Game stopped');
+        // console.log('[World] Game stopped');
     }
 
 }

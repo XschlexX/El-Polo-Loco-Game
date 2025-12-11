@@ -113,7 +113,7 @@ class Overlay {
      * @param {string} strokeColor - Umriss-Farbe
      * @param {number} strokeWidth - Umriss-Breite
      */
-    drawText(ctx, text, x, y, font = 'bold 32px Rye, Arial', fillColor = 'orange', strokeColor = '#a0220a', strokeWidth = 1) {
+    drawText(ctx, text, x, y, font = 'bold 32px Rye, Arial', fillColor = 'orange', strokeColor = '#a0220a', strokeWidth = 3) {
         ctx.font = font;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -166,8 +166,15 @@ class Overlay {
 
         let anyHovered = false;
         this.buttons.forEach(button => {
+            const wasHovered = button.isHovered;
             button.isHovered = this.isButtonClicked(button, mouseX, mouseY);
-            if (button.isHovered) anyHovered = true;
+            if (button.isHovered && !wasHovered) {
+                anyHovered = true;
+                window.soundManager.play('buttonHover');
+            } else if (button.isHovered) {
+                // Button wird weiterhin gehovered
+                anyHovered = true;
+            }
         });
         return anyHovered;
     }

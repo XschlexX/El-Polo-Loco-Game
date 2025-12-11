@@ -1,15 +1,15 @@
-class VictoryOverlay extends Overlay {
-    victoryImage;
+class DefeatOverlay extends Overlay {
+    defeatImage;
 
     constructor() {
         super();
         this.setupButtons();
-        this.loadVictoryImage();
+        this.loadDefeatImage();
     }
 
-    loadVictoryImage() {
-        this.victoryImage = new Image();
-        this.victoryImage.src = 'assets/img/You won, you lost/You won A.png';
+    loadDefeatImage() {
+        this.defeatImage = new Image();
+        this.defeatImage.src = 'assets/img/You won, you lost/Game Over.png';
     }
 
     setupButtons() {
@@ -19,8 +19,8 @@ class VictoryOverlay extends Overlay {
             y: 400,
             width: 140,
             height: 50,
-            text: 'Next Level',
-            action: 'nextLevel',
+            text: 'Try Again',
+            action: 'tryAgain',
             isHovered: false,
             fontSize: 'bold 20px Rye, Arial'
         });
@@ -47,20 +47,20 @@ class VictoryOverlay extends Overlay {
         // Halbtransparenter schwarzer Hintergrund
         this.drawBackground(ctx, 0.6);
 
-        // Titel "Congratulations!"
-        this.drawText(ctx, 'Congratulations!', 360, 50, 'bold 32px Rye, Arial');
+        // Titel "Oh No! You Lost!!"
+        this.drawText(ctx, 'Oh No! You Lost!', 360, 50, 'bold 32px Rye, Arial');
 
-        // Untertitel "You Won This Level!"
-        this.drawText(ctx, 'You Won This Level!', 360, 90, 'bold 24px Rye, Arial');
+        // Untertitel "Try Again!"
+        this.drawText(ctx, 'Try Again!', 360, 90, 'bold 24px Rye, Arial');
 
         // Victory Image (wenn geladen)
-        if (this.victoryImage.complete) {
-            const imgWidth = 240;
-            const imgHeight = (this.victoryImage.height / this.victoryImage.width) * imgWidth;
-            const imgX = (720 / 2) - (imgWidth / 2);
+        if (this.defeatImage.complete) {
+            const imgWidth = 340;
+            const imgHeight = (this.defeatImage.height / this.defeatImage.width) * imgWidth;
+            const imgX = (720 - imgWidth) / 2;
             const imgY = (480 / 2) - (imgHeight / 2);
 
-            ctx.drawImage(this.victoryImage, imgX, imgY, imgWidth, imgHeight);
+            ctx.drawImage(this.defeatImage, imgX, imgY, imgWidth, imgHeight);
         }
 
         // Buttons zeichnen

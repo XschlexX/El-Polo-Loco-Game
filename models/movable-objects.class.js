@@ -41,6 +41,7 @@ class MovableObjects extends DrawableObject {
         this.energy -= 10;
         if (this.energy < 0) {
             this.energy = 0;
+
         } else {
             this.lastHit = new Date().getTime();
             // Spiele Hurt-Sound ab (nur für Character!)

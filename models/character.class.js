@@ -12,6 +12,7 @@ class Character extends MovableObjects {
     isRunSoundPlaying = false;  // Track ob Run-Sound läuft
     isSleepSoundPlaying = false;  // Track ob Sleep-Sound läuft
     wasAboveGround = false;  // Track ob Character in der Luft war
+    defeatScreenShown = false; // Track ob Defeat-Screen bereits angezeigt wurde
 
     hitBoxLeft = 30;
     hitBoxTop = 130;
@@ -96,6 +97,7 @@ class Character extends MovableObjects {
         super();
         this.energy = initialEnergy;
         this.bottles = initialBottles;
+        this.deathSoundPlayed = false;
         this.loadImage(this.imagesIdle[0]);
         this.loadImages(this.imagesIdle);
         this.loadImages(this.imagesLongIdle);
@@ -181,7 +183,7 @@ class Character extends MovableObjects {
             if (!this.world) return;
 
             if (this.isDead()) {
-                this.playAnimation(this.imagesDead);
+                this.characterDeadHandler();
             } else if (this.isHurt()) {
                 this.playAnimation(this.imagesHurt);
             } else {
@@ -230,6 +232,30 @@ class Character extends MovableObjects {
         };
         this.sleepTimer = setTimeout(sleepCallback, 3000);
         GlobalIntervalManager.registerTimeout(this.sleepTimer, 'Character sleep timer', this, 3000, sleepCallback);
+    }
+
+    characterDeadHandler() {
+        // Play death sound if not already played
+        if (this.world && this.world.soundManager && !this.deathSoundPlayed) {
+            this.world.soundManager.play('characterDead');
+            this.deathSoundPlayed = true; // Prevent replaying the sound
+        }
+        // Disable keyboard inputs when character dies
+        if (this.world && this.world.keyboard) {
+            keyboardActive = false;
+            if (this.world.keyboard) {
+                Object.keys(this.world.keyboard).forEach(key => {
+                    this.world.keyboard[key] = false;
+                });
+            }
+            console.log(keyboardActive);
+        }
+
+        this.playAnimation(this.imagesDead);
+        if (!this.defeatScreenShown) {
+            showYouLostScreen(1000);
+            this.defeatScreenShown = true;
+        }
     }
 
     /**

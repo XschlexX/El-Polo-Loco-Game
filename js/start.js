@@ -14,6 +14,7 @@ function startGame() {
     window.soundManager.playMusic('gameTheme');
     createLevel1();
     world = new World(canvas, keyboard);
+    keyboardActive = true;
 }
 
 function showInfoScreen() {
@@ -26,12 +27,6 @@ function showControlScreen() {
 
 function showYouWonScreen(delay = 0) {
     setTimeout(() => {
-        // Stoppe Game-Music ZUERST
-        if (window.soundManager) {
-            window.soundManager.stopMusic('gameTheme');
-            window.soundManager.stopMusic('endbossAngry');
-        }
-
         // Stoppe das komplette Spiel (Intervals + Keyboard + Sound-Effekte)
         if (window.world) {
             window.world.stopGame();
@@ -46,7 +41,21 @@ function showYouWonScreen(delay = 0) {
     }, delay);
 }
 
-// setupYouWonButtons() wird nicht mehr benötigt - Buttons werden im Canvas-Overlay gehandhabt
+function showYouLostScreen(delay = 0) {
+    setTimeout(() => {
+        // Stoppe das komplette Spiel (Intervals + Keyboard + Sound-Effekte)
+        if (window.world) {
+            window.world.stopGame();
+            // Zeige Defeat-Overlay auf dem Canvas
+            window.world.defeatOverlay.show();
+        }
+
+        // Starte Menu-Music NACH dem Stoppen
+        if (window.soundManager) {
+            window.soundManager.play('youLost');
+        }
+    }, delay);
+}
 
 function enableSound() {
     window.soundManager.playMusic('menuTheme');

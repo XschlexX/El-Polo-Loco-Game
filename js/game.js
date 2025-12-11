@@ -2,6 +2,7 @@
 
 let canvas;
 let world;
+let keyboardActive = true;
 let keyboard = new Keyboard();
 let soundManager;
 
@@ -12,6 +13,8 @@ function init() {
 }
 
 window.addEventListener('keydown', (e) => {
+    if (!keyboardActive) return; // Add this line to check if keyboard is active
+
     if (e.code === 'ArrowLeft') {
         keyboard.LEFT = true;
     } else if (e.code === 'ArrowRight') {
@@ -28,6 +31,11 @@ window.addEventListener('keydown', (e) => {
 });
 
 window.addEventListener('keyup', (e) => {
+    if (!keyboardActive) {
+
+        return;
+    }; // Add this line to check if keyboard is active
+
     if (e.code === 'ArrowLeft') {
         keyboard.LEFT = false;
     } else if (e.code === 'ArrowRight') {
@@ -111,7 +119,7 @@ function generateStatusBars() {
         if (barType === 'imagesCoinBar' && coinsAmount === 0) {
             return; // Skippe diese Bar
         }
-        
+
         for (let i = 0; i < 3; i++) {
             statusBars.push(new StatusBar(barType, i));
         }

@@ -15,11 +15,12 @@ class SoundManager {
         this.addSound('menuTheme', 'sounds/music/menu-theme.mp3', 0.5);
         this.addSound('gameTheme', 'sounds/music/game-theme1.mp3', 0.5);
         this.addSound('endbossTheme', 'sounds/music/endboss-theme.mp3', 0.5);
-        this.addSound('characterJump', 'sounds/effects/character-jump.mp3', 0.1);
-        this.addSound('characterLand', 'sounds/effects/character-land.mp3', 0.3);  // Leiser!
-        this.addSound('characterRun', 'sounds/effects/character-run.mp3', 0.3);
-        this.addSound('characterHurt', 'sounds/effects/character-hurt.mp3', 0.6);
-        this.addSound('characterSleep', 'sounds/effects/character-sleep.mp3', 0.3);
+        this.addSound('characterSleep', 'sounds/effects/character/character-sleep.mp3', 0.3);
+        this.addSound('characterJump', 'sounds/effects/character/character-jump.mp3', 0.1);
+        this.addSound('characterLand', 'sounds/effects/character/character-land.mp3', 0.3);  // Leiser!
+        this.addSound('characterRun', 'sounds/effects/character/character-run.mp3', 0.3);
+        this.addSound('characterHurt', 'sounds/effects/character/character-hurt.mp3', 0.6);
+        this.addSound('characterDead', 'sounds/effects/character/character-dead.mp3', 0.6);
         this.addSound('chickenDead', 'sounds/effects/enemies/chicken-dead.mp3', 1.0);  // Volle Lautstärke!
         this.addSound('chickenSmallDead', 'sounds/effects/enemies/chicken-small-dead.mp3', 1.0);
         this.addSound('bottleCollect', 'sounds/effects/bottle-collect.mp3', 0.2);
@@ -30,6 +31,9 @@ class SoundManager {
         this.addSound('endbossAngry', 'sounds/effects/enemies/endboss-angry.mp3', 1);
         this.addSound('endbossDead', 'sounds/effects/enemies/endboss-dead.mp3', 0.1);
         this.addSound('youWon', 'sounds/win-lose/win-sound.mov', 0.5);
+        this.addSound('youLost', 'sounds/win-lose/lose-sound.wav', 0.5);
+        this.addSound('buttonHover', 'sounds/effects/button/button-hover.mp3', 0.5);
+        this.addSound('buttonClick', 'sounds/effects/button/button-click.mp3', 0.5);
 
     }
 

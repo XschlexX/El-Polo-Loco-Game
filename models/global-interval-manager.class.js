@@ -95,7 +95,7 @@ class GlobalIntervalManager {
                 clearTimeout(timeoutId);
                 this.timeouts[key].isActive = false;
                 this.timeouts[key].clearedAt = new Date().toLocaleTimeString();
-                console.log(`[Interval Manager] Cleared timeout: ${this.timeouts[key].name} (${name})`);
+                // console.log(`[Interval Manager] Cleared timeout: ${this.timeouts[key].name} (${name})`);
                 return;
             }
         }
@@ -138,7 +138,7 @@ class GlobalIntervalManager {
                 clearedCount++;
             }
         }
-        console.log(`[Interval Manager] Cleared all ${clearedCount} intervals`);
+        // console.log(`[Interval Manager] Cleared all ${clearedCount} intervals`);
     }
 
     /**
