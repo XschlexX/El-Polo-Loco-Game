@@ -20,6 +20,12 @@ function infoScreenTemplate() {
     return /*html*/`
         <div id="info_screen" class="all-screens">
             <img class="background-image" src="../assets/img/5_background/first_half_background.png" alt="Info">
+            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
+                <img src="../assets/icon/unmute.png" alt="unmute">
+            </button>
+            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
+                <img src="../assets/icon/mute.png" alt="mute">
+            </button>
             <div class="info-screen">
                 <div class="info-text">
                     <h2>Info</h2>
@@ -59,13 +65,13 @@ function controlsScreenTemplate() {
     return /*html*/`
         <div id="controls_screen" class="all-screens">
             <img class="background-image" src="../assets/img/5_background/first_half_background.png" alt="Controls">
+            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
+                <img src="../assets/icon/unmute.png" alt="unmute">
+            </button>
+            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
+                <img src="../assets/icon/mute.png" alt="mute">
+            </button>
             <div class="screen-container">
-                <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
-                    <img src="../assets/icon/unmute.png" alt="unmute">
-                </button>
-                <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
-                    <img src="../assets/icon/mute.png" alt="mute">
-                </button>
             </div>
             <button class="button" onclick="startScreen()">BACK</button>
         </div>

@@ -12,8 +12,8 @@ function generateBackgrounds() {
     ];
 
     // Generiere Hintergründe von -1440 bis 2160 (alle 720px)
-    for (let x = levelStart; x <= levelEnd; x += 720) {
-        const imageIndex = ((x - levelStart) / 720) % 2 + 1; // Wechselt zwischen 1 und 2
+    for (let x = levelStart; x <= levelEnd; x += canvasWidth) {
+        const imageIndex = ((x - levelStart) / canvasWidth) % 2 + 1; // Wechselt zwischen 1 und 2
 
         backgrounds.push(new BackgroundObject(layers[0], x)); // Air layer
         backgrounds.push(new BackgroundObject(layers[1] + imageIndex + '.png', x));
