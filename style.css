@@ -27,6 +27,18 @@
     /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
+:root {
+    --canvas-width: 720px;
+    --canvas-height: 480px;
+    --primary-orange: orange;
+    --accent-red: #a0220a;
+    --button-gradient: linear-gradient(to bottom, #ff9d00, #ffdb00, #ff9d00);
+    --overlay-bg: rgba(0, 0, 0, 0.8);
+    --border-radius: 8px;
+    --main-border: 2px solid red;
+    --gap-s: 8px;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -47,21 +59,21 @@ h1 {
 
 #game_container {
     position: relative;
-    width: 720px;
-    height: 480px;
+    height: var(--canvas-height);
+    width: var(--canvas-width);
 }
 
 /* Screens */
 .all-screens {
     position: relative;
-    height: 480px;
-    width: 720px;
+    height: var(--canvas-height);
+    width: var(--canvas-width);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 24px 40px;
-    border: 2px solid red;
-    border-radius: 8px;
+    border: var(--main-border);
+    border-radius: var(--border-radius);
     overflow: hidden;
 
     & .background-image {
@@ -78,12 +90,12 @@ h1 {
 
 .screen-container {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-s);
 }
 
 .startscreen {
-    height: 480px;
-    width: 720px;
+    height: var(--canvas-height);
+    width: var(--canvas-width);
     background-image: url(../assets/img/9_intro_outro_screens/start/startscreen_2.png);
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -91,8 +103,8 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 2px solid red;
-    border-radius: 8px;
+    border: var(--main-border);
+    border-radius: var(--border-radius);
     gap: 24px;
 }
 
@@ -122,22 +134,22 @@ h1 {
 
 canvas {
     background: black;
-    border-radius: 8px;
-    border: 2px solid red;
+    border-radius: var(--border-radius);
+    border: var(--main-border);
 }
 
 .you-won-screen-overlay {
     position: absolute;
     top: 2px;
     left: 2px;
-    height: 480px;
-    width: 720px;
+    height: var(--canvas-height);
+    width: var(--canvas-width);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--overlay-bg);
     z-index: 1000;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
 
 
     & .you-won-screen-container {
@@ -153,7 +165,7 @@ canvas {
         & p {
             font-size: 2em;
             text-align: center;
-            color: orange;
+            color: var(--primary-orange);
             font-weight: bold;
             /* -webkit-text-stroke: 1px #a0220a; */
             /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); */
@@ -177,14 +189,13 @@ canvas {
 
 }
 
-
 .button {
-    background: linear-gradient(to bottom, #ff9d00, #ffdb00, #ff9d00);
+    background: var(--button-gradient);
     /* -webkit-background-clip: text; */
     /* -webkit-text-fill-color: transparent; */
     /* background-clip: text; */
-    color: orange;
-    -webkit-text-stroke: .5px #a0220a;
+    color: var(--primary-orange);
+    -webkit-text-stroke: .5px var(--accent-red);
     /* text-stroke: 1px black; */
     border: none;
     border-radius: 12px;
@@ -203,8 +214,9 @@ canvas {
 }
 
 .fz32 {
+    /* Font size 32px  */
     font-size: 32px;
-    color: #a0220a;
+    color: var(--accent-red);
     -webkit-text-stroke: .5px black;
 }
 
@@ -219,18 +231,18 @@ canvas {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-s);
 }
 
 .key-display {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-s);
 }
 
 .key {
     background: linear-gradient(to bottom, #f0f0f0, #d0d0d0);
     border: 2px solid #333;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     padding: 0px 16px;
     font-size: 24px;
     font-weight: bold;
@@ -257,7 +269,7 @@ canvas {
     top: 20px;
     right: 20px;
     padding: 5px;
-    background: linear-gradient(to bottom, #ff9d00, #ffdb00, #ff9d00);
+    background: var(--button-gradient);
     border-radius: 50%;
     border: none;
     cursor: pointer;

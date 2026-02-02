@@ -5,6 +5,12 @@ function startScreenTemplate() {
                 <button class="button" onclick="showInfoScreen()">INFO</button>
                 <button class="button" onclick="showControlScreen()">CONTROLS</button>
             </div>
+                <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
+                    <img src="../assets/icon/unmute.png" alt="unmute">
+                </button>
+                <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
+                    <img src="../assets/icon/mute.png" alt="mute">
+                </button>
             <button class="button fz32" onclick="startGame()">START GAME</button>
         </div>
     `;
@@ -68,7 +74,7 @@ function controlsScreenTemplate() {
 
 function showCanvasTemplate() {
     return /*html*/`
-    <canvas id="canvas" class="canvas" width="720" height="480"></canvas>
+    <canvas id="canvas" class="canvas" width="${canvasWidth}" height="${canvasHeight}"></canvas>
     `;
 }
 

@@ -1,6 +1,8 @@
 'use strict';
 
 let canvas;
+let canvasHeight = 480;
+let canvasWidth = 720;
 let world;
 let keyboardActive = true;
 let keyboard = new Keyboard();
@@ -32,7 +34,6 @@ window.addEventListener('keydown', (e) => {
 
 window.addEventListener('keyup', (e) => {
     if (!keyboardActive) {
-
         return;
     }; // Add this line to check if keyboard is active
 
