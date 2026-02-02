@@ -1,9 +1,9 @@
-let levelStart = -720;
-let levelEnd = 2160;
+let levelStart = - canvasWidth * 1;
+let levelEnd = canvasWidth * 3;
 let characterHP = 50; // HP für Level 1
 let characterBottles = 0;
 let smallChickenAmount = 0; // Anzahl der kleinen Hühner
-let bigChickenAmount = 2;
+let bigChickenAmount = 5;
 let chickenSpeed = 1;
 let coinsAmount = 0;
 let bottleAmount = 10;

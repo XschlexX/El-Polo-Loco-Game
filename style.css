@@ -61,6 +61,11 @@ h1 {
     position: relative;
     height: var(--canvas-height);
     width: var(--canvas-width);
+    max-width: 100vw;
+    max-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Screens */
@@ -133,6 +138,9 @@ h1 {
 }
 
 canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     background: black;
     border-radius: var(--border-radius);
     border: var(--main-border);
@@ -282,5 +290,30 @@ canvas {
 
     &:hover {
         scale: 1.1;
+    }
+}
+
+@media (max-width: 720px) {
+    :root {
+        --canvas-width: 100vw;
+        --canvas-height: 66.67vw;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .all-screens,
+    .startscreen {
+        padding: 12px 20px;
+    }
+
+    .button {
+        font-size: 18px;
+    }
+
+    .keys-info {
+        gap: 16px;
+        scale: 0.8;
     }
 }
