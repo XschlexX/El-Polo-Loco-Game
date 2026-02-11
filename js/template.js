@@ -1,14 +1,14 @@
-function startScreenTemplate() {
+function mainScreenTemplate() {
     return /*html*/`
         <div id="startscreen" class="startscreen">
             <div class="startscreen-controls">
                 <button class="button" onclick="showInfoScreen()">INFO</button>
                 <button class="button" onclick="showControlScreen()">CONTROLS</button>
             </div>
-                <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
+                <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                     <img src="../assets/icon/unmute.png" alt="unmute">
                 </button>
-                <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
+                <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                     <img src="../assets/icon/mute.png" alt="mute">
                 </button>
             <button class="button fz32" onclick="startGame()">START GAME</button>
@@ -20,10 +20,10 @@ function infoScreenTemplate() {
     return /*html*/`
         <div id="info_screen" class="all-screens">
             <img class="background-image" src="../assets/img/5_background/first_half_background.png" alt="Info">
-            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
+            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                 <img src="../assets/icon/unmute.png" alt="unmute">
             </button>
-            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
+            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                 <img src="../assets/icon/mute.png" alt="mute">
             </button>
             <div class="info-screen">
@@ -55,7 +55,7 @@ function infoScreenTemplate() {
                         <div>Throw Bottle</div>
                     </div>
                 </div>
-                <button class="button" onclick="startScreen()">BACK</button>
+                <button class="button" onclick="mainScreen()">BACK</button>
             </div>
         </div>
     `;
@@ -65,15 +65,15 @@ function controlsScreenTemplate() {
     return /*html*/`
         <div id="controls_screen" class="all-screens">
             <img class="background-image" src="../assets/img/5_background/first_half_background.png" alt="Controls">
-            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button">
+            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                 <img src="../assets/icon/unmute.png" alt="unmute">
             </button>
-            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;">
+            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                 <img src="../assets/icon/mute.png" alt="mute">
             </button>
             <div class="screen-container">
             </div>
-            <button class="button" onclick="startScreen()">BACK</button>
+            <button class="button" onclick="mainScreen()">BACK</button>
         </div>
     `;
 }
@@ -92,7 +92,7 @@ function youWonScreenTemplate() {
                 <img class="you-won-img" src="../assets/img/You won, you lost/You won A.png" alt="You won!">
                 <div class="you-won-screen-buttons">
                     <button class="next-level-button button">Next Level</button>
-                    <button class="main-menu-button button" onclick="startScreen()">Main Menu</button>
+                    <button class="main-menu-button button" onclick="mainScreen()">Main Menu</button>
                 </div>
             </div>
         </div>

@@ -344,19 +344,19 @@ class World {
             // Prüfe zuerst Victory-Overlay (höchste Priorität)
             const victoryAction = this.victoryOverlay.handleClick(mouseX, mouseY);
             if (victoryAction === 'mainMenu') {
-                startScreen();
+                mainScreen();
                 window.soundManager.playMusic('menuTheme');
                 return;
             } else if (victoryAction === 'nextLevel') {
                 alert('Level 2 ist noch nicht implementiert!');
-                startScreen();
+                mainScreen();
                 return;
             }
 
-            // Prüfe zuerst Victory-Overlay (höchste Priorität)
+            // Prüfe Defeat-Overlay
             const defeatAction = this.defeatOverlay.handleClick(mouseX, mouseY);
             if (defeatAction === 'mainMenu') {
-                startScreen();
+                mainScreen();
                 window.soundManager.playMusic('menuTheme');
                 return;
             } else if (defeatAction === 'tryAgain') {
@@ -367,7 +367,7 @@ class World {
             // Prüfe Settings-Overlay-Buttons
             const action = this.settingsOverlay.handleClick(mouseX, mouseY);
             if (action === 'exit') {
-                this.exitGame();
+                mainScreen();
             } else if (action === 'restart') {
                 startGame();
             } else if (action === 'resume') {
@@ -399,15 +399,15 @@ class World {
         });
     }
 
-    exitGame() {
-        // Stoppe alle Game-Loops
-        location.reload(); // Lädt die Seite neu und beendet das Spiel
-    }
+    // exitGame() {
+    //     // Stoppe alle Game-Loops
+    //     location.reload(); // Lädt die Seite neu und beendet das Spiel
+    // }
 
-    restartGame() {
-        // Starte das Spiel neu
-        location.reload(); // Lädt die Seite neu und startet das Spiel von vorne
-    }
+    // restartGame() {
+    //     // Starte das Spiel neu
+    //     location.reload(); // Lädt die Seite neu und startet das Spiel von vorne
+    // }
 
     pauseGame() {
         console.log('[World] Pausing game...');
@@ -470,17 +470,8 @@ class World {
 
         // 4. Stoppe nur Sound-Effekte, NICHT die Musik
         if (this.soundManager) {
-            // Stoppe alle Sound-Effekte einzeln, aber nicht die Musik
-            // const soundEffects = ['walking', 'jumping', 'hurt', 'bottleThrow', 'bottleSplash',
-            //     'chickenHit', 'bottleCollect', 'coinCollect', 'endbossHurt',
-            //     'endbossDead', 'snoring'];
-            // soundEffects.forEach(sound => {
-            //     if (this.soundManager.sounds && this.soundManager.sounds[sound]) {
-            //         this.soundManager.sounds[sound].pause();
-            //         this.soundManager.sounds[sound].currentTime = 0;
-            //     }
-            // });
-            this.soundManager.muteAll();
+            // Stoppe alle Sound-Effekte, aber ändere nicht den muted-Status
+            this.soundManager.stopAllSounds();
         }
 
         // console.log('[World] Game stopped');

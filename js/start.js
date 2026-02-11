@@ -1,5 +1,5 @@
-function startScreen() {
-    document.getElementById('game_container').innerHTML = startScreenTemplate();
+function mainScreen() {
+    document.getElementById('game_container').innerHTML = mainScreenTemplate();
     // document.getElementById('game_container').innerHTML = youWonScreenTemplate();
 }
 
@@ -34,8 +34,8 @@ function showYouWonScreen(delay = 0) {
             window.world.victoryOverlay.show();
         }
 
-        // Starte Menu-Music NACH dem Stoppen
-        if (window.soundManager) {
+        // Starte Win-Sound NACH dem Stoppen (nur wenn nicht gemutet)
+        if (window.soundManager && !window.soundManager.muted) {
             window.soundManager.play('youWon');
         }
     }, delay);
@@ -50,14 +50,15 @@ function showYouLostScreen(delay = 0) {
             window.world.defeatOverlay.show();
         }
 
-        // Starte Menu-Music NACH dem Stoppen
-        if (window.soundManager) {
+        // Starte Lose-Sound NACH dem Stoppen (nur wenn nicht gemutet)
+        if (window.soundManager && !window.soundManager.muted) {
             window.soundManager.play('youLost');
         }
     }, delay);
 }
 
 function enableSound() {
+    window.soundManager.unmuteAll();
     window.soundManager.playMusic('menuTheme');
 }
 

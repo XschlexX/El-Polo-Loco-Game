@@ -11,7 +11,7 @@ let soundManager;
 
 function init() {
     window.soundManager = new SoundManager();  // ← Füge 'window.' hinzu!
-    startScreen();
+    mainScreen();
 }
 
 window.addEventListener('keydown', (e) => {

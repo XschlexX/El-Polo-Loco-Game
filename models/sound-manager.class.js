@@ -1,6 +1,7 @@
 class SoundManager {
     sounds = {}; // Hier werden alle Sounds gespeichert: { 'jump': Audio-Objekt, 'hurt': Audio-Objekt }
     loopSounds = ['menuTheme', 'gameTheme', 'endbossTheme', 'characterRun', 'characterSleep', 'endbossAngry']; // Liste der Loop-Sounds
+    muted = true; // Sound-Status: true = stumm (Standard), false = an
 
     constructor() {
         this.initializeSounds();
@@ -52,13 +53,12 @@ class SoundManager {
 
     /**
      * Spielt einen Sound ab
-     */
-    /**
-     * Spielt einen Sound ab
      * @param {string} name - Name des Sounds
      * @param {boolean} restart - Sound von vorne starten?
      */
     play(name, restart = true) {
+        if (this.muted) return; // Wenn stumm, nicht abspielen
+
         if (!this.sounds[name]) {
             console.warn(`Sound "${name}" nicht gefunden`);
             return;
@@ -122,13 +122,31 @@ class SoundManager {
     }
 
     /**
-     * Deaktiviert alle Sounds
+     * Deaktiviert alle Sounds und setzt muted-Status
      */
     muteAll() {
+        this.muted = true;
         Object.values(this.sounds).forEach(sound => {
             sound.pause();
             sound.currentTime = 0;
         });
+    }
+
+    /**
+     * Stoppt alle Sounds ohne muted-Status zu ändern (für Spielende)
+     */
+    stopAllSounds() {
+        Object.values(this.sounds).forEach(sound => {
+            sound.pause();
+            sound.currentTime = 0;
+        });
+    }
+
+    /**
+     * Aktiviert alle Sounds wieder
+     */
+    unmuteAll() {
+        this.muted = false;
     }
 
     /**
@@ -146,6 +164,8 @@ class SoundManager {
      * Kurze Effekt-Sounds (bottleCollect, bottleThrow, etc.) werden NICHT fortgesetzt
      */
     resumeAllSounds() {
+        if (this.muted) return; // Wenn stumm, nicht fortsetzen
+
         Object.keys(this.sounds).forEach(soundName => {
             // Nur Loop-Sounds fortsetzen!
             if (this.loopSounds.includes(soundName)) {
@@ -159,12 +179,5 @@ class SoundManager {
                 }
             }
         });
-    }
-
-    /**
-     * Aktiviert alle Sounds wieder
-     */
-    unmuteAll() {
-        // Diese Methode ist optional - könnte für zukünftige Nutzung dienen
     }
 }

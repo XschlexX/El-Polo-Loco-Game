@@ -277,7 +277,9 @@ canvas {
     justify-content: center;
     top: 20px;
     right: 20px;
-    padding: 5px;
+    padding: 8px;
+    height: 40px;
+    width: aspect-ratio(1/1);
     background: var(--button-gradient);
     border-radius: 50%;
     border: none;
@@ -286,7 +288,8 @@ canvas {
     transition: all 0.075s ease-in-out;
 
     & img {
-        width: 20px;
+        width: 24px;
+        height: aspect-ratio(1/1);
     }
 
     &:hover {
