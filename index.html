@@ -6,36 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/img/7_statusbars/3_icons/icon_coin.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="style.css">
-    <!-- Systems -->
+    <!-- Systems (no dependencies) -->
     <script src="models/systems/sound-manager.class.js"></script>
     <script src="models/systems/global-interval-manager.class.js"></script>
-    <script src="models/systems/world.class.js"></script>
-    <script src="models/systems/level.class.js"></script>
     <script src="models/systems/keyboard.class.js"></script>
-    <script src="models/systems/game-timer.class.js"></script>
-    <script src="models/systems/debug-info.class.js"></script>
-    <script src="models/systems/thowable-object.class.js"></script>
 
     <!-- Base Classes -->
     <script src="models/base/drawable-object.class.js"></script>
     <script src="models/base/movable-objects.class.js"></script>
     <script src="models/base/collectable-objects.class.js"></script>
 
-    <!-- Entities (Character & Enemies) -->
-    <script src="models/entities/character.class.js"></script>
-    <script src="models/entities/chicken.class.js"></script>
-    <script src="models/entities/chicken-small.class.js"></script>
-    <script src="models/entities/endboss.class.js"></script>
+    <!-- Systems (extends DrawableObject/MovableObjects) -->
+    <script src="models/systems/game-timer.class.js"></script>
+    <script src="models/systems/debug-info.class.js"></script>
 
-    <!-- Environment -->
+    <!-- Environment (extends DrawableObject) -->
     <script src="models/environment/background-object.class.js"></script>
     <script src="models/environment/clouds.class.js"></script>
 
-    <!-- Collectables -->
+    <!-- Collectables (extends CollectableObjects) -->
     <script src="models/collectables/collectable-coins.class.js"></script>
     <script src="models/collectables/collectable-bottle.class.js"></script>
 
-    <!-- UI -->
+    <!-- UI (extends DrawableObject) -->
     <script src="models/ui/status-bar.class.js"></script>
     <script src="models/ui/level-display.class.js"></script>
     <script src="models/ui/overlay.class.js"></script>
@@ -43,6 +36,17 @@
     <script src="models/ui/victory-overlay.class.js"></script>
     <script src="models/ui/defeat-overlay.class.js"></script>
     <script src="models/ui/settings-button.class.js"></script>
+
+    <!-- Entities (extends MovableObjects) -->
+    <script src="models/entities/character.class.js"></script>
+    <script src="models/entities/chicken.class.js"></script>
+    <script src="models/entities/chicken-small.class.js"></script>
+    <script src="models/entities/endboss.class.js"></script>
+
+    <!-- Systems (depends on entities) -->
+    <script src="models/systems/thowable-object.class.js"></script>
+    <script src="models/systems/level.class.js"></script>
+    <script src="models/systems/world.class.js"></script>
     <script src="js/level-generator.js"></script>
     <script src="js/game.js"></script>
     <script src="levels/level1.js"></script>

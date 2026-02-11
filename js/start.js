@@ -1,6 +1,24 @@
 function mainScreen() {
     document.getElementById('game_container').innerHTML = mainScreenTemplate();
-    // document.getElementById('game_container').innerHTML = youWonScreenTemplate();
+    // Setze den Sound-Button-Status basierend auf dem aktuellen Mute-Status
+    updateSoundButtonState();
+}
+
+function updateSoundButtonState() {
+    const unmuteBtn = document.getElementById('unmute-btn');
+    const muteBtn = document.getElementById('mute-btn');
+    
+    if (unmuteBtn && muteBtn && window.soundManager) {
+        if (window.soundManager.muted) {
+            // Sound ist gemutet -> zeige Unmute-Button (zum Einschalten)
+            unmuteBtn.style.display = 'block';
+            muteBtn.style.display = 'none';
+        } else {
+            // Sound ist an -> zeige Mute-Button (zum Ausschalten)
+            unmuteBtn.style.display = 'none';
+            muteBtn.style.display = 'block';
+        }
+    }
 }
 
 function startGame() {
@@ -19,10 +37,12 @@ function startGame() {
 
 function showInfoScreen() {
     document.getElementById('game_container').innerHTML = infoScreenTemplate();
+    updateSoundButtonState();
 }
 
 function showControlScreen() {
     document.getElementById('game_container').innerHTML = controlsScreenTemplate();
+    updateSoundButtonState();
 }
 
 function showYouWonScreen(delay = 0) {

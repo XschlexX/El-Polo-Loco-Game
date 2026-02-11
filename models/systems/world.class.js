@@ -368,6 +368,7 @@ class World {
             const action = this.settingsOverlay.handleClick(mouseX, mouseY);
             if (action === 'exit') {
                 mainScreen();
+                window.soundManager.playMusic('menuTheme');
             } else if (action === 'restart') {
                 startGame();
             } else if (action === 'resume') {
