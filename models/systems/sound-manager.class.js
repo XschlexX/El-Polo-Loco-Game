@@ -11,8 +11,6 @@ class SoundManager {
      * Lädt alle Sounds des Spiels
      */
     initializeSounds() {
-        // TODO: Hier fügst du die Sounds hinzu
-        // Beispiel: this.addSound('jump', 'sounds/effects/jump.mp3');
         this.addSound('menuTheme', 'sounds/music/menu-theme.mp3', 0.5);
         this.addSound('gameTheme', 'sounds/music/game-theme1.mp3', 0.5);
         this.addSound('endbossTheme', 'sounds/music/endboss-theme.mp3', 0.5);
@@ -59,10 +57,10 @@ class SoundManager {
     play(name, restart = true) {
         if (this.muted) return; // Wenn stumm, nicht abspielen
 
-        if (!this.sounds[name]) {
-            console.warn(`Sound "${name}" nicht gefunden`);
-            return;
-        }
+        // if (!this.sounds[name]) {
+        //     console.warn(`Sound "${name}" nicht gefunden`);
+        //     return;
+        // }
 
         const sound = this.sounds[name];
         if (restart) {
@@ -78,10 +76,10 @@ class SoundManager {
      * @param {string} name - Name der Musik
      */
     playMusic(name) {
-        if (!this.sounds[name]) {
-            console.warn(`Sound "${name}" nicht gefunden`);
-            return;
-        }
+        // if (!this.sounds[name]) {
+        //     console.warn(`Sound "${name}" nicht gefunden`);
+        //     return;
+        // }
 
         const sound = this.sounds[name];
         sound.loop = true;
@@ -93,7 +91,7 @@ class SoundManager {
      * @param {string} name - Name der Musik
      */
     stopMusic(name) {
-        if (!this.sounds[name]) return;
+        // if (!this.sounds[name]) return;
 
         const sound = this.sounds[name];
         sound.pause();
@@ -105,7 +103,7 @@ class SoundManager {
      * @param {string} name - Name der Musik
      */
     pauseMusic(name) {
-        if (!this.sounds[name]) return;
+        // if (!this.sounds[name]) return;
         this.sounds[name].pause();
     }
 
@@ -114,7 +112,7 @@ class SoundManager {
      * @param {string} name - Name der Musik
      */
     resumeMusic(name) {
-        if (!this.sounds[name]) return;
+        // if (!this.sounds[name]) return;
 
         const sound = this.sounds[name];
         sound.loop = true;
