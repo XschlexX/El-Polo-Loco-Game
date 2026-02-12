@@ -128,7 +128,7 @@ class SoundManager {
         this.muted = true;
         Object.values(this.sounds).forEach(sound => {
             sound.pause();
-            sound.currentTime = 0;
+            // sound.currentTime = 0;
         });
     }
 

@@ -5,10 +5,21 @@ class SettingsOverlay extends Overlay {
     }
 
     setupButtons() {
+        // Sound Toggle Button
+        this.buttons.push({
+            x: 260,
+            y: 160,
+            width: 200,
+            height: 50,
+            text: 'Sound:  ON',
+            action: 'toggleSound',
+            isHovered: false
+        });
+
         // Restart Game Button
         this.buttons.push({
             x: 260,
-            y: 190,
+            y: 220,
             width: 200,
             height: 50,
             text: 'Restart Game',
@@ -19,7 +30,7 @@ class SettingsOverlay extends Overlay {
         // Exit Game Button
         this.buttons.push({
             x: 260,
-            y: 260,
+            y: 280,
             width: 200,
             height: 50,
             text: 'Exit Game',
@@ -30,13 +41,31 @@ class SettingsOverlay extends Overlay {
         // Resume Button
         this.buttons.push({
             x: 260,
-            y: 330,
+            y: 340,
             width: 200,
             height: 50,
             text: 'Resume',
             action: 'resume',
             isHovered: false
         });
+    }
+
+    /**
+     * Aktualisiert den Text des Sound-Buttons basierend auf dem aktuellen Mute-Status
+     */
+    updateSoundButtonText() {
+        const soundButton = this.buttons.find(b => b.action === 'toggleSound');
+        if (soundButton && window.soundManager) {
+            soundButton.text = window.soundManager.muted ? 'Sound:  OFF' : 'Sound:  ON';
+        }
+    }
+
+    /**
+     * Zeigt das Overlay an und aktualisiert den Sound-Button-Status
+     */
+    show() {
+        this.isVisible = true;
+        this.updateSoundButtonText();
     }
 
     draw(ctx) {

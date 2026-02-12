@@ -373,6 +373,8 @@ class World {
                 startGame();
             } else if (action === 'resume') {
                 this.resumeGame();
+            } else if (action === 'toggleSound') {
+                this.toggleSound();
             } else if (!this.settingsOverlay.isVisible && this.settingsButton.isClicked(mouseX, mouseY)) {
                 // Öffne Settings nur wenn Overlay nicht sichtbar ist
                 this.pauseGame();
@@ -441,9 +443,27 @@ class World {
         if (this.soundManager) {
             this.soundManager.stopMusic('menuTheme');
             this.soundManager.resumeAllSounds();
+            this.soundManager.playMusic('gameTheme');
         }
 
         console.log('[World] Game resumed');
+    }
+
+    /**
+     * Toggelt den Sound-Status (Mute/Unmute) und aktualisiert den Button-Text
+     */
+    toggleSound() {
+        if (this.soundManager) {
+            if (this.soundManager.muted) {
+                this.soundManager.unmuteAll();
+                // Wenn im Pause-Menü, spiele menuTheme
+                this.soundManager.playMusic('menuTheme');
+            } else {
+                this.soundManager.muteAll();
+            }
+            // Aktualisiere den Button-Text im Overlay
+            this.settingsOverlay.updateSoundButtonText();
+        }
     }
 
     stopGame() {
