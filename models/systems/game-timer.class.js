@@ -1,5 +1,7 @@
 class GameTimer extends DrawableObject {
     startTime;
+    pausedTime = 0;
+    isPaused = false;
     width = 120;
     height = 30;
     y = 70;   // Unter Level Display (Level Display: y=10 + height=50 + gap=10)
@@ -11,11 +13,34 @@ class GameTimer extends DrawableObject {
     }
 
     /**
+     * Pausiert den Timer
+     */
+    pause() {
+        if (!this.isPaused) {
+            this.pausedTime = new Date().getTime();
+            this.isPaused = true;
+        }
+    }
+
+    /**
+     * Setzt den Timer fort
+     */
+    resume() {
+        if (this.isPaused) {
+            const now = new Date().getTime();
+            const pauseDuration = now - this.pausedTime;
+            this.startTime += pauseDuration;
+            this.isPaused = false;
+        }
+    }
+
+    /**
      * Berechnet die vergangene Zeit seit Spielstart
      * @returns {Object} Objekt mit Minuten und Sekunden
      */
     getElapsedTime() {
-        const currentTime = new Date().getTime();
+        // Wenn pausiert, verwende die Zeit zum Pausierzeitpunkt
+        const currentTime = this.isPaused ? this.pausedTime : new Date().getTime();
         const elapsed = Math.floor((currentTime - this.startTime) / 1000); // in Sekunden
         const minutes = Math.floor(elapsed / 60);
         const seconds = elapsed % 60;

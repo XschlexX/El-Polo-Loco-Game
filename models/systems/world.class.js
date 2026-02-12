@@ -360,7 +360,7 @@ class World {
                 window.soundManager.playMusic('menuTheme');
                 return;
             } else if (defeatAction === 'tryAgain') {
-                startGame();;
+                startGame();
                 return;
             }
 
@@ -421,7 +421,12 @@ class World {
         // 2. Pausiere alle Intervals
         GlobalIntervalManager.pauseAll();
 
-        // 3. Pausiere alle Sounds und starte menuTheme
+        // 3. Pausiere den GameTimer
+        if (this.level.gameTimer && this.level.gameTimer[0]) {
+            this.level.gameTimer[0].pause();
+        }
+
+        // 4. Pausiere alle Sounds und starte menuTheme
         if (this.soundManager) {
             this.soundManager.pauseAllSounds();
             this.soundManager.playMusic('menuTheme');
@@ -439,7 +444,12 @@ class World {
         // 2. Setze alle Intervals fort
         GlobalIntervalManager.resumeAll();
 
-        // 3. Stoppe menuTheme und setze Spiel-Sounds fort
+        // 3. Setze den GameTimer fort
+        if (this.level.gameTimer && this.level.gameTimer[0]) {
+            this.level.gameTimer[0].resume();
+        }
+
+        // 4. Stoppe menuTheme und setze Spiel-Sounds fort
         if (this.soundManager) {
             this.soundManager.stopMusic('menuTheme');
             this.soundManager.resumeAllSounds();
@@ -485,7 +495,7 @@ class World {
             this.character.isSleeping = false;
             this.character.isIdle = false;
             if (this.character.sleepTimer) {
-                clearTimeout(this.character.sleepTimer);
+                GlobalIntervalManager.clearTimeout(this.character.sleepTimer, 'Character sleep timer');
             }
         }
 

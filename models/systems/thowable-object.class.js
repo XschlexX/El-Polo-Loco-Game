@@ -75,9 +75,8 @@ class ThrowableObject extends MovableObjects {
                     this.splashAnimationComplete = true;
                     this.markedForDeletion = true; // Markiere zum Löschen
                     // Nach kurzer Verzögerung aus der World entfernen
-                    setTimeout(() => {
-                        this.removeFromWorld();
-                    }, 100);
+                    const timeoutId = setTimeout(() => {}, 100);
+                    GlobalIntervalManager.registerTimeout(timeoutId, 'ThrowableObject removal', this, 100, () => this.removeFromWorld());
                 }
             }
             this.height = this.img.naturalHeight * 0.2;

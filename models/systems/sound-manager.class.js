@@ -57,10 +57,10 @@ class SoundManager {
     play(name, restart = true) {
         if (this.muted) return; // Wenn stumm, nicht abspielen
 
-        // if (!this.sounds[name]) {
-        //     console.warn(`Sound "${name}" nicht gefunden`);
-        //     return;
-        // }
+        if (!this.sounds[name]) {
+            console.warn(`Sound "${name}" nicht gefunden`);
+            return;
+        }
 
         const sound = this.sounds[name];
         if (restart) {
