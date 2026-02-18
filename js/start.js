@@ -7,7 +7,7 @@ function mainScreen() {
 function updateSoundButtonState() {
     const unmuteBtn = document.getElementById('unmute-btn');
     const muteBtn = document.getElementById('mute-btn');
-    
+
     if (unmuteBtn && muteBtn && window.soundManager) {
         if (window.soundManager.muted) {
             // Sound ist gemutet -> zeige Unmute-Button (zum Einschalten)
@@ -22,8 +22,16 @@ function updateSoundButtonState() {
 }
 
 function startGame() {
+    // 1. Stoppe altes Spiel komplett (falls vorhanden)
+    // Dies verhindert, dass Intervalle der alten World weiterlaufen
+    if (world) {
+        world.stopGame();
+        world = null;  // Referenz löschen für Garbage Collection
+    }
+
     document.getElementById('game_container').innerHTML = showCanvasTemplate();
     canvas = document.getElementById('canvas');
+
     // Erstelle SoundManager falls nicht vorhanden
     if (!window.soundManager) {
         window.soundManager = new SoundManager();

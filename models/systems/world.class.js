@@ -477,8 +477,6 @@ class World {
     }
 
     stopGame() {
-        // console.log('[World] Stopping game completely...');
-
         // 1. Stoppe ALLE Intervals permanent
         GlobalIntervalManager.clearAll();
 

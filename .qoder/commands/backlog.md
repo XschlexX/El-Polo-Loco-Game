@@ -62,6 +62,32 @@ SOFORT ausführen:
 
 ---
 
+## Formatierungsregel für Task-Titel
+
+Alle Tasks müssen folgendes Format verwenden:
+
+```
+[Kategorie] Beschreibung
+```
+
+**Verfügbare Kategorien:**
+
+- `🔴 [Bug]` - Fehlerbehebung (immer mit rotem Punkt)
+- `[Chicken]` - Gegner: Chicken
+- `[Endboss]` - Gegner: Endboss
+- `[Feature]` - Neue Features
+- `[Performance]` - Performance-Optimierung
+- `[Refactor]` - Code-Refactoring
+- `[UI]` - Benutzeroberfläche
+
+**Beispiele:**
+
+- `🔴 [Bug] Intervalle laufen weiter nach Restart Game`
+- `[UI] Loading Spinner bei Start Game einbauen`
+- `[Feature] Level 2 erstellen`
+
+---
+
 ## Fehlerbehandlung (sofort ausführen)
 
 - Kein aktives Board → "❌ Kein aktives Trello-Board gefunden."

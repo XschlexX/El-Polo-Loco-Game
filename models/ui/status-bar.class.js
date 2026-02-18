@@ -56,7 +56,7 @@ class StatusBar extends DrawableObject {
     }
 
     setCharacter() {
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             if (world) {
                 this.character = world.character;
                 if (this.statusbar === 'imagesBottleBar') {
@@ -72,10 +72,11 @@ class StatusBar extends DrawableObject {
                 console.error('Character nicht gefunden');
             }
         }, 500);
+        GlobalIntervalManager.registerTimeout(timeoutId, 'StatusBar setCharacter', this, 500, null);
     }
 
     setEndboss() {
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             if (world) {
                 this.endboss = world.level.enemies.find(enemy => enemy instanceof Endboss);
                 if (this.endboss) {
@@ -88,10 +89,11 @@ class StatusBar extends DrawableObject {
                 }
             }
         }, 500);
+        GlobalIntervalManager.registerTimeout(timeoutId, 'StatusBar setEndboss', this, 500, null);
     }
 
     setWidth() {
-        setInterval(() => {
+        const intervalCallback = () => {
             if (this.statusbar === 'imagesHealthBar' && this.type === 1) {
                 this.width = this.character.energy * this.multiplier;
             } else if (this.statusbar === 'imagesBottleBar' && this.type === 1) {
@@ -99,11 +101,13 @@ class StatusBar extends DrawableObject {
             } else if (this.statusbar === 'imagesCoinBar' && this.type === 1) {
                 this.width = this.character.coins * this.multiplier;
             }
-        }, 100);
+        };
+        const intervalId = setInterval(intervalCallback, 100);
+        GlobalIntervalManager.register(intervalId, 'StatusBar width update', this, 100, intervalCallback);
     }
 
     setEndbossWidth() {
-        setInterval(() => {
+        const intervalCallback = () => {
             if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 1 && this.endboss) {
                 let newWidth = this.endboss.energy * this.endbossMultiplier;
                 let widthDifference = this.initialWidth - newWidth;
@@ -112,7 +116,9 @@ class StatusBar extends DrawableObject {
                 this.x = this.initialX + widthDifference;
                 this.width = newWidth;
             }
-        }, 100);
+        };
+        const intervalId = setInterval(intervalCallback, 100);
+        GlobalIntervalManager.register(intervalId, 'StatusBar endboss width update', this, 100, intervalCallback);
     }
 
     setPosition() {

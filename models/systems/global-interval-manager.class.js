@@ -126,19 +126,40 @@ class GlobalIntervalManager {
     }
 
     /**
-     * CLEAR ALL INTERVALS
-     * Stops all active intervals
+     * CLEAR ALL INTERVALS AND TIMEOUTS
+     * Stops all intervals and timeouts (including paused ones)
      */
     static clearAll() {
         let clearedCount = 0;
+
+        // Clear all intervals (including paused ones)
         for (const key in this.intervals) {
-            if (this.intervals[key].isActive) {
-                clearInterval(this.intervals[key].intervalId);
-                this.intervals[key].isActive = false;
+            const interval = this.intervals[key];
+            // Clear if active OR if paused (has valid intervalId)
+            if (interval.isActive || interval.intervalId) {
+                clearInterval(interval.intervalId);
+                interval.isActive = false;
                 clearedCount++;
             }
         }
-        // console.log(`[Interval Manager] Cleared all ${clearedCount} intervals`);
+
+        // Clear all timeouts (including paused ones)
+        for (const key in this.timeouts) {
+            const timeout = this.timeouts[key];
+            // Clear if active OR if paused (has valid timeoutId)
+            if (timeout.isActive || timeout.timeoutId) {
+                clearTimeout(timeout.timeoutId);
+                timeout.isActive = false;
+                clearedCount++;
+            }
+        }
+
+        // Reset pause state since everything is cleared
+        this.isPaused = false;
+        this.pausedIntervals = [];
+        this.pausedTimeouts = [];
+
+        // console.log(`[Interval Manager] Cleared all ${clearedCount} intervals/timeouts`);
     }
 
     /**
