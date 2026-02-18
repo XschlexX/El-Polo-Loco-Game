@@ -32,11 +32,10 @@ function createLevel1() {
         [
             new DebugInfo()
         ],
-        generateBottlesWithMinDistance(bottleAmount, 100), // Flaschen mit Mindestabstand
-        generateCoinsWithMinDistance(coinsAmount, 50), // Münzen mit Mindestabstand
         [
             new LevelDisplay(levelNumber) // Level Anzeige
-        ]
-
+        ],
+        generateBottlesWithMinDistance(bottleAmount, 100), // Flaschen mit Mindestabstand
+        generateCoinsWithMinDistance(coinsAmount, 50) // Münzen mit Mindestabstand
     );
 }

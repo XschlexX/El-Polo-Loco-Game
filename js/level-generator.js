@@ -6,19 +6,16 @@ function generateBackgrounds() {
     const backgrounds = [];
     const layers = [
         '../assets/img/5_background/layers/air.png',
-        '../assets/img/5_background/layers/3_third_layer/',
-        '../assets/img/5_background/layers/2_second_layer/',
-        '../assets/img/5_background/layers/1_first_layer/'
+        '../assets/img/5_background/layers/3_third_layer/full.png',
+        '../assets/img/5_background/layers/2_second_layer/full.png',
+        '../assets/img/5_background/layers/1_first_layer/full.png'
     ];
 
-    // Generiere Hintergründe von -1440 bis 2160 (alle 720px)
-    for (let x = levelStart; x <= levelEnd; x += canvasWidth) {
-        const imageIndex = ((x - levelStart) / canvasWidth) % 2 + 1; // Wechselt zwischen 1 und 2
-
-        backgrounds.push(new BackgroundObject(layers[0], x)); // Air layer
-        backgrounds.push(new BackgroundObject(layers[1] + imageIndex + '.png', x));
-        backgrounds.push(new BackgroundObject(layers[2] + imageIndex + '.png', x));
-        backgrounds.push(new BackgroundObject(layers[3] + imageIndex + '.png', x));
+    for (let x = levelStart; x <= levelEnd; x += canvasWidth * 2) {
+        backgrounds.push(new BackgroundObject(layers[0], x));
+        backgrounds.push(new BackgroundObject(layers[1], x));
+        backgrounds.push(new BackgroundObject(layers[2], x));
+        backgrounds.push(new BackgroundObject(layers[3], x));
     }
 
     return backgrounds;
@@ -31,7 +28,7 @@ function generateBackgrounds() {
 function generateClouds() {
     const clouds = [];
     const cloudSpacing = 1440;
-    const cloudCount = 12;
+    const cloudCount = 120;
 
     for (let i = 0; i < cloudCount; i++) {
         clouds.push(new Cloud(300 + cloudSpacing * i));

@@ -1,8 +1,6 @@
 'use strict';
 
 let canvas;
-let canvasHeight = 480;
-let canvasWidth = 720;
 let world;
 let keyboardActive = true;
 let keyboard = new Keyboard();

@@ -263,7 +263,7 @@ class Character extends MovableObjects {
      * Die Kamera folgt dem Character asymmetrisch mit sanfter Transition (Easing)
      */
     updateCamera() {
-        const canvasWidth = 720; // Standard Canvas-Breite
+        // const canvasWidth = 720; // Standard Canvas-Breite
         const offsetFromEdge = 50; // Abstand vom Rand
 
         // Berechne die minimale Kamera-Position (am Level-Start)
