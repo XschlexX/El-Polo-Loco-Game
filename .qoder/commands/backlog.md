@@ -20,8 +20,13 @@ SOFORT ausführen:
 
 1. `mcp_trello_get_active_board_info` aufrufen
 2. `mcp_trello_get_lists` mit der boardId aufrufen
-3. Liste finden mit Name "Backlog" (case-insensitive) oder Fallbacks: "Back Log", "To Do", "Todo", "Tasks"
-4. `mcp_trello_get_cards_by_list_id` mit der Listen-ID aufrufen
+3. **Auto-Formatierung durchführen:**
+   - Für **ALLE Listen** auf dem Board:
+     - `mcp_trello_get_cards_by_list_id` aufrufen
+     - Jeden Task prüfen und ggf. formatieren (siehe "Auto-Formatierung")
+4. **Backlog anzeigen:**
+   - Liste finden mit Name "Backlog" (case-insensitive) oder Fallbacks: "Back Log", "To Do", "Todo", "Tasks"
+   - `mcp_trello_get_cards_by_list_id` mit der Listen-ID aufrufen (frisch formatiert)
 5. Ergebnis anzeigen:
    ```
    ## Backlog Tasks (X Tasks gefunden)
@@ -29,6 +34,48 @@ SOFORT ausführen:
    2. [Task-Name]
    ...
    ```
+
+## Auto-Formatierung von Tasks
+
+Beim Durchsuchen prüfe jeden Task-Titel:
+
+**Gültige Präfixe (keine Änderung nötig):**
+
+- `🔴 [Bug]`
+- `[Chicken]`
+- `[Endboss]`
+- `[Feature]`
+- `[Performance]`
+- `[Refactor]`
+- `[UI]`
+
+**Wenn Titel KEIN gültiges Präfix hat:**
+
+- Analysiere den Task-Inhalt (Name + Beschreibung)
+- Weise die passende Kategorie zu
+- Aktualisiere den Task-Titel mit `mcp_trello_update_card_details`
+
+**Kategorie-Erkennung (Schlüsselwörter im Titel/Beschreibung):**
+
+| Kategorie       | Schlüsselwörter                                                           |
+| --------------- | ------------------------------------------------------------------------- |
+| `🔴 [Bug]`      | bug, fehler, error, crash, fix, problem, issue, kaputt, nicht funktionier |
+| `[Chicken]`     | chicken, huhn, küken, gegner klein                                        |
+| `[Endboss]`     | endboss, boss, final, gegner groß                                         |
+| `[Feature]`     | feature, neu, hinzufügen, implementieren, erstellen, new                  |
+| `[Performance]` | performance, optimierung, schneller, lag, fps, memory, leak               |
+| `[Refactor]`    | refactor, umbauen, aufräumen, code, struktur, clean                       |
+| `[UI]`          | ui, design, button, screen, overlay, layout, style, css                   |
+
+**Fallback:** Wenn keine Kategorie passt → `[Feature]`
+
+**Formatierung anwenden:**
+
+```
+Neuer Titel: "[Kategorie] Originaler Titel"
+```
+
+Beispiel: "Loading Spinner einbauen" → "[UI] Loading Spinner einbauen"
 
 ---
 
@@ -92,5 +139,5 @@ Alle Tasks müssen folgendes Format verwenden:
 
 - Kein aktives Board → "❌ Kein aktives Trello-Board gefunden."
 - Keine Backlog-Liste → "❌ Keine Backlog-Liste gefunden."
-- Liste leer → "ℹ️ Die Backlog-Liste enthält keine Tasks."
+- Backlog-Liste leer → "ℹ️ Die Backlog-Liste enthält keine Tasks."
 - Kein Titel beim Erstellen → "❌ Bitte gib einen Titel an. Beispiel: /backlog Mein Task"
