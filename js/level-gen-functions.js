@@ -39,15 +39,16 @@ function generateClouds() {
 
 /**
  * Generiert Status-Bars für das Level
+ * @param {number} amount - Anzahl der Coins im Level (0 = keine Coin-Bar)
  * @returns {Array} Array von StatusBar Objekten
  */
-function generateStatusBars() {
+function generateStatusBars(amount) {
     const statusBars = [];
     const barTypes = ['imagesHealthBar', 'imagesBottleBar', 'imagesCoinBar', 'imagesHealthBarEndboss'];
 
     barTypes.forEach(barType => {
         // Überspringe imagesCoinBar wenn keine Münzen im Level
-        if (barType === 'imagesCoinBar' && coinsAmount === 0) {
+        if (barType === 'imagesCoinBar' && amount === 0) {
             return; // Skippe diese Bar
         }
 

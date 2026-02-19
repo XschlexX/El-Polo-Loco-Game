@@ -13,7 +13,7 @@ class Level {
     levelStartX; // Level beginnt hier (erstes Hintergrundbild)
     levelEndX; // Level endet hier (letztes Hintergrundbild)
 
-    constructor(levelDistance, character, backgroundObjects, clouds, statusBars, enemies, endboss, gameTimer, debugInfo, collectableBottles, collectableCoins, levelDisplay) {
+    constructor(levelDistance, character, backgroundObjects, clouds, statusBars, enemies, endboss, gameTimer, debugInfo, levelDisplay, collectableBottles, collectableCoins) {
         this.levelStartX = levelDistance[0];
         this.levelEndX = levelDistance[1];
         this.character = character; // Character für dieses Level

@@ -84,18 +84,18 @@ function showCanvasTemplate() {
     `;
 }
 
-function youWonScreenTemplate() {
-    return /*html*/`
-        <div id="you_won_screen" class="you-won-screen-overlay">
-            <div class="you-won-screen-container">
-                <p>Congratulations! You Won This Level! </p>
-                <img class="you-won-img" src="../assets/img/You won, you lost/You won A.png" alt="You won!">
-                <div class="you-won-screen-buttons">
-                    <button class="next-level-button button">Next Level</button>
-                    <button class="main-menu-button button" onclick="mainScreen()">Main Menu</button>
-                </div>
-            </div>
-        </div>
-    `;
-}
+// function youWonScreenTemplate() {
+//     return /*html*/`
+//         <div id="you_won_screen" class="you-won-screen-overlay">
+//             <div class="you-won-screen-container">
+//                 <p>Congratulations! You Won This Level! </p>
+//                 <img class="you-won-img" src="../assets/img/You won, you lost/You won A.png" alt="You won!">
+//                 <div class="you-won-screen-buttons">
+//                     <button class="next-level-button button">Next Level</button>
+//                     <button class="main-menu-button button" onclick="mainScreen()">Main Menu</button>
+//                 </div>
+//             </div>
+//         </div>
+//     `;
+// }
 

@@ -3,7 +3,6 @@ class SettingsButton extends DrawableObject {
     height = 30;
     x = 720 - 60; // 60px vom rechten Rand
     y = 50; // Oben rechts
-    world;
     isHovered = false;
 
     constructor() {
@@ -62,7 +61,7 @@ class SettingsButton extends DrawableObject {
         const radius = this.width / 2;
         const distance = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2));
         // Wenn das Victory-Overlay sichtbar ist, ist der Button nicht klickbar
-        if (this.world.defeatOverlay.isVisible || this.world.victoryOverlay.isVisible) {
+        if (window.world.defeatOverlay.isVisible || window.world.victoryOverlay.isVisible) {
             return false;
         }
         return distance <= radius;
@@ -76,7 +75,7 @@ class SettingsButton extends DrawableObject {
         const distance = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2));
         this.isHovered = distance <= radius;
 
-        if (this.world.defeatOverlay.isVisible || this.world.victoryOverlay.isVisible) {
+        if (window.world.defeatOverlay.isVisible || window.world.victoryOverlay.isVisible) {
             return false;
         }
         return this.isHovered;

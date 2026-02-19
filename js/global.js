@@ -1,33 +1,24 @@
 let canvasHeight = 480;
 let canvasWidth = 720;
 
+// Level-Variablen (werden von level-creator.js gesetzt)
+let levelStart;
+let levelEnd;
+
 
 
 let levels = {
-    godModeLevel: {
-        levelStart: - canvasWidth * 0,
-        levelEnd: canvasWidth * 1,
-        characterHP: 999999,
-        characterBottles: 999999,
-        smallChickenAmount: 999999,
-        bigChickenAmount: 999999,
-        chickenSpeed: 999999,
-        coinsAmount: 999999,
-        bottleAmount: 999999,
-        endbossHP: 999999,
-        levelNumber: 999999
-    },
     level1: {
         levelStart: - canvasWidth * 1,
         levelEnd: canvasWidth * 3,
-        characterHP: 50, // HP für Level 1
+        characterHP: 150, // HP für Level 1
         characterBottles: 0,
         smallChickenAmount: 0, // Anzahl der kleinen Hühner
-        bigChickenAmount: 5,
+        bigChickenAmount: 0,
         chickenSpeed: 1,
         coinsAmount: 0,
         bottleAmount: 10,
-        endbossHP: 50,
+        endbossHP: 10,
         levelNumber: 1 // Level-Nummer
     },
     level2: {
@@ -35,8 +26,8 @@ let levels = {
         levelEnd: canvasWidth * 4,
         characterHP: 100,
         characterBottles: 0,
-        smallChickenAmount: 0,
-        bigChickenAmount: 10,
+        smallChickenAmount: 5,
+        bigChickenAmount: 0,
         chickenSpeed: 1,
         coinsAmount: 0,
         bottleAmount: 15,
@@ -81,5 +72,18 @@ let levels = {
         bottleAmount: 30,
         endbossHP: 250,
         levelNumber: 5 // Level-Nummer
+    },
+    godModeLevel: {
+        levelStart: - canvasWidth * 6,
+        levelEnd: canvasWidth * 24,
+        characterHP: 10000,
+        characterBottles: 0,
+        smallChickenAmount: 0,
+        bigChickenAmount: 0,
+        chickenSpeed: 1,
+        coinsAmount: 30,
+        bottleAmount: 30,
+        endbossHP: 1000,
+        levelNumber: 999
     }
 };

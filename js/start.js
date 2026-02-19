@@ -21,7 +21,7 @@ function updateSoundButtonState() {
     }
 }
 
-function startGame() {
+function startGame(level = 1) {
     // 1. Stoppe altes Spiel komplett (falls vorhanden)
     // Dies verhindert, dass Intervalle der alten World weiterlaufen
     if (world) {
@@ -38,7 +38,7 @@ function startGame() {
     }
     window.soundManager.stopMusic('menuTheme');
     window.soundManager.playMusic('gameTheme');
-    createLevel1();
+    createLevel(level);
     world = new World(canvas, keyboard);
     keyboardActive = true;
 }

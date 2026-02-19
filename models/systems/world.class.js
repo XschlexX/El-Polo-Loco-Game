@@ -1,6 +1,6 @@
 class World {
     character;
-    level = level1;
+    level = currentLevel;
     canvas;
     ctx;
     keyboard;
@@ -25,13 +25,9 @@ class World {
 
         // Erstelle Settings-Button und Overlay
         this.settingsButton = new SettingsButton();
-        this.settingsButton.world = this;
         this.settingsOverlay = new SettingsOverlay();
-        this.settingsOverlay.world = this;
         this.victoryOverlay = new VictoryOverlay();
-        this.victoryOverlay.world = this;
         this.defeatOverlay = new DefeatOverlay();
-        this.defeatOverlay.world = this;
 
         this.draw();
         this.setWorld();
