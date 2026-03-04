@@ -30,7 +30,7 @@ function startGame(level = 1) {
     }
 
     // Zeige Loading Screen
-    document.getElementById('game_container').innerHTML = showCanvasTemplate() + AssetLoader.getLoadingScreenHTML();
+    document.getElementById('game_container').innerHTML = showCanvasTemplate() + loadingScreenTemplate();
     canvas = document.getElementById('canvas');
 
     // Erstelle SoundManager falls nicht vorhanden
@@ -42,10 +42,10 @@ function startGame(level = 1) {
     const assetLoader = new AssetLoader();
     assetLoader.loadAll(
         // onProgress Callback
-        (loaded, total) => {
+        (loaded, total, percentage) => {
             const progressElement = document.getElementById('loading-progress');
             if (progressElement) {
-                progressElement.textContent = `${loaded} / ${total}`;
+                progressElement.textContent = `${percentage}%`;
             }
         },
         // onComplete Callback

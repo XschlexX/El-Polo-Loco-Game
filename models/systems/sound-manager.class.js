@@ -3,6 +3,9 @@ class SoundManager {
     loopSounds = ['menuTheme', 'gameTheme', 'endbossTheme', 'characterRun', 'characterSleep', 'endbossAngry']; // Liste der Loop-Sounds
     muted = true; // Sound-Status: true = stumm (Standard), false = an
 
+    // Globaler Sound-Cache für alle SoundManager Instanzen
+    static globalSoundCache = {};
+
     constructor() {
         this.initializeSounds();
     }
@@ -43,10 +46,16 @@ class SoundManager {
      * @param {number} volume - Lautstärke (0.0 - 1.0), Standard: 1.0
      */
     addSound(name, path, volume = 1.0) {
-        const audio = new Audio(path);
-        audio.preload = 'auto'; // Lädt Sound im Voraus
-        audio.volume = volume;  // Setze Lautstärke
-        this.sounds[name] = audio;
+        // Prüfe ob der Sound bereits im globalen Cache ist
+        if (SoundManager.globalSoundCache[path]) {
+            this.sounds[name] = SoundManager.globalSoundCache[path];
+        } else {
+            const audio = new Audio(path);
+            audio.preload = 'auto'; // Lädt Sound im Voraus
+            audio.volume = volume;  // Setze Lautstärke
+            this.sounds[name] = audio;
+            SoundManager.globalSoundCache[path] = audio;
+        }
     }
 
     /**

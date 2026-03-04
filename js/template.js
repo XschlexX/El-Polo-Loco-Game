@@ -84,6 +84,16 @@ function showCanvasTemplate() {
     `;
 }
 
+function loadingScreenTemplate() {
+    return /*html*/`
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading...</div>
+            <div id="loading-progress" class="loading-progress">0%</div>
+        </div>
+    `;
+}
+
 // function youWonScreenTemplate() {
 //     return /*html*/`
 //         <div id="you_won_screen" class="you-won-screen-overlay">

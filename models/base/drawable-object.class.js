@@ -7,17 +7,31 @@ class DrawableObject {
     imageCache = {};
     currentImage = 0;
 
+    // Globaler Image-Cache für alle DrawableObjects
+    static globalImageCache = {};
 
     loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
+        // Prüfe zuerst den globalen Cache
+        if (DrawableObject.globalImageCache[path]) {
+            this.img = DrawableObject.globalImageCache[path];
+        } else {
+            this.img = new Image();
+            this.img.src = path;
+            DrawableObject.globalImageCache[path] = this.img;
+        }
     }
 
     loadImages(arr) {
         arr.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
+            // Prüfe zuerst den globalen Cache
+            if (DrawableObject.globalImageCache[path]) {
+                this.imageCache[path] = DrawableObject.globalImageCache[path];
+            } else {
+                let img = new Image();
+                img.src = path;
+                this.imageCache[path] = img;
+                DrawableObject.globalImageCache[path] = img;
+            }
         });
     }
 

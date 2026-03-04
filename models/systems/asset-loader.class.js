@@ -157,16 +157,15 @@ class AssetLoader {
         // Background Bilder
         this.addImagesFromArray([
             '../assets/img/5_background/layers/air.png',
-            '../assets/img/5_background/layers/3_third_layer/1.png',
-            '../assets/img/5_background/layers/3_third_layer/2.png',
-            '../assets/img/5_background/layers/2_second_layer/1.png',
-            '../assets/img/5_background/layers/2_second_layer/2.png',
-            '../assets/img/5_background/layers/1_first_layer/1.png',
-            '../assets/img/5_background/layers/1_first_layer/2.png'
+            '../assets/img/5_background/layers/3_third_layer/full.png',
+            '../assets/img/5_background/layers/2_second_layer/full.png',
+            '../assets/img/5_background/layers/1_first_layer/full.png'
         ]);
 
         // Clouds
-        this.addImagesFromArray(['../assets/img/5_background/layers/4_clouds/1.png']);
+        this.addImagesFromArray([
+            '../assets/img/5_background/layers/4_clouds/full.png'
+        ]);
 
         // Collectables - Coins
         this.addImagesFromArray([
@@ -176,8 +175,8 @@ class AssetLoader {
 
         // Collectables - Bottles on ground
         this.addImagesFromArray([
-            '../assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
-            '../assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.png'
+            '../assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
+            '../assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
         ]);
 
         // Bottle rotation animation
@@ -206,48 +205,13 @@ class AssetLoader {
             '../assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
         ]);
 
-        // Status Bar - Health
-        this.addImagesFromArray([
-            '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
-            '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
-            '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
-            '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png',
-            '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
-            '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
-        ]);
 
-        // Status Bar - Coins
+        // Status Bar Elements (used by status-bar.class.js)
         this.addImagesFromArray([
-            '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
-            '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/20.png',
-            '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/40.png',
-            '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/60.png',
-            '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/80.png',
-            '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
-        ]);
-
-        // Status Bar - Bottles
-        this.addImagesFromArray([
-            '../assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
-            '../assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png',
-            '../assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png',
-            '../assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png',
-            '../assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png',
-            '../assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png'
-        ]);
-
-        // Status Bar - Endboss (using blue folder)
-        this.addImagesFromArray([
-            '../assets/img/7_statusbars/2_statusbar_endboss/blue/blue0.png',
-            '../assets/img/7_statusbars/2_statusbar_endboss/blue/blue20.png',
-            '../assets/img/7_statusbars/2_statusbar_endboss/blue/blue40.png',
-            '../assets/img/7_statusbars/2_statusbar_endboss/blue/blue60.png',
-            '../assets/img/7_statusbars/2_statusbar_endboss/blue/blue80.png',
-            '../assets/img/7_statusbars/2_statusbar_endboss/blue/blue100.png'
-        ]);
-
-        // UI Icons
-        this.addImagesFromArray([
+            '../assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
+            '../assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
+            '../assets/img/7_statusbars/4_bar_elements/statusbar_empty_endboss.png',
+            '../assets/img/7_statusbars/4_bar_elements/statusbar_blue_endboss.png',
             '../assets/img/7_statusbars/3_icons/icon_health.png',
             '../assets/img/7_statusbars/3_icons/icon_coin.png',
             '../assets/img/7_statusbars/3_icons/icon_salsa_bottle.png',
@@ -316,9 +280,20 @@ class AssetLoader {
      */
     loadImages() {
         this.imagePaths.forEach(path => {
+            // Prüfe ob das Bild bereits im globalen Cache ist
+            if (DrawableObject.globalImageCache && DrawableObject.globalImageCache[path]) {
+                this.loadedImages++;
+                this.updateProgress();
+                return;
+            }
+
             const img = new Image();
             img.onload = () => {
                 this.loadedImages++;
+                // Speichere im globalen Cache für wiederverwendung
+                if (DrawableObject.globalImageCache) {
+                    DrawableObject.globalImageCache[path] = img;
+                }
                 this.updateProgress();
             };
             img.onerror = () => {
@@ -335,9 +310,20 @@ class AssetLoader {
      */
     loadSounds() {
         this.soundPaths.forEach(path => {
+            // Prüfe ob der Sound bereits im globalen Cache ist (vom SoundManager geladen)
+            if (SoundManager.globalSoundCache && SoundManager.globalSoundCache[path]) {
+                this.loadedSounds++;
+                this.updateProgress();
+                return;
+            }
+
             const audio = new Audio();
             audio.oncanplaythrough = () => {
                 this.loadedSounds++;
+                // Speichere im globalen Cache für Wiederverwendung
+                if (SoundManager.globalSoundCache) {
+                    SoundManager.globalSoundCache[path] = audio;
+                }
                 this.updateProgress();
             };
             audio.onerror = () => {
@@ -356,9 +342,10 @@ class AssetLoader {
     updateProgress() {
         const loaded = this.loadedImages + this.loadedSounds;
         const total = this.totalAssets;
+        const percentage = total > 0 ? Math.round((loaded / total) * 100) : 0;
 
         if (this.onProgress) {
-            this.onProgress(loaded, total);
+            this.onProgress(loaded, total, percentage);
         }
 
         if (loaded >= total && this.onComplete) {
@@ -366,16 +353,4 @@ class AssetLoader {
         }
     }
 
-    /**
-     * Erstellt das Loading Screen HTML
-     */
-    static getLoadingScreenHTML() {
-        return /*html*/`
-            <div id="loading-screen" class="loading-screen">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">Loading...</div>
-                <div id="loading-progress" class="loading-progress">0 / 0</div>
-            </div>
-        `;
-    }
 }
