@@ -331,8 +331,11 @@ class World {
                 window.soundManager.playMusic('menuTheme');
                 return;
             } else if (victoryAction === 'nextLevel') {
-                alert('Level 2 ist noch nicht implementiert!');
-                mainScreen();
+                // Aktualisiere globale Level-Variablen
+                currentLevelNumber++;
+
+                // Starte das nächste Level
+                startGame(currentLevelNumber);
                 return;
             }
 

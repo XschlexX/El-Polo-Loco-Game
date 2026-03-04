@@ -13,13 +13,13 @@ class VictoryOverlay extends Overlay {
     }
 
     setupButtons() {
-        // Next Level Button
+        // Next Level Button - verwendet globale nextLevelNumber
         this.buttons.push({
             x: 200,
             y: 400,
             width: 140,
             height: 50,
-            text: 'Next Level',
+            text: `Try Level ${currentLevelNumber + 1}`,
             action: 'nextLevel',
             isHovered: false,
             fontSize: 'bold 20px Rye, Arial'

@@ -22,6 +22,9 @@ function updateSoundButtonState() {
 }
 
 function startGame(level = 1) {
+    // Aktualisiere globale Level-Variablen
+    currentLevelNumber = level;
+
     // 1. Stoppe altes Spiel komplett (falls vorhanden)
     // Dies verhindert, dass Intervalle der alten World weiterlaufen
     if (world) {

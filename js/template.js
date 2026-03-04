@@ -11,7 +11,8 @@ function mainScreenTemplate() {
                 <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                     <img src="../assets/icon/mute.png" alt="mute">
                 </button>
-            <button class="button fz32" onclick="startGame()">START GAME</button>
+            <button class="button fz32" onclick="startGame(1)">START GAME</button>
+            <button class="button" onclick="startGame(0)">START TEST</button>
         </div>
     `;
 }
@@ -93,19 +94,3 @@ function loadingScreenTemplate() {
         </div>
     `;
 }
-
-// function youWonScreenTemplate() {
-//     return /*html*/`
-//         <div id="you_won_screen" class="you-won-screen-overlay">
-//             <div class="you-won-screen-container">
-//                 <p>Congratulations! You Won This Level! </p>
-//                 <img class="you-won-img" src="../assets/img/You won, you lost/You won A.png" alt="You won!">
-//                 <div class="you-won-screen-buttons">
-//                     <button class="next-level-button button">Next Level</button>
-//                     <button class="main-menu-button button" onclick="mainScreen()">Main Menu</button>
-//                 </div>
-//             </div>
-//         </div>
-//     `;
-// }
-

@@ -15,6 +15,8 @@ function createLevel(levelNumber) {
         return null;
     }
 
+    currentLevelNumber = lvlData.levelNumber;
+
     // Setze globale Variablen für die Generator-Funktionen
     // Diese werden in level-gen-functions.js verwendet
     levelStart = lvlData.levelStart;
