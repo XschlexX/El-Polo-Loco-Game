@@ -7,15 +7,23 @@ let levelEnd;
 
 let currentLevelNumber = 1;
 
+// Debug-Settings
+let debugModus = false;
+let characterDebug = true;
+let characterGodMode = false;
+let endbossDebug = true;
+let endboss = true;
+let chicken = false;
+
 let levels = {
     level0: {
         levelStart: - canvasWidth * 1,
         levelEnd: canvasWidth * 3,
-        characterHP: 50, // HP für Level 1
+        characterHP: characterGodMode ? 10000 : 50,
         characterBottles: 0,
-        smallChickenAmount: 0, // Anzahl der kleinen Hühner
-        bigChickenAmount: 0,
-        chickenSpeed: 1,
+        smallChickenAmount: chicken ? 10 : 0,
+        bigChickenAmount: chicken ? 10 : 0,
+        chickenSpeed: 3,
         coinsAmount: 10,
         bottleAmount: 10,
         endbossHP: 10,

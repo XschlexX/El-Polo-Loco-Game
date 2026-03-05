@@ -52,6 +52,11 @@ function generateStatusBars(amount) {
             return; // Skippe diese Bar
         }
 
+        // Überspringe imagesHealthBarEndboss wenn Endboss deaktiviert
+        if (barType === 'imagesHealthBarEndboss' && !endboss) {
+            return; // Skippe diese Bar
+        }
+
         for (let i = 0; i < 3; i++) {
             statusBars.push(new StatusBar(barType, i));
         }

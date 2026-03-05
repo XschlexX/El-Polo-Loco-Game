@@ -5,7 +5,6 @@ class Endboss extends MovableObjects {
     groundLevel = 450;
     y = this.groundLevel - this.height;
     startX;
-    levelEnd;
     energy;
     hitBoxLeft = 40;
     hitBoxTop = 70;
@@ -108,7 +107,7 @@ class Endboss extends MovableObjects {
      * 3. Lädt alle Animations-Bilder in den Cache
      * 4. Startet die animate() Methode
      */
-    constructor(levelEnd, endbossHP) {
+    constructor(endbossHP) {
         super();
         this.loadImage(this.imagesWalk[0]);
         this.loadImages(this.imagesWalk);
@@ -117,7 +116,6 @@ class Endboss extends MovableObjects {
         this.loadImages(this.imagesAttackRun);
         this.loadImages(this.imagesHurt);
         this.loadImages(this.imagesDead);
-        this.levelEnd = levelEnd;
         this.energy = endbossHP;
         this.startX = levelEnd - 500;
         this.x = this.startX;

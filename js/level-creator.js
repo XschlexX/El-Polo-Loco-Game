@@ -36,7 +36,7 @@ function createLevel(levelNumber) {
             ...generateChickens(lvlData.bigChickenAmount, lvlData.chickenSpeed)
         ],
         [
-            new Endboss(lvlData.levelEnd, lvlData.endbossHP),
+            new Endboss(lvlData.endbossHP),
         ],
         [
             new GameTimer()

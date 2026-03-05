@@ -158,19 +158,14 @@ class Character extends MovableObjects {
             // Warte bis world gesetzt ist
             if (!this.world) return;
 
-            // Maximale Character-Position rechts: Level-Ende - Character-Breite
-            const maxCharacterX = this.world.level.levelEndX - this.width;
-            // Minimale Character-Position links: Level-Start
-            const minCharacterX = this.world.level.levelStartX;
-
-            if (this.world.keyboard.RIGHT && this.x < maxCharacterX) {
+            if (this.world.keyboard.RIGHT) {
                 this.moveRight();
             }
-            if (this.world.keyboard.LEFT && this.x > minCharacterX) {
+            if (this.world.keyboard.LEFT) {
                 this.moveLeft(true);
             }
             if (this.world.keyboard.UP && !this.isAboveGround(this.groundLevel)) {
-                this.jump(8);
+                this.jump();
                 this.currentImage = 0;
             }
             this.updateCamera();

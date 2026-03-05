@@ -12,8 +12,6 @@ class ChickenSmall extends MovableObjects {
     isDying = false;
     opacity = 1;
     movingLeft = true; // Startrichtung: nach links
-    minX; // Linke Grenze (wird aus Level geladen)
-    maxX; // Rechte Grenze (Startposition)
 
     imagesWalk = [
         '../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -40,27 +38,14 @@ class ChickenSmall extends MovableObjects {
     animate() {
         const moveCallback = () => {
             if (!this.isDead()) {
-                // Lade Level-Grenzen dynamisch, wenn world verfügbar ist
-                if (this.world && this.minX === undefined) {
-                    this.minX = this.world.level.levelStartX;
-                }
-
                 if (this.movingLeft) {
-                    this.x -= this.speed; // Nach links bewegen
-                    this.otherDirection = false; // Nach links = nicht gespiegelt
-                    // Richtungswechsel wenn linke Grenze erreicht
-                    if (this.minX !== undefined && this.x <= this.minX) {
+                    this.moveLeft();
+                    if (this.x <= levelStart) {
                         this.movingLeft = false;
                     }
                 } else {
-                    if (this.world && this.maxX === undefined) {
-                        this.maxX = this.world.level.levelEndX - this.width;
-                    }
-
-                    this.x += this.speed; // Nach rechts bewegen
-                    this.otherDirection = true; // Nach rechts = gespiegelt
-                    // Richtungswechsel wenn rechte Grenze erreicht
-                    if (this.x >= this.maxX) {
+                    this.moveRight(true);
+                    if (this.x + this.width >= levelEnd) {
                         this.movingLeft = true;
                     }
                 }

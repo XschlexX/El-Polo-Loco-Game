@@ -1,6 +1,5 @@
 class DebugInfo extends DrawableObject {
     world;
-    showDebugInfo = true; // Debug-Modus Ein/Aus (F2 zum Umschalten)
 
     constructor() {
         super();
@@ -14,8 +13,8 @@ class DebugInfo extends DrawableObject {
     setupDebugToggle() {
         window.addEventListener('keydown', (e) => {
             if (e.key === 'F2') {
-                this.showDebugInfo = !this.showDebugInfo;
-                console.log('Debug Info:', this.showDebugInfo ? 'AN' : 'AUS');
+                debugModus = !debugModus;
+                console.log('Debug Info:', debugModus ? 'AN' : 'AUS');
             }
         });
     }
@@ -26,12 +25,12 @@ class DebugInfo extends DrawableObject {
      */
     draw(ctx) {
         // Nur zeichnen wenn world existiert und Debug aktiviert ist
-        if (!this.world || !this.showDebugInfo) {
+        if (!debugModus) {
             return;
         }
 
         // Debug-Info für den Charakter
-        if (this.world.character) {
+        if (characterDebug) {
             const char = this.world.character;
             const isAboveGround = char.isAboveGround(char.groundLevel);
             const fieldX = 10;
@@ -70,34 +69,48 @@ class DebugInfo extends DrawableObject {
             ctx.restore();
         }
 
-        const endboss = this.world.level.enemies.find(enemy => enemy instanceof Endboss);
+        if (endbossDebug) {
+            const boss = this.world.level.enemies.find(e => e instanceof Endboss);
+            if (!boss) return;
 
-        // if (endboss) {
-        //     ctx.save();
-        //     ctx.font = '16px Arial';
-        //     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        //     ctx.fillRect(10, 120, 260, 170);
+            const fieldX = 400;
+            const fieldY = 120;
+            const fieldWidth = 300;
+            const textGap = 15;
 
-        //     ctx.fillStyle = 'lime';
-        //     ctx.fillText('=== ENDBOSS DEBUG INFO ===', 20, 30);
-        //     ctx.fillStyle = 'white';
+            // Zeige x + width wenn nach rechts, sonst nur x
+            const displayX = boss.otherDirection ?
+                Math.round(boss.x + boss.width) :
+                Math.round(boss.x);
 
-        //     // Zeige x + width wenn nach rechts, sonst nur x
-        //     const displayX = endboss.otherDirection ?
-        //         Math.round(endboss.x + endboss.width) :
-        //         Math.round(endboss.x);
+            // Debug-Informationen als Array definieren
+            const debugInfo = [
+                'Endboss Debug:',
+                `Position: (${displayX})`,
+                `StartX: ${Math.round(boss.startX)}`,
+                `Level End: ${Math.round(boss.levelEnd || levelEnd)}`,
+                `Energy: ${boss.energy}`,
+                `State: ${boss.state.isChasing ? 'CHASING' : 'PATROL'}`,
+                `Direction: ${boss.otherDirection ? 'RECHTS →' : '← LINKS'}`
+            ];
 
-        //     ctx.fillText(`X Position: ${displayX}`, 20, 55);
-        //     ctx.fillText(`StartX: ${Math.round(endboss.startX)}`, 20, 75);
-        //     ctx.fillText(`Level End: ${Math.round(endboss.levelEnd)}`, 20, 95);
-        //     ctx.fillText(`Energy: ${endboss.energy}`, 20, 115);
-        //     ctx.fillText(`State: ${endboss.state.isChasing ? 'CHASING' : 'PATROL'}`, 20, 135);
-        //     ctx.fillText(`Direction: ${endboss.otherDirection ? 'RECHTS →' : '← LINKS'}`, 20, 155);
+            // Höhe des Feldes basierend auf der Anzahl der Debug-Zeilen berechnen
+            const fieldHeight = debugInfo.length * textGap + 10;
 
-        //     ctx.fillStyle = 'yellow';
-        //     ctx.font = '12px Arial';
-        //     ctx.fillText('Drücke F2 zum Ausblenden', 20, 175);
-        //     ctx.restore();
-        // }
+            ctx.save();
+            ctx.font = '14px Arial';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(fieldX, fieldY, fieldWidth, fieldHeight);
+
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'left';
+
+            // Jede Debug-Zeile zeichnen
+            debugInfo.forEach((info, index) => {
+                ctx.fillText(info, fieldX + textGap, fieldY + textGap * (index + 1));
+            });
+
+            ctx.restore();
+        }
     }
 }

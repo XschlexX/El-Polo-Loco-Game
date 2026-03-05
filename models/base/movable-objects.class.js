@@ -69,16 +69,18 @@ class MovableObjects extends DrawableObject {
     }
 
     moveRight(directionState = false) {
-        this.x += this.speed;
+        if (this.x + this.width < levelEnd)
+            this.x += this.speed;
         this.otherDirection = directionState;
     }
 
     moveLeft(directionState) {
-        this.x -= this.speed;
+        if (this.x > levelStart)
+            this.x -= this.speed;
         this.otherDirection = directionState;
     }
 
-    jump(speed) {
+    jump(speed = 8) {
         this.speedY = speed;
         this.world.soundManager.play('characterJump');
 

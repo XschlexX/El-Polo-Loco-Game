@@ -125,21 +125,17 @@ class World {
      * @param {Endboss} enemy - Der Endboss, mit dem kollidiert wurde
      */
     bounceFromEndboss(character, enemy) {
-        // Setze Character auf eine kleine Sprungbewegung
-        character.speedY = 8; // Kleiner Sprung nach oben
+        character.jump();
 
         // Bestimme Richtung für horizontalen Bounce basierend auf Position des Endboss
         let bounceDirection;
-        if (character.x < enemy.x) {
-            // Character ist links vom Endboss, bewege nach rechts (weg vom Endboss)
+        if ((character.x + character.width) / 2 < (enemy.x + enemy.width) / 2) {
+            // Character ist links vom Endboss, bewege nach links (weg vom Endboss)
             bounceDirection = 'left';
-        } else if (character.x > (enemy.x + enemy.width)) {
-            // Character ist rechts vom Endboss, bewege nach links (weg vom Endboss)
-            bounceDirection = 'right';
         } else {
-            // Character ist zwischen den x-Positionen von Endboss (in der Mitte), wähle zufällige Richtung
-            bounceDirection = Math.random() > 0.5 ? 'left' : 'right';
-        }
+            // Character ist rechts vom Endboss, bewege nach rechts (weg vom Endboss)
+            bounceDirection = 'right';
+        };
 
         // Setze Flag, um zu kennzeichnen, dass der Character sich im Bounce-Zustand befindet
         character.isBouncing = true;
