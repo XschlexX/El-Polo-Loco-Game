@@ -40,12 +40,12 @@ class Chicken extends MovableObjects {
             if (!this.isDead()) {
 
                 if (this.movingLeft) {
-                    this.moveLeft();
+                    this.moveLeft(true);
                     if (this.x <= levelStart) {
                         this.movingLeft = false;
                     }
                 } else {
-                    this.moveRight(true);
+                    this.moveRight();
                     if (this.x + this.width >= levelEnd) {
                         this.movingLeft = true;
                     }

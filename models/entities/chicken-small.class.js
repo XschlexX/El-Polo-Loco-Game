@@ -3,15 +3,15 @@ class ChickenSmall extends MovableObjects {
     width = this.height * 0.8;
     groundLevel = 435 - this.height;
     y = this.groundLevel;
-    hitBoxLeft = 0;     // Keine Reduzierung links! Volle Breite
-    hitBoxTop = -5;     // Keine Reduzierung oben! Volle Höhe
-    hitBoxRight = 0;    // Keine Reduzierung rechts! Volle Breite
-    hitBoxBottom = 0;   // Keine Reduzierung unten! Volle Höhe
+    hitBoxLeft = 0;
+    hitBoxTop = -5;
+    hitBoxRight = 0;
+    hitBoxBottom = 0;
     world;
     markedForDeletion = false;
     isDying = false;
     opacity = 1;
-    movingLeft = true; // Startrichtung: nach links
+    movingLeft = true;
 
     imagesWalk = [
         '../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -39,12 +39,12 @@ class ChickenSmall extends MovableObjects {
         const moveCallback = () => {
             if (!this.isDead()) {
                 if (this.movingLeft) {
-                    this.moveLeft();
+                    this.moveLeft(true);
                     if (this.x <= levelStart) {
                         this.movingLeft = false;
                     }
                 } else {
-                    this.moveRight(true);
+                    this.moveRight();
                     if (this.x + this.width >= levelEnd) {
                         this.movingLeft = true;
                     }

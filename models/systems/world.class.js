@@ -289,8 +289,9 @@ class World {
     }
 
     addToMap(mo) {
-        // Endboss hat umgekehrte Logik für otherDirection
-        const shouldFlip = mo instanceof Endboss ? !mo.otherDirection : mo.otherDirection;
+        // Enemies haben umgekehrte Logik für otherDirection
+        const isEnemy = mo instanceof Chicken || mo instanceof ChickenSmall || mo instanceof Endboss;
+        const shouldFlip = isEnemy ? !mo.otherDirection : mo.otherDirection;
 
         if (shouldFlip) {
             this.flipImage(mo);
