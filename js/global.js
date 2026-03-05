@@ -1,12 +1,3 @@
-let canvasHeight = 480;
-let canvasWidth = 720;
-
-// Level-Variablen (werden von level-creator.js gesetzt)
-let levelStart;
-let levelEnd;
-
-let currentLevelNumber = 1;
-
 // Debug-Settings
 let debugModus = false;
 let characterDebug = true;
@@ -14,6 +5,18 @@ let characterGodMode = false;
 let endbossDebug = true;
 let endboss = true;
 let chicken = false;
+
+// Canvas-Größe
+let canvasHeight = 480;
+let canvasWidth = 720;
+
+// Level-Variablen (werden von level-creator.js gesetzt)
+let levelStart;
+let levelEnd;
+let currentLevelNumber = 1;
+
+
+
 
 let levels = {
     level0: {

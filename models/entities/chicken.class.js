@@ -12,8 +12,6 @@ class Chicken extends MovableObjects {
     isDying = false;
     opacity = 1;
     movingLeft = true; // Startrichtung: nach links
-    minX; // Linke Grenze (wird aus Level geladen)
-    maxX; // Rechte Grenze (Startposition)
 
     imagesWalk = [
         '../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',

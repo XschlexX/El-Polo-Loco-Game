@@ -13,7 +13,7 @@ class Cloud extends MovableObjects {
 
     animateCloud() {
         const cloudCallback = () => {
-            this.moveLeft(false);
+            this.moveLeft(false, this.speed, levelStart - canvas.width * 100);
         };
         const intervalId = setInterval(cloudCallback, 1000 / 60);
         GlobalIntervalManager.register(intervalId, 'Cloud movement', this, 1000 / 60, cloudCallback);

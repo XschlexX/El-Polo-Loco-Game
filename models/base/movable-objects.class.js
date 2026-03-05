@@ -68,15 +68,17 @@ class MovableObjects extends DrawableObject {
         this.currentImage++;
     }
 
-    moveRight(directionState = false) {
-        if (this.x + this.width < levelEnd)
-            this.x += this.speed;
+    moveRight(directionState = false, speed = this.speed, boundary = levelEnd) {
+        if (this.x + this.width < boundary) {
+            this.x += speed;
+        }
         this.otherDirection = directionState;
     }
 
-    moveLeft(directionState) {
-        if (this.x > levelStart)
-            this.x -= this.speed;
+    moveLeft(directionState = false, speed = this.speed, boundary = levelStart) {
+        if (this.x > boundary) {
+            this.x -= speed;
+        }
         this.otherDirection = directionState;
     }
 

@@ -10,6 +10,7 @@ class Endboss extends MovableObjects {
     hitBoxTop = 70;
     hitBoxRight = 40 + this.hitBoxLeft;
     hitBoxBottom = 15 + this.hitBoxTop;
+    rightBoundary = levelEnd;
 
 
     // Bewegungs-Parameter
@@ -17,7 +18,7 @@ class Endboss extends MovableObjects {
         speed: 0.5,              // Normale Patrol-Geschwindigkeit
         chasingSpeed: 3,         // Geschwindigkeit während Verfolgung
         moveDistance: 300,       // Patrol-Reichweite
-        movingRight: true        // Aktuelle Patrol-Richtung
+        movingRight: false        // Aktuelle Patrol-Richtung
     };
 
     // Ramm-Angriff Parameter
@@ -117,8 +118,9 @@ class Endboss extends MovableObjects {
         this.loadImages(this.imagesHurt);
         this.loadImages(this.imagesDead);
         this.energy = endbossHP;
-        this.startX = levelEnd - 500;
+        this.startX = levelEnd - 800;
         this.x = this.startX;
+        this.rightBoundary = Math.min(this.startX + this.movement.moveDistance + this.width, levelEnd);
         this.animate();
     }
 
@@ -172,8 +174,8 @@ class Endboss extends MovableObjects {
             // REGEL 3: CHASING-MODUS (Verfolge den Character)
             if (this.state.isChasing && this.world && this.world.character) {
                 const character = this.world.character;
-                const minX = this.world.level.levelStartX;
-                const maxX = this.world.level.levelEndX - this.width;
+                const minX = levelStart;
+                const maxX = levelEnd - this.width;
 
                 if (character.x > this.x) {
                     const newX = this.x + this.movement.chasingSpeed;
@@ -195,14 +197,12 @@ class Endboss extends MovableObjects {
 
             // REGEL 4: PATROL-MODUS (Standard-Verhalten)
             if (this.movement.movingRight) {
-                this.x += this.movement.speed;
-                this.otherDirection = true;
-                if (this.x >= this.startX + this.movement.moveDistance || (this.x + this.width) >= this.levelEnd) {
+                this.moveRight(false, this.movement.speed, this.rightBoundary);
+                if (this.x + this.width >= this.rightBoundary) {
                     this.movement.movingRight = false;
                 }
             } else {
-                this.x -= this.movement.speed;
-                this.otherDirection = false;
+                this.moveLeft(true, this.movement.speed, this.startX);
                 if (this.x <= this.startX) {
                     this.movement.movingRight = true;
                 }

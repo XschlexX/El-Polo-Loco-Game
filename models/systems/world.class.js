@@ -289,14 +289,17 @@ class World {
     }
 
     addToMap(mo) {
-        if (mo.otherDirection) {
+        // Endboss hat umgekehrte Logik für otherDirection
+        const shouldFlip = mo instanceof Endboss ? !mo.otherDirection : mo.otherDirection;
+
+        if (shouldFlip) {
             this.flipImage(mo);
         }
         mo.draw(this.ctx);
         // mo.drawFrame(this.ctx);
         // mo.drawCollisionFrame(this.ctx);
 
-        if (mo.otherDirection) {
+        if (shouldFlip) {
             this.flipImageBack(mo);
         }
     }

@@ -80,8 +80,8 @@ class DebugInfo extends DrawableObject {
 
             // Zeige x + width wenn nach rechts, sonst nur x
             const displayX = boss.otherDirection ?
-                Math.round(boss.x + boss.width) :
-                Math.round(boss.x);
+                Math.round(boss.x) :
+                Math.round(boss.x + boss.width);
 
             // Debug-Informationen als Array definieren
             const debugInfo = [
@@ -91,7 +91,9 @@ class DebugInfo extends DrawableObject {
                 `Level End: ${Math.round(boss.levelEnd || levelEnd)}`,
                 `Energy: ${boss.energy}`,
                 `State: ${boss.state.isChasing ? 'CHASING' : 'PATROL'}`,
-                `Direction: ${boss.otherDirection ? 'RECHTS →' : '← LINKS'}`
+                `Direction: ${boss.otherDirection ? '← LINKS' : 'RECHTS →'}`,
+                `Rechter Rand: ${boss.rightBoundary}`,
+                `Breite: ${boss.width}`
             ];
 
             // Höhe des Feldes basierend auf der Anzahl der Debug-Zeilen berechnen
