@@ -241,12 +241,13 @@ class World {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        // Parallax-Hintergründe zeichnen - jeder Layer mit eigenem Faktor
+        this.drawParallaxBackgrounds();
+
         this.ctx.translate(this.camera_x, 0);
-
-        this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.clouds);
-
         this.ctx.translate(-this.camera_x, 0);
+
         this.addObjectsToMap(this.level.statusBars);
         this.addObjectsToMap(this.level.gameTimer);
         this.addObjectsToMap(this.level.levelDisplay);
@@ -277,6 +278,34 @@ class World {
 
         let self = this;
         requestAnimationFrame(() => self.draw());
+    }
+
+    /**
+     * Zeichnet Hintergrund-Layer mit Parallax-Effekt
+     * Jeder Layer bewegt sich mit unterschiedlicher Geschwindigkeit basierend auf seinem parallaxFactor
+     */
+    drawParallaxBackgrounds() {
+        // Gruppiere nach Faktor
+        const factorGroups = {};
+        this.level.backgroundObjects.forEach(bg => {
+            if (!factorGroups[bg.parallaxFactor]) {
+                factorGroups[bg.parallaxFactor] = [];
+            }
+            factorGroups[bg.parallaxFactor].push(bg);
+        });
+
+        // Sortiere Faktoren aufsteigend (von hinten nach vorne: 0, 0.2, 0.5, 1)
+        const sortedFactors = Object.keys(factorGroups)
+            .map(f => parseFloat(f))
+            .sort((a, b) => a - b);
+
+        // Zeichne jede Gruppe mit ihrem Parallax-Offset (von hinten nach vorne)
+        sortedFactors.forEach(factor => {
+            const parallaxOffset = this.camera_x * factor;
+            this.ctx.translate(parallaxOffset, 0);
+            this.addObjectsToMap(factorGroups[factor]);
+            this.ctx.translate(-parallaxOffset, 0);
+        });
     }
 
     addObjectsToMap(objects) {
