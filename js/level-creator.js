@@ -23,10 +23,6 @@ function createLevel(levelNumber) {
     levelEnd = lvlData.levelEnd;
 
     currentLevel = new Level(
-        [
-            lvlData.levelStart,
-            lvlData.levelEnd
-        ],
         new Character(lvlData.characterHP, lvlData.characterBottles),
         generateBackgrounds(),
         generateClouds(),

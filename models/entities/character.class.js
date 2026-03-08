@@ -22,90 +22,92 @@ class Character extends MovableObjects {
     world;
     cameraEasingSpeed = 0.05; // Geschwindigkeit der Kamera-Anpassung (0.05-0.15 ist gut)
 
-    imagesIdle = [
-        '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-2.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-3.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-4.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-5.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-6.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-7.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-8.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-9.png',
-        '../assets/img/2_character_pepe/1_idle/idle/I-10.png'
-    ];
+    images = imagePaths.character;
 
-    imagesLongIdle = [
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
-        '../assets/img/2_character_pepe/1_idle/long_idle/I-20.png',
-    ];
+    // imagesIdle = [
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-1.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-2.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-3.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-4.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-5.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-6.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-7.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-8.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-9.png',
+    //     '../assets/img/2_character_pepe/1_idle/idle/I-10.png'
+    // ];
 
-    imagesWalk = [
-        '../assets/img/2_character_pepe/2_walk/W-21.png',
-        '../assets/img/2_character_pepe/2_walk/W-22.png',
-        '../assets/img/2_character_pepe/2_walk/W-23.png',
-        '../assets/img/2_character_pepe/2_walk/W-24.png',
-        '../assets/img/2_character_pepe/2_walk/W-25.png',
-        '../assets/img/2_character_pepe/2_walk/W-26.png'
-    ];
+    // imagesLongIdle = [
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
+    //     '../assets/img/2_character_pepe/1_idle/long_idle/I-20.png',
+    // ];
 
-    imagesJump = [
-        '../assets/img/2_character_pepe/3_jump/J-31.png',
-        '../assets/img/2_character_pepe/3_jump/J-32.png',
-        '../assets/img/2_character_pepe/3_jump/J-33.png',
-        '../assets/img/2_character_pepe/3_jump/J-34.png',
-        '../assets/img/2_character_pepe/3_jump/J-35.png',
-        '../assets/img/2_character_pepe/3_jump/J-36.png',
-        '../assets/img/2_character_pepe/3_jump/J-37.png',
-        '../assets/img/2_character_pepe/3_jump/J-38.png',
-        '../assets/img/2_character_pepe/3_jump/J-39.png'
-    ];
+    // imagesWalk = [
+    //     '../assets/img/2_character_pepe/2_walk/W-21.png',
+    //     '../assets/img/2_character_pepe/2_walk/W-22.png',
+    //     '../assets/img/2_character_pepe/2_walk/W-23.png',
+    //     '../assets/img/2_character_pepe/2_walk/W-24.png',
+    //     '../assets/img/2_character_pepe/2_walk/W-25.png',
+    //     '../assets/img/2_character_pepe/2_walk/W-26.png'
+    // ];
 
-    imagesThrow = [
-        '../assets/img/2_character_pepe/6_throw/th_1.png',
-        '../assets/img/2_character_pepe/6_throw/th_2.png',
-        '../assets/img/2_character_pepe/6_throw/th_3.png',
-        '../assets/img/2_character_pepe/6_throw/th_4.png',
-        '../assets/img/2_character_pepe/6_throw/th_5.png'
-    ];
+    // imagesJump = [
+    //     '../assets/img/2_character_pepe/3_jump/J-31.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-32.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-33.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-34.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-35.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-36.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-37.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-38.png',
+    //     '../assets/img/2_character_pepe/3_jump/J-39.png'
+    // ];
 
-    imagesHurt = [
-        '../assets/img/2_character_pepe/4_hurt/H-41.png',
-        '../assets/img/2_character_pepe/4_hurt/H-42.png',
-        '../assets/img/2_character_pepe/4_hurt/H-43.png'
-    ];
+    // imagesThrow = [
+    //     '../assets/img/2_character_pepe/6_throw/th_1.png',
+    //     '../assets/img/2_character_pepe/6_throw/th_2.png',
+    //     '../assets/img/2_character_pepe/6_throw/th_3.png',
+    //     '../assets/img/2_character_pepe/6_throw/th_4.png',
+    //     '../assets/img/2_character_pepe/6_throw/th_5.png'
+    // ];
 
-    imagesDead = [
-        '../assets/img/2_character_pepe/5_dead/D-51.png',
-        '../assets/img/2_character_pepe/5_dead/D-52.png',
-        '../assets/img/2_character_pepe/5_dead/D-53.png',
-        '../assets/img/2_character_pepe/5_dead/D-54.png',
-        '../assets/img/2_character_pepe/5_dead/D-55.png',
-        '../assets/img/2_character_pepe/5_dead/D-56.png',
-        '../assets/img/2_character_pepe/5_dead/D-57.png'
-    ];
+    // imagesHurt = [
+    //     '../assets/img/2_character_pepe/4_hurt/H-41.png',
+    //     '../assets/img/2_character_pepe/4_hurt/H-42.png',
+    //     '../assets/img/2_character_pepe/4_hurt/H-43.png'
+    // ];
+
+    // imagesDead = [
+    //     '../assets/img/2_character_pepe/5_dead/D-51.png',
+    //     '../assets/img/2_character_pepe/5_dead/D-52.png',
+    //     '../assets/img/2_character_pepe/5_dead/D-53.png',
+    //     '../assets/img/2_character_pepe/5_dead/D-54.png',
+    //     '../assets/img/2_character_pepe/5_dead/D-55.png',
+    //     '../assets/img/2_character_pepe/5_dead/D-56.png',
+    //     '../assets/img/2_character_pepe/5_dead/D-57.png'
+    // ];
 
     constructor(initialEnergy, initialBottles) {
         super();
         this.energy = initialEnergy;
         this.bottles = initialBottles;
         this.deathSoundPlayed = false;
-        this.loadImage(this.imagesIdle[0]);
-        this.loadImages(this.imagesIdle);
-        this.loadImages(this.imagesLongIdle);
-        this.loadImages(this.imagesWalk);
-        this.loadImages(this.imagesJump);
-        this.loadImages(this.imagesThrow);
-        this.loadImages(this.imagesHurt);
-        this.loadImages(this.imagesDead);
+        this.loadImage(this.images.imagesIdle[0]);
+        this.loadImages(this.images.imagesIdle);
+        this.loadImages(this.images.imagesLongIdle);
+        this.loadImages(this.images.imagesWalk);
+        this.loadImages(this.images.imagesJump);
+        this.loadImages(this.images.imagesThrow);
+        this.loadImages(this.images.imagesHurt);
+        this.loadImages(this.images.imagesDead);
         this.applyGravity(this.groundLevel);
         this.animate();
     }
@@ -180,18 +182,18 @@ class Character extends MovableObjects {
             if (this.isDead()) {
                 this.characterDeadHandler();
             } else if (this.isHurt()) {
-                this.playAnimation(this.imagesHurt);
+                this.playAnimation(this.images.imagesHurt);
             } else {
                 if (this.world.keyboard.RIGHT && !this.isAboveGround(this.groundLevel) || this.world.keyboard.LEFT && !this.isAboveGround(this.groundLevel)) {
-                    this.playAnimation(this.imagesWalk);
+                    this.playAnimation(this.images.imagesWalk);
                 } else if (this.isAboveGround(this.groundLevel)) {
-                    this.playAnimation(this.imagesJump);
+                    this.playAnimation(this.images.imagesJump);
                 } else if (this.world.keyboard.SPACE && this.bottles > 0) {
-                    this.playAnimation(this.imagesThrow);
+                    this.playAnimation(this.images.imagesThrow);
                 } else if (this.sleep) {
-                    this.playAnimation(this.imagesLongIdle);
+                    this.playAnimation(this.images.imagesLongIdle);
                 } else {
-                    this.playAnimation(this.imagesIdle);
+                    this.playAnimation(this.images.imagesIdle);
                 }
             }
         };
@@ -246,7 +248,7 @@ class Character extends MovableObjects {
             console.log(keyboardActive);
         }
 
-        this.playAnimation(this.imagesDead);
+        this.playAnimation(this.images.imagesDead);
         if (!this.defeatScreenShown) {
             showYouLostScreen(1000);
             this.defeatScreenShown = true;
@@ -258,14 +260,13 @@ class Character extends MovableObjects {
      * Die Kamera folgt dem Character asymmetrisch mit sanfter Transition (Easing)
      */
     updateCamera() {
-        // const canvasWidth = 720; // Standard Canvas-Breite
         const offsetFromEdge = 50; // Abstand vom Rand
 
         // Berechne die minimale Kamera-Position (am Level-Start)
-        const minCameraX = -this.world.level.levelStartX;
+        const minCameraX = -levelStart;
 
         // Berechne die maximale Kamera-Position (am Level-Ende)
-        const maxCameraX = -(this.world.level.levelEndX - canvasWidth);
+        const maxCameraX = -(levelEnd - canvasWidth);
 
         let targetCameraX;
 

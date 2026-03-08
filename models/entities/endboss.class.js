@@ -1,5 +1,4 @@
 class Endboss extends MovableObjects {
-    // Basis-Properties (von Parent geerbt: x, y, width, height, energy, etc.)
     height = 400;
     width = this.height * 0.8;
     groundLevel = 450;
@@ -10,14 +9,14 @@ class Endboss extends MovableObjects {
     hitBoxTop = 70;
     hitBoxRight = 40 + this.hitBoxLeft;
     hitBoxBottom = 15 + this.hitBoxTop;
-    rightBoundary = levelEnd;
-
+    rightBoundary;
+    maxX = levelEnd - this.width;
 
     // Bewegungs-Parameter
     movement = {
         speed: 0.5,              // Normale Patrol-Geschwindigkeit
         chasingSpeed: 3,         // Geschwindigkeit während Verfolgung
-        moveDistance: 300,       // Patrol-Reichweite
+        patrolDistance: 300,       // Patrol-Reichweite
         movingRight: false        // Aktuelle Patrol-Richtung
     };
 
@@ -25,7 +24,7 @@ class Endboss extends MovableObjects {
     ramming = {
         isActive: false,         // Ramm-Modus aktiv?
         direction: 1,            // 1 = rechts, -1 = links
-        distance: this.width * 1.3,  // Wie weit nach Kollision weiterlaufen
+        distance: 100,  // Wie weit nach Kollision weiterlaufen
         distanceTraveled: 0      // Wie weit bereits gelaufen
     };
 
@@ -41,62 +40,22 @@ class Endboss extends MovableObjects {
         isPlayingDeath: false          // Death-Animation läuft gerade?
     };
 
-    imagesWalk = [
-        '../assets/img/4_enemie_boss_chicken/1_walk/G1.png',
-        '../assets/img/4_enemie_boss_chicken/1_walk/G2.png',
-        '../assets/img/4_enemie_boss_chicken/1_walk/G3.png',
-        '../assets/img/4_enemie_boss_chicken/1_walk/G4.png'
-    ];
+    /**
+     * STOP RAMMING MODE
+     * Beendet den Ramm-Angriff und setzt alle relevanten Zustände zurück
+     * Wird aufgerufen wenn Ramming abgeschlossen ist oder Boundary erreicht wurde
+     */
+    stopRammingMode() {
+        this.ramming.isActive = false;
+        this.ramming.distanceTraveled = 0;
+        this.otherDirection = !this.otherDirection;
+        this.state.isChasing = this.canSeeCharacter();
+        this.state.hasPlayedAlert = true;
+        this.state.hasPlayedAttack = true;
+    }
 
-    imagesAlert = [
-        '../assets/img/4_enemie_boss_chicken/2_alert/G5.png',
-        '../assets/img/4_enemie_boss_chicken/2_alert/G6.png',
-        '../assets/img/4_enemie_boss_chicken/2_alert/G7.png',
-        '../assets/img/4_enemie_boss_chicken/2_alert/G8.png',
-        '../assets/img/4_enemie_boss_chicken/2_alert/G9.png',
-        '../assets/img/4_enemie_boss_chicken/2_alert/G10.png',
-        '../assets/img/4_enemie_boss_chicken/2_alert/G11.png',
-        '../assets/img/4_enemie_boss_chicken/2_alert/G12.png',
-    ];
-
-    imagesAttack = [
-        '../assets/img/4_enemie_boss_chicken/3_attack/G13.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G14.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G15.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G16.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G17.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G18.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G19.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G20.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G17.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G18.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G19.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G20.png'
-    ];
-
-    imagesAttackRun = [
-        '../assets/img/4_enemie_boss_chicken/1_walk/G1.png',
-        '../assets/img/4_enemie_boss_chicken/1_walk/G2.png',
-        '../assets/img/4_enemie_boss_chicken/1_walk/G3.png',
-        '../assets/img/4_enemie_boss_chicken/1_walk/G4.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G13.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G17.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G18.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G19.png',
-        '../assets/img/4_enemie_boss_chicken/3_attack/G20.png'
-    ];
-
-    imagesHurt = [
-        '../assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
-        '../assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
-        '../assets/img/4_enemie_boss_chicken/4_hurt/G23.png'
-    ];
-
-    imagesDead = [
-        '../assets/img/4_enemie_boss_chicken/5_dead/G24.png',
-        '../assets/img/4_enemie_boss_chicken/5_dead/G25.png',
-        '../assets/img/4_enemie_boss_chicken/5_dead/G26.png',
-    ];
+    // Image paths for the animation
+    images = imagePaths.endboss;
 
     /**
      * CONSTRUCTOR
@@ -110,17 +69,17 @@ class Endboss extends MovableObjects {
      */
     constructor(endbossHP) {
         super();
-        this.loadImage(this.imagesWalk[0]);
-        this.loadImages(this.imagesWalk);
-        this.loadImages(this.imagesAlert);
-        this.loadImages(this.imagesAttack);
-        this.loadImages(this.imagesAttackRun);
-        this.loadImages(this.imagesHurt);
-        this.loadImages(this.imagesDead);
         this.energy = endbossHP;
-        this.startX = levelEnd - 800;
+        this.startX = levelEnd - 700;
         this.x = this.startX;
-        this.rightBoundary = Math.min(this.startX + this.movement.moveDistance + this.width, levelEnd);
+        this.rightBoundary = Math.min(this.startX + this.movement.patrolDistance + this.width, levelEnd);
+        this.loadImage(this.images.imagesWalk[0]);
+        this.loadImages(this.images.imagesWalk);
+        this.loadImages(this.images.imagesAlert);
+        this.loadImages(this.images.imagesAttack);
+        this.loadImages(this.images.imagesAttackRun);
+        this.loadImages(this.images.imagesHurt);
+        this.loadImages(this.images.imagesDead);
         this.animate();
     }
 
@@ -144,52 +103,38 @@ class Endboss extends MovableObjects {
             // REGEL 2: RAMMING-MODUS (nach Kollision mit Character)
             if (this.ramming.isActive) {
                 const newX = this.x + (this.movement.chasingSpeed * this.ramming.direction);
-                const minX = this.world ? this.world.level.levelStartX : 0;
-                const maxX = this.world ? this.world.level.levelEndX - this.width : this.levelEnd - this.width;
 
-                if (newX >= minX && newX <= maxX) {
+                if (newX >= levelStart && newX <= this.maxX) {
                     this.x = newX;
                     this.ramming.distanceTraveled += this.movement.chasingSpeed;
                 } else {
-                    this.ramming.isActive = false;
-                    this.ramming.distanceTraveled = 0;
-                    this.otherDirection = !this.otherDirection;
-                    this.state.isChasing = this.canSeeCharacter();
-                    this.state.hasPlayedAlert = true;
-                    this.state.hasPlayedAttack = true;
+                    this.stopRammingMode();
                     return;
                 }
 
                 if (this.ramming.distanceTraveled >= this.ramming.distance) {
-                    this.ramming.isActive = false;
-                    this.ramming.distanceTraveled = 0;
-                    this.otherDirection = !this.otherDirection;
-                    this.state.isChasing = this.canSeeCharacter();
-                    this.state.hasPlayedAlert = true;
-                    this.state.hasPlayedAttack = true;
+                    this.stopRammingMode();
                 }
                 return;
             }
 
             // REGEL 3: CHASING-MODUS (Verfolge den Character)
-            if (this.state.isChasing && this.world && this.world.character) {
-                const character = this.world.character;
-                const minX = levelStart;
-                const maxX = levelEnd - this.width;
+            if (this.state.isChasing) {
+                const character = this.world?.character;
 
                 if (character.x > this.x) {
                     const newX = this.x + this.movement.chasingSpeed;
-                    if (newX <= maxX) {
-                        this.x = newX;
-                    }
-                    this.otherDirection = true;
-                    this.ramming.direction = 1;
-                } else {
-                    const newX = this.x - this.movement.chasingSpeed;
-                    if (newX >= minX) {
+                    if (newX <= this.maxX) {
                         this.x = newX;
                     }
                     this.otherDirection = false;
+                    this.ramming.direction = 1;
+                } else {
+                    const newX = this.x - this.movement.chasingSpeed;
+                    if (newX >= levelStart) {
+                        this.x = newX;
+                    }
+                    this.otherDirection = true;
                     this.ramming.direction = -1;
                 }
                 return;
@@ -231,13 +176,13 @@ class Endboss extends MovableObjects {
                 this.state.isChasing = false;
             }
             else if (this.isHurt()) {
-                this.playAnimation(this.imagesHurt);
+                this.playAnimation(this.images.imagesHurt);
             }
             else if (this.state.isChasing || this.ramming.isActive) {
-                this.playAnimation(this.imagesAttackRun);
+                this.playAnimation(this.images.imagesAttackRun);
             }
             else {
-                this.playAnimation(this.imagesWalk);
+                this.playAnimation(this.images.imagesWalk);
                 if (this.world && this.world.soundManager) {
                     this.world.soundManager.stopMusic('endbossAngry');
                 }
@@ -303,12 +248,12 @@ class Endboss extends MovableObjects {
     playHurtAnimationOnce() {
         this.state.isPlayingHurt = true;
         let frameIndex = 0;
-        this.img = this.imageCache[this.imagesHurt[frameIndex]];
+        this.img = this.imageCache[this.images.imagesHurt[frameIndex]];
 
         const hurtCallback = () => {
             frameIndex++;
-            if (frameIndex < this.imagesHurt.length) {
-                this.img = this.imageCache[this.imagesHurt[frameIndex]];
+            if (frameIndex < this.images.imagesHurt.length) {
+                this.img = this.imageCache[this.images.imagesHurt[frameIndex]];
             } else {
                 GlobalIntervalManager.clear(hurtInterval, 'Endboss hurt');
                 this.state.isPlayingHurt = false;
@@ -333,12 +278,12 @@ class Endboss extends MovableObjects {
             this.world.soundManager.play('endbossDead');
         }
 
-        this.img = this.imageCache[this.imagesDead[frameIndex]];
+        this.img = this.imageCache[this.images.imagesDead[frameIndex]];
 
         const deathCallback = () => {
             frameIndex++;
-            if (frameIndex < this.imagesDead.length) {
-                this.img = this.imageCache[this.imagesDead[frameIndex]];
+            if (frameIndex < this.images.imagesDead.length) {
+                this.img = this.imageCache[this.images.imagesDead[frameIndex]];
             } else {
                 GlobalIntervalManager.clear(deathInterval, 'Endboss death');
                 this.state.isPlayingDeath = false;
@@ -367,13 +312,10 @@ class Endboss extends MovableObjects {
      * @returns {boolean} true wenn Character sichtbar ist
      */
     canSeeCharacter() {
-        if (!this.world || !this.world.character) {
-            return false;
-        }
-        const character = this.world.character;
+        const character = this.world?.character;
         let distance;
 
-        if (this.otherDirection) {
+        if (!this.otherDirection) {
             // Endboss schaut nach rechts
             // Distanz = Character-Start minus Endboss-Ende
             distance = character.x - (this.x + this.width);
@@ -384,7 +326,7 @@ class Endboss extends MovableObjects {
         }
 
         // Nur sichtbar wenn: VOR dem Endboss (distance > 0) UND nah genug (< 100px)
-        return distance > 0 && distance < 200;
+        return distance > 0 && distance < 100;
     }
 
     /**
@@ -423,18 +365,15 @@ class Endboss extends MovableObjects {
         }
 
         // Drehe Endboss in Richtung des Characters
-        if (this.world && this.world.character) {
-            const character = this.world.character;
-            this.otherDirection = character.x > this.x;
-        }
-
+        const character = this.world?.character;
+        this.otherDirection = character.x < this.x;
         let frameIndex = 0;
-        this.img = this.imageCache[this.imagesAlert[frameIndex]];
+        this.img = this.imageCache[this.images.imagesAlert[frameIndex]];
 
         const alertCallback = () => {
             frameIndex++;
-            if (frameIndex < this.imagesAlert.length) {
-                this.img = this.imageCache[this.imagesAlert[frameIndex]];
+            if (frameIndex < this.images.imagesAlert.length) {
+                this.img = this.imageCache[this.images.imagesAlert[frameIndex]];
             } else {
                 GlobalIntervalManager.clear(alertInterval, 'Endboss alert');
                 this.state.isPlayingAlert = false;
@@ -482,12 +421,12 @@ class Endboss extends MovableObjects {
             this.world.soundManager.playMusic('endbossAngry');
         }
 
-        this.img = this.imageCache[this.imagesAttack[frameIndex]];
+        this.img = this.imageCache[this.images.imagesAttack[frameIndex]];
 
         const attackCallback = () => {
             frameIndex++;
-            if (frameIndex < this.imagesAttack.length) {
-                this.img = this.imageCache[this.imagesAttack[frameIndex]];
+            if (frameIndex < this.images.imagesAttack.length) {
+                this.img = this.imageCache[this.images.imagesAttack[frameIndex]];
             } else {
                 GlobalIntervalManager.clear(attackInterval, 'Endboss attack');
                 this.state.isPlayingAttack = false;
@@ -541,13 +480,12 @@ class Endboss extends MovableObjects {
         }
 
         // Drehe Endboss in Richtung des Characters
-        if (this.world && this.world.character) {
-            const character = this.world.character;
-            this.otherDirection = character.x > this.x;
-        }
+        const character = this.world?.character;
+        this.otherDirection = character.x > this.x;
 
         // Triggere Alert-Animation (führt dann zu Attack und Chase)
         this.state.hasPlayedAlert = false; // Reset für Neustart
         this.playAlertAnimationOnce();
     }
 }
+

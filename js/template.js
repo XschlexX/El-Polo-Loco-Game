@@ -12,7 +12,7 @@ function mainScreenTemplate() {
                     <img src="../assets/icon/mute.png" alt="mute">
                 </button>
             <button class="button fz32" onclick="startGame(1)">START GAME</button>
-            <button class="button" onclick="startGame(0)">START TEST</button>
+            <button class="button" onclick="startGame(5)">START TEST</button>
         </div>
     `;
 }

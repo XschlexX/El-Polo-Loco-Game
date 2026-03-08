@@ -13,25 +13,15 @@ class Chicken extends MovableObjects {
     opacity = 1;
     movingLeft = true; // Startrichtung: nach links
 
-    imagesWalk = [
-        '../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
-        '../assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
-        '../assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
-    ];
-
-    imagesDead = [
-        '../assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
-    ];
-
-
+    images = imagePaths.chicken;
 
     constructor(levelEnd, chickenSpeed) {
         super();
-        this.loadImage('../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.x = 200 + Math.random() * (levelEnd);
         this.speed = 0.25 + Math.random() * chickenSpeed;
-        this.loadImages(this.imagesWalk);
-        this.loadImages(this.imagesDead);
+        this.loadImage(this.images.imagesWalk[0]);
+        this.loadImages(this.images.imagesWalk);
+        this.loadImages(this.images.imagesDead);
         this.animate();
     }
 
@@ -59,7 +49,7 @@ class Chicken extends MovableObjects {
             if (this.isDead()) {
                 this.playDeadAnimation();
             } else {
-                this.playAnimation(this.imagesWalk);
+                this.playAnimation(this.images.imagesWalk);
             }
         };
         const animationInterval = setInterval(animationCallback, 150);
@@ -70,7 +60,7 @@ class Chicken extends MovableObjects {
         if (!this.isDying) {
             this.isDying = true;
             // Lade das Dead-Bild direkt aus dem Cache
-            this.img = this.imageCache[this.imagesDead[0]];
+            this.img = this.imageCache[this.images.imagesDead[0]];
             // Stoppe alle Intervals dieses Objekts
             GlobalIntervalManager.clearByOwner(this);
 
