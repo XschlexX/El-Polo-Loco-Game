@@ -346,6 +346,64 @@ canvas {
     font-size: 16px;
 }
 
+/* Rotate Screen - nur sichtbar im Portrait-Modus auf mobilen Geräten */
+.rotate-screen {
+    display: none;
+    /* Standardmäßig ausgeblendet */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--overlay-bg);
+    z-index: 9999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.rotate-content {
+    color: var(--primary-orange);
+    padding: 20px;
+}
+
+.rotate-content h2 {
+    font-size: 2em;
+    margin-bottom: 16px;
+    -webkit-text-stroke: .5px var(--accent-red);
+}
+
+.rotate-content p {
+    font-size: 1.2em;
+    color: #fff;
+}
+
+.rotate-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+    animation: rotatePhone 2s ease-in-out infinite;
+}
+
+@keyframes rotatePhone {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(90deg);
+    }
+}
+
+/* Zeige Rotate-Screen nur auf mobilen Geräten im Portrait-Modus */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    .rotate-screen {
+        display: flex;
+    }
+}
+
 @media (max-width: 720px) {
     :root {
         --canvas-width: 100vw;

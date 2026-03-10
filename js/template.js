@@ -11,9 +11,9 @@ function mainScreenTemplate() {
                 <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                     <img src="../assets/icon/mute.png" alt="mute">
                 </button>
-            <button class="button fz32" onclick="startGame(1)">START GAME</button>
-            <button class="button" onclick="startGame(0)">START TEST</button>
-        </div>
+                <button class="button" onclick="startGame(0)">START DEBUG MODE</button>
+                <button class="button fz32" onclick="startGame(1)">START GAME</button>
+            </div>
     `;
 }
 
@@ -91,6 +91,18 @@ function loadingScreenTemplate() {
             <div class="loading-spinner"></div>
             <div class="loading-text">Loading...</div>
             <div id="loading-progress" class="loading-progress">0%</div>
+        </div>
+    `;
+}
+
+function rotateScreenTemplate() {
+    return /*html*/`
+        <div id="rotate-screen" class="rotate-screen">
+            <div class="rotate-content">
+                <div class="rotate-icon">📱</div>
+                <h2>Please Rotate Your Device</h2>
+                <p>This game is best played in landscape mode.</p>
+            </div>
         </div>
     `;
 }

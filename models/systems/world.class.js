@@ -387,12 +387,12 @@ class World {
             } else if (action === 'restart') {
                 startGame();
             } else if (action === 'resume') {
-                this.resumeGame();
+                this.hideSettingsOverlay();
             } else if (action === 'toggleSound') {
                 this.toggleSound();
             } else if (!this.settingsOverlay.isVisible && this.settingsButton.isClicked(mouseX, mouseY)) {
                 // Öffne Settings nur wenn Overlay nicht sichtbar ist
-                this.pauseGame();
+                this.showSettingsOverlay();
             }
         });
 
@@ -417,11 +417,12 @@ class World {
         });
     }
 
-    pauseGame() {
-        console.log('[World] Pausing game...');
-
-        // 1. Zeige Settings-Overlay
+    showSettingsOverlay() {
         this.settingsOverlay.show();
+        this.pauseGame();
+    }
+
+    pauseGame() {
 
         // 2. Pausiere alle Intervals
         GlobalIntervalManager.pauseAll();
@@ -436,15 +437,15 @@ class World {
             this.soundManager.pauseAllSounds();
             this.soundManager.playMusic('menuTheme');
         }
+    }
 
-        console.log('[World] Game paused');
+    hideSettingsOverlay() {
+        this.settingsOverlay.hide();
+        this.resumeGame();
     }
 
     resumeGame() {
         console.log('[World] Resuming game...');
-
-        // 1. Verstecke Settings-Overlay
-        this.settingsOverlay.hide();
 
         // 2. Setze alle Intervals fort
         GlobalIntervalManager.resumeAll();

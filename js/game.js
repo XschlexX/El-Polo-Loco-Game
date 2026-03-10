@@ -10,6 +10,7 @@ let soundManager;
 function init() {
     window.soundManager = new SoundManager();  // ← Füge 'window.' hinzu!
     mainScreen();
+    initOrientationCheck();  // Starte die Überwachung der Bildschirmausrichtung
 }
 
 window.addEventListener('keydown', (e) => {
@@ -60,3 +61,32 @@ window.addEventListener('keyup', (e) => {
         keyboard.ANY = false;
     }
 });
+
+/**
+ * Überwacht die Bildschirmausrichtung und zeigt/versteckt den Rotate-Screen
+ */
+function initOrientationCheck() {
+    const rotateScreen = document.getElementById('rotate-screen');
+
+    if (!rotateScreen) return;
+
+    function checkOrientation() {
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const isMobile = window.innerWidth <= 768;
+
+        if (isMobile && isPortrait) {
+            rotateScreen.style.display = 'flex';
+            world.pauseGame();
+        } else {
+            rotateScreen.style.display = 'none';
+            world.resumeGame();
+        }
+    }
+
+    // Initial prüfen
+    checkOrientation();
+
+    // Bei Größenänderung prüfen
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+}
