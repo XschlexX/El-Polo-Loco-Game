@@ -73,10 +73,14 @@ function initOrientationCheck() {
 
         if (isMobile && isPortrait) {
             rotateScreen.style.display = 'flex';
-            world.pauseGame();
+            if (world) {
+                world.pauseGame();
+            }
         } else {
             rotateScreen.style.display = 'none';
-            world.resumeGame();
+            if (world) {
+                world.resumeGame();
+            }
         }
     }
 

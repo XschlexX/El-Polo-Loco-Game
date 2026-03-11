@@ -79,9 +79,10 @@ function showYouWonScreen(delay = 0) {
         // Stoppe das komplette Spiel (Intervals + Keyboard + Sound-Effekte)
         if (window.world) {
             window.world.stopGame();
-            // Zeige Victory-Overlay auf dem Canvas
-            window.world.victoryOverlay.show();
         }
+
+        // Zeige HTML Victory-Overlay
+        showHtmlVictoryOverlay();
 
         // Starte Win-Sound NACH dem Stoppen (nur wenn nicht gemutet)
         if (window.soundManager && !window.soundManager.muted) {
@@ -95,9 +96,10 @@ function showYouLostScreen(delay = 0) {
         // Stoppe das komplette Spiel (Intervals + Keyboard + Sound-Effekte)
         if (window.world) {
             window.world.stopGame();
-            // Zeige Defeat-Overlay auf dem Canvas
-            window.world.defeatOverlay.show();
         }
+
+        // Zeige HTML Defeat-Overlay
+        showHtmlDefeatOverlay();
 
         // Starte Lose-Sound NACH dem Stoppen (nur wenn nicht gemutet)
         if (window.soundManager && !window.soundManager.muted) {
@@ -130,4 +132,156 @@ function toggleSoundButton() {
         muteBtn.style.display = 'block';
         enableSound();
     }
+}
+
+/**
+ * Toggle das Settings-Menü (wird vom HTML Settings Button aufgerufen)
+ */
+function toggleSettingsMenu() {
+    const overlay = document.getElementById('settings-overlay');
+    if (overlay) {
+        if (overlay.classList.contains('active')) {
+            hideHtmlSettingsOverlay();
+        } else {
+            showHtmlSettingsOverlay();
+        }
+    }
+}
+
+/**
+ * Zeigt das HTML Settings Overlay an
+ */
+function showHtmlSettingsOverlay() {
+    const overlay = document.getElementById('settings-overlay');
+    if (overlay && window.world) {
+        overlay.classList.add('active');
+        updateSettingsSoundButtonText();
+        window.world.pauseGame();
+    }
+}
+
+/**
+ * Versteckt das HTML Settings Overlay
+ */
+function hideHtmlSettingsOverlay() {
+    const overlay = document.getElementById('settings-overlay');
+    if (overlay && window.world) {
+        overlay.classList.remove('active');
+        window.world.resumeGame();
+    }
+}
+
+/**
+ * Aktualisiert den Sound-Button Text im Settings Overlay
+ */
+function updateSettingsSoundButtonText() {
+    const soundBtn = document.getElementById('settings-sound-btn');
+    if (soundBtn && window.soundManager) {
+        soundBtn.textContent = window.soundManager.muted ? 'Sound: OFF' : 'Sound: ON';
+    }
+}
+
+/**
+ * Toggle Sound aus dem Settings Overlay
+ */
+function toggleSettingsSound() {
+    if (window.soundManager) {
+        if (window.soundManager.muted) {
+            window.soundManager.unmuteAll();
+            window.soundManager.playMusic('menuTheme');
+        } else {
+            window.soundManager.muteAll();
+        }
+        updateSettingsSoundButtonText();
+    }
+}
+
+/**
+ * Startet das Spiel neu aus dem Overlay
+ */
+function restartGameFromOverlay() {
+    hideHtmlSettingsOverlay();
+    startGame();
+}
+
+/**
+ * Beendet das Spiel und geht zum Hauptmenü
+ */
+function exitToMainMenu() {
+    // Stoppe das Spiel komplett bevor zum Hauptmenü gewechselt wird
+    if (window.world) {
+        window.world.stopGame();
+        window.world = null;
+    }
+    hideHtmlSettingsOverlay();
+    hideHtmlVictoryOverlay();
+    hideHtmlDefeatOverlay();
+    mainScreen();
+    if (window.soundManager) {
+        window.soundManager.playMusic('menuTheme');
+    }
+}
+
+/**
+ * Setzt das Spiel fort aus dem Overlay
+ */
+function resumeGameFromOverlay() {
+    hideHtmlSettingsOverlay();
+}
+
+/**
+ * Zeigt das HTML Victory Overlay an
+ */
+function showHtmlVictoryOverlay() {
+    const overlay = document.getElementById('victory-overlay');
+    if (overlay) {
+        overlay.classList.add('active');
+    }
+}
+
+/**
+ * Versteckt das HTML Victory Overlay
+ */
+function hideHtmlVictoryOverlay() {
+    const overlay = document.getElementById('victory-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+}
+
+/**
+ * Startet das nächste Level aus dem Overlay
+ */
+function nextLevelFromOverlay() {
+    hideHtmlVictoryOverlay();
+    currentLevelNumber++;
+    startGame(currentLevelNumber);
+}
+
+/**
+ * Zeigt das HTML Defeat Overlay an
+ */
+function showHtmlDefeatOverlay() {
+    const overlay = document.getElementById('defeat-overlay');
+    if (overlay) {
+        overlay.classList.add('active');
+    }
+}
+
+/**
+ * Versteckt das HTML Defeat Overlay
+ */
+function hideHtmlDefeatOverlay() {
+    const overlay = document.getElementById('defeat-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+}
+
+/**
+ * Versucht das Level erneut aus dem Overlay
+ */
+function tryAgainFromOverlay() {
+    hideHtmlDefeatOverlay();
+    startGame();
 }

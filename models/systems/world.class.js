@@ -7,7 +7,6 @@ class World {
     camera_x = 0;
     throwableObjects = [];
     lastThrow;
-    settingsButton;
     settingsOverlay;
     victoryOverlay;
     defeatOverlay;
@@ -23,11 +22,7 @@ class World {
         this.soundManager = window.soundManager;
         window.world = this;
 
-        // Erstelle Settings-Button und Overlay
-        this.settingsButton = new SettingsButton();
-        this.settingsOverlay = new SettingsOverlay();
-        this.victoryOverlay = new VictoryOverlay();
-        this.defeatOverlay = new DefeatOverlay();
+        // Overlays sind jetzt HTML-basiert, keine Canvas-Overlays mehr nötig
 
         this.draw();
         this.setWorld();
@@ -252,9 +247,6 @@ class World {
         this.addObjectsToMap(this.level.gameTimer);
         this.addObjectsToMap(this.level.levelDisplay);
 
-        // Zeichne Settings-Button
-        this.settingsButton.draw(this.ctx);
-
         // Debug-Info zeichnen (falls vorhanden)
         if (this.level.debugInfo && this.level.debugInfo.length > 0) {
             this.addObjectsToMap(this.level.debugInfo);
@@ -269,12 +261,7 @@ class World {
         this.addObjectsToMap(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
 
-        // Zeichne Settings-Overlay (falls sichtbar)
-        this.settingsOverlay.draw(this.ctx);
-
-        // Zeichne Victory-Overlay (falls sichtbar)
-        this.victoryOverlay.draw(this.ctx);
-        this.defeatOverlay.draw(this.ctx);
+        // Overlays sind jetzt HTML-basiert und werden nicht mehr auf dem Canvas gezeichnet
 
         let self = this;
         requestAnimationFrame(() => self.draw());
@@ -349,81 +336,81 @@ class World {
     setupCanvasListeners() {
         // Click-Event für Settings-Button und Overlay
         this.canvas.addEventListener('click', (e) => {
-            const rect = this.canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-
-            // Prüfe zuerst Victory-Overlay (höchste Priorität)
-            const victoryAction = this.victoryOverlay.handleClick(mouseX, mouseY);
-            if (victoryAction === 'mainMenu') {
-                mainScreen();
-                window.soundManager.playMusic('menuTheme');
-                return;
-            } else if (victoryAction === 'nextLevel') {
-                // Aktualisiere globale Level-Variablen
-                currentLevelNumber++;
-
-                // Starte das nächste Level
-                startGame(currentLevelNumber);
-                return;
-            }
-
-            // Prüfe Defeat-Overlay
-            const defeatAction = this.defeatOverlay.handleClick(mouseX, mouseY);
-            if (defeatAction === 'mainMenu') {
-                mainScreen();
-                window.soundManager.playMusic('menuTheme');
-                return;
-            } else if (defeatAction === 'tryAgain') {
-                startGame();
-                return;
-            }
-
-            // Prüfe Settings-Overlay-Buttons
-            const action = this.settingsOverlay.handleClick(mouseX, mouseY);
-            if (action === 'exit') {
-                mainScreen();
-                window.soundManager.playMusic('menuTheme');
-            } else if (action === 'restart') {
-                startGame();
-            } else if (action === 'resume') {
-                this.hideSettingsOverlay();
-            } else if (action === 'toggleSound') {
-                this.toggleSound();
-            } else if (!this.settingsOverlay.isVisible && this.settingsButton.isClicked(mouseX, mouseY)) {
-                // Öffne Settings nur wenn Overlay nicht sichtbar ist
-                this.showSettingsOverlay();
-            }
+            const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
+            this.handleCanvasClick(coords.x, coords.y);
         });
+
+        // Touch-Event für mobile Geräte
+        this.canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const touch = e.touches[0];
+            const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
+            this.handleCanvasClick(coords.x, coords.y);
+        }, { passive: false });
+
+        // Touchend-Event hinzufügen für bessere Kompatibilität
+        this.canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, { passive: false });
 
         // Mousemove-Event für Hover-Effekt
         this.canvas.addEventListener('mousemove', (e) => {
-            const rect = this.canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-
-            // Prüfe Victory-Overlay-Buttons zuerst
-            const victoryHovered = this.victoryOverlay.handleHover(mouseX, mouseY);
-            const defeatHovered = this.defeatOverlay.handleHover(mouseX, mouseY);
-            // Prüfe Settings-Overlay-Buttons
-            const overlayHovered = this.settingsOverlay.handleHover(mouseX, mouseY);
-            const buttonHovered = this.settingsButton.isHovering(mouseX, mouseY);
-
-            if (victoryHovered || defeatHovered || overlayHovered || buttonHovered) {
-                this.canvas.style.cursor = 'pointer';
-            } else {
-                this.canvas.style.cursor = 'default';
-            }
+            const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
+            this.handleCanvasHover(coords.x, coords.y);
         });
+
+        // Touch-Move für Hover-Effekt auf Mobile
+        this.canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
+            this.handleCanvasHover(coords.x, coords.y);
+        }, { passive: false });
     }
 
-    showSettingsOverlay() {
-        this.settingsOverlay.show();
-        this.pauseGame();
+    /**
+     * Konvertiert Screen-Koordinaten zu Canvas-Koordinaten
+     * Berücksichtigt CSS-Scaling und Canvas-Resolution
+     * @param {number} clientX - X-Position auf dem Screen
+     * @param {number} clientY - Y-Position auf dem Screen
+     * @returns {Object} - {x, y} Canvas-Koordinaten
+     */
+    getCanvasCoordinates(clientX, clientY) {
+        const rect = this.canvas.getBoundingClientRect();
+
+        // Berechne die relative Position im Canvas (0-1)
+        const relativeX = (clientX - rect.left) / rect.width;
+        const relativeY = (clientY - rect.top) / rect.height;
+
+        // Konvertiere zu Canvas-Koordinaten
+        return {
+            x: relativeX * this.canvas.width,
+            y: relativeY * this.canvas.height
+        };
+    }
+
+    /**
+     * Behandelt Klick-Events auf dem Canvas (für Mouse und Touch)
+     * @param {number} x - X-Position des Klicks
+     * @param {number} y - Y-Position des Klicks
+     */
+    handleCanvasClick(x, y) {
+        // Overlays sind jetzt HTML-basiert, keine Canvas-Klick-Handler mehr nötig
+    }
+
+    /**
+     * Behandelt Hover-Events auf dem Canvas (für Mouse und Touch)
+     * @param {number} x - X-Position
+     * @param {number} y - Y-Position
+     */
+    handleCanvasHover(x, y) {
+        // Overlays sind jetzt HTML-basiert, keine Canvas-Hover-Handler mehr nötig
+        this.canvas.style.cursor = 'default';
     }
 
     pauseGame() {
-
         // 2. Pausiere alle Intervals
         GlobalIntervalManager.pauseAll();
 
@@ -439,14 +426,7 @@ class World {
         }
     }
 
-    hideSettingsOverlay() {
-        this.settingsOverlay.hide();
-        this.resumeGame();
-    }
-
     resumeGame() {
-        console.log('[World] Resuming game...');
-
         // 2. Setze alle Intervals fort
         GlobalIntervalManager.resumeAll();
 
@@ -461,8 +441,6 @@ class World {
             this.soundManager.resumeAllSounds();
             this.soundManager.playMusic('gameTheme');
         }
-
-        console.log('[World] Game resumed');
     }
 
     stopGame() {
@@ -476,7 +454,12 @@ class World {
             });
         }
 
-        // 3. Stoppe alle Character-spezifischen Sounds
+        // 3. Pausiere den GameTimer
+        if (this.level.gameTimer && this.level.gameTimer[0]) {
+            this.level.gameTimer[0].pause();
+        }
+
+        // 4. Stoppe alle Character-spezifischen Sounds
         if (this.character) {
             // Verhindere dass Character einschläft und Sleep-Sound spielt
             this.character.isSleeping = false;
@@ -486,7 +469,7 @@ class World {
             }
         }
 
-        // 4. Stoppe nur Sound-Effekte, NICHT die Musik
+        // 5. Stoppe nur Sound-Effekte, NICHT die Musik
         if (this.soundManager) {
             // Stoppe alle Sound-Effekte, aber ändere nicht den muted-Status
             this.soundManager.stopAllSounds();
@@ -507,8 +490,6 @@ class World {
             } else {
                 this.soundManager.muteAll();
             }
-            // Aktualisiere den Button-Text im Overlay
-            this.settingsOverlay.updateSoundButtonText();
         }
     }
 

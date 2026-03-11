@@ -82,6 +82,12 @@ function controlsScreenTemplate() {
 function showCanvasTemplate() {
     return /*html*/`
     <canvas id="canvas" class="canvas" width="${canvasWidth}" height="${canvasHeight}"></canvas>
+    <button id="settings-btn" class="settings-button" title="Settings" onclick="toggleSettingsMenu()">
+        <span class="hamburger-icon"></span>
+    </button>
+    ${settingsOverlayTemplate()}
+    ${victoryOverlayTemplate()}
+    ${defeatOverlayTemplate()}
     `;
 }
 
@@ -102,6 +108,70 @@ function rotateScreenTemplate() {
                 <div class="rotate-icon">📱</div>
                 <h2>Please Rotate Your Device</h2>
                 <p>This game is best played in landscape mode.</p>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Settings Overlay Template - HTML-Version
+ */
+function settingsOverlayTemplate() {
+    return /*html*/`
+        <div id="settings-overlay" class="game-overlay">
+            <div class="overlay-container">
+                <h2 class="overlay-title">Menu</h2>
+                <button id="settings-sound-btn" class="overlay-button" onclick="toggleSettingsSound()">Sound: ON</button>
+                <button class="overlay-button" onclick="restartGameFromOverlay()">Restart Game</button>
+                <button class="overlay-button" onclick="exitToMainMenu()">Exit Game</button>
+                <button class="overlay-button" onclick="resumeGameFromOverlay()">Resume</button>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Victory Overlay Template - HTML-Version mit Canvas-Styling
+ * Zeigt "Next Level" Button nur an, wenn es nicht das letzte Level ist
+ */
+function victoryOverlayTemplate() {
+    const maxLevel = 5;
+    const isLastLevel = currentLevelNumber >= maxLevel;
+
+    const nextLevelButton = !isLastLevel
+        ? `<button class="victory-button" onclick="nextLevelFromOverlay()">Try Level ${currentLevelNumber + 1}</button>`
+        : '';
+
+    const completionMessage = isLastLevel
+        ? `<div class="victory-completion-message">You have completed all levels!<br>Thank you for playing!</div>`
+        : '';
+
+    return /*html*/`
+        <div id="victory-overlay" class="game-overlay victory-overlay">
+            <div class="victory-container">
+                <img class="victory-image" src="assets/img/You won, you lost/You won A.png" alt="You Won">
+                ${completionMessage}
+                <div class="victory-buttons">
+                    ${nextLevelButton}
+                    <button class="victory-button" onclick="exitToMainMenu()">Main Menu</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Defeat Overlay Template - HTML-Version mit Canvas-Styling
+ */
+function defeatOverlayTemplate() {
+    return /*html*/`
+        <div id="defeat-overlay" class="game-overlay defeat-overlay">
+            <div class="defeat-container">
+                <img class="defeat-image" src="assets/img/You won, you lost/Game Over.png" alt="You Lost">
+                <div class="defeat-buttons">
+                    <button class="defeat-button" onclick="tryAgainFromOverlay()">Try Again</button>
+                    <button class="defeat-button" onclick="exitToMainMenu()">Main Menu</button>
+                </div>
             </div>
         </div>
     `;

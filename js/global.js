@@ -1,7 +1,7 @@
 // Debug-Settings
 let debugModus = false;
 let characterDebug = true;
-let characterGodMode = true;
+let characterGodMode = false;
 let endbossDebug = true;
 let endboss = true;
 let chicken = false;
@@ -23,7 +23,7 @@ let levels = {
     level0: {
         levelStart: - canvasWidth * 1,
         levelEnd: canvasWidth * 3,
-        characterHP: characterGodMode ? 10000 : 50,
+        characterHP: characterGodMode ? 10000 : 10,
         characterBottles: 0,
         smallChickenAmount: smallChicken ? 10 : 0,
         bigChickenAmount: chicken ? 10 : 0,
