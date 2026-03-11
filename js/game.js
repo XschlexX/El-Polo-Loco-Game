@@ -8,13 +8,13 @@ let soundManager;
 
 
 function init() {
-    window.soundManager = new SoundManager();  // ← Füge 'window.' hinzu!
+    window.soundManager = new SoundManager();
     mainScreen();
-    initOrientationCheck();  // Starte die Überwachung der Bildschirmausrichtung
+    initOrientationCheck();
 }
 
 window.addEventListener('keydown', (e) => {
-    if (!keyboardActive) return; // Add this line to check if keyboard is active
+    if (!keyboardActive) return;
 
     if (e.code === 'ArrowLeft') {
         keyboard.LEFT = true;
@@ -28,13 +28,12 @@ window.addEventListener('keydown', (e) => {
         keyboard.DOWN = true;
     }
     keyboard.ANY = true;
-    // console.log(e);
 });
 
 window.addEventListener('keyup', (e) => {
     if (!keyboardActive) {
         return;
-    }; // Add this line to check if keyboard is active
+    };
 
     if (e.code === 'ArrowLeft') {
         keyboard.LEFT = false;
@@ -48,7 +47,6 @@ window.addEventListener('keyup', (e) => {
         keyboard.DOWN = false;
     }
 
-    // Prüfe, ob noch eine Taste gedrückt ist  
     const anyKeyStillPressed =
         keyboard.LEFT ||
         keyboard.RIGHT ||
@@ -56,7 +54,6 @@ window.addEventListener('keyup', (e) => {
         keyboard.UP ||
         keyboard.DOWN;
 
-    // Setze ANY nur auf false, wenn keine andere Taste mehr gedrückt ist  
     if (!anyKeyStillPressed) {
         keyboard.ANY = false;
     }
