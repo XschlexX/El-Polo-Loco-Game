@@ -213,18 +213,8 @@ class World {
     }
 
     checkThrowableObject() {
-        if (this.keyboard.SPACE && this.throwInterval() && this.character.bottles > 0) {
-            let bottle = new ThrowableObject(this.character);
-            bottle.world = this; // Setze World-Referenz
-            this.throwableObjects.push(bottle);
-            this.character.bottles--; // Reduziere Flaschenanzahl
-            this.lastThrow = new Date().getTime();
-
-            // Spiele Throw-Sound ab
-            if (this.soundManager) {
-                this.soundManager.play('bottleThrow');
-            }
-        }
+        // Flaschenwurf wird jetzt in der Character-Klasse gesteuert
+        // (in startThrowAnimation() -> throwBottle())
     }
 
     throwInterval() {

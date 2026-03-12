@@ -85,9 +85,36 @@ function showCanvasTemplate() {
     <button id="settings-btn" class="settings-button" title="Settings" onclick="toggleSettingsMenu()">
         <span class="hamburger-icon"></span>
     </button>
+    ${touchControlsTemplate()}
     ${settingsOverlayTemplate()}
     ${victoryOverlayTemplate()}
     ${defeatOverlayTemplate()}
+    `;
+}
+
+/**
+ * Touch Controls Template - Mobile Touch Buttons
+ */
+function touchControlsTemplate() {
+    return /*html*/`
+        <div id="touch-controls" class="touch-controls">
+            <div class="touch-controls-row">
+                <button id="btn-left" class="touch-btn touch-btn-left" title="Move Left">
+                    <span class="touch-btn-icon">&#9664;</span>
+                </button>
+                <button id="btn-right" class="touch-btn touch-btn-right" title="Move Right">
+                    <span class="touch-btn-icon">&#9654;</span>
+                </button>
+            </div>
+            <div class="touch-controls-row">
+                <button id="btn-throw" class="touch-btn touch-btn-throw" title="Throw Bottle">
+                    <span class="touch-btn-icon">&#127863;</span>
+                </button>
+                <button id="btn-jump" class="touch-btn touch-btn-jump" title="Jump">
+                    <span class="touch-btn-icon">&#9650;</span>
+                </button>
+            </div>
+        </div>
     `;
 }
 

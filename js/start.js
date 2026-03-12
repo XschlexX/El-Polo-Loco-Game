@@ -60,6 +60,8 @@ function startGame(level = 1) {
             createLevel(level);
             world = new World(canvas, keyboard);
             keyboardActive = true;
+            // Initialisiere Touch-Controls für mobile Geräte
+            initTouchControls();
         }
     );
 }

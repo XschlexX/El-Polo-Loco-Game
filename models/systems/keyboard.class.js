@@ -5,4 +5,5 @@ class Keyboard {
     DOWN = false;
     SPACE = false;
     ANY = false;
+    THROW_REQUEST = false; // Für Touch-Steuerung: Einmaliger Wurf-Request
 }

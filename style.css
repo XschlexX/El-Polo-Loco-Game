@@ -568,7 +568,81 @@ canvas {
     }
 }
 
-@media (max-width: 720px) {
+/* Touch Controls - Mobile Gamepad Buttons */
+.touch-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: none;
+    /* Standardmäßig ausgeblendet, nur auf Mobile sichtbar */
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none;
+    /* Erlaubt Klicks durch den Container */
+    z-index: 50;
+}
+
+.touch-controls-row {
+    display: flex;
+    gap: 10px;
+    pointer-events: auto;
+    /* Aktiviert Klicks auf Buttons */
+}
+
+.touch-btn {
+    width: 60px;
+    height: 60px;
+    min-width: 44px;
+    min-height: 44px;
+    /* Apple Human Interface Guidelines: mindestens 44x44px */
+    background: rgba(255, 255, 255, 0.25);
+    border: 2px solid rgba(255, 215, 0, 0.8);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    /* Verhindert iOS Callout */
+    touch-action: manipulation;
+    /* Verhindert Double-Tap Zoom */
+}
+
+.touch-btn:active,
+.touch-btn.pressed {
+    background: rgba(255, 215, 0, 0.5);
+    transform: scale(0.95);
+    border-color: #FFD700;
+}
+
+.touch-btn-icon {
+    font-size: 24px;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    /* Verhindert, dass das Icon Events abfängt */
+}
+
+/* Touch-Buttons auf mobilen Geräten anzeigen (Pointer: coarse = Touchscreen) */
+@media (pointer: coarse) {
+    .touch-controls {
+        display: flex;
+    }
+}
+
+/* Touch-Buttons auf kleinen Bildschirmen (Tablets und Handys) */
+@media (max-width: 1024px) {
+    .touch-controls {
+        display: flex;
+    }
+}
+
+/* Tablets und kleinere Geräte */
+@media (max-width: 768px) {
     :root {
         --canvas-width: 100vw;
         --canvas-height: 66.67vw;
@@ -590,5 +664,31 @@ canvas {
     .keys-info {
         gap: 16px;
         scale: 0.8;
+    }
+
+    .touch-btn {
+        width: 55px;
+        height: 55px;
+    }
+
+    .touch-btn-icon {
+        font-size: 20px;
+    }
+}
+
+/* Sehr kleine Bildschirme (Handys) */
+@media (max-width: 480px) {
+    .touch-btn {
+        width: 50px;
+        height: 50px;
+    }
+
+    .touch-btn-icon {
+        font-size: 18px;
+    }
+
+    .touch-controls {
+        padding: 0 10px;
+        bottom: 5px;
     }
 }

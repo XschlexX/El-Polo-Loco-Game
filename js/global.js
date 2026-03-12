@@ -24,7 +24,7 @@ let levels = {
         levelStart: - canvasWidth * 1,
         levelEnd: canvasWidth * 3,
         characterHP: characterGodMode ? 10000 : 10,
-        characterBottles: 0,
+        characterBottles: 100,
         smallChickenAmount: smallChicken ? 10 : 0,
         bigChickenAmount: chicken ? 10 : 0,
         chickenSpeed: 3,
