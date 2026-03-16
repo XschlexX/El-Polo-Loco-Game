@@ -17,27 +17,27 @@ class ThrowableObject extends MovableObjects {
     // hitBoxBottom = -25;
 
     imagesRotate = [
-        '../assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/1_2_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/1_3_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/2_1_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/2_2_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/2_3_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/3_1_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/3_2_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/3_3_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/4_1_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/4_2_bottle_rotation.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/4_3_bottle_rotation.png'
+        'assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/1_2_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/1_3_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/2_1_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/2_2_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/2_3_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/3_1_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/3_2_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/3_3_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/4_1_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/4_2_bottle_rotation.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/4_3_bottle_rotation.png'
     ];
 
     imagesSplash = [
-        '../assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
-        '../assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
+        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
+        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
     ];
 
 

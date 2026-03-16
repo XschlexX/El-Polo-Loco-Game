@@ -12,8 +12,8 @@ class CollectableCoin extends CollectableObject {
 
     // Animations-Bilder
     images = [
-        '../assets/img/8_coin/coin_1.png',
-        '../assets/img/8_coin/coin_2.png'
+        'assets/img/8_coin/coin_1.png',
+        'assets/img/8_coin/coin_2.png'
     ];
 
     constructor(x) {

@@ -8,10 +8,10 @@ function generateBackgrounds() {
     // Layer-Konfiguration mit Parallax-Faktoren
     // Je kleiner der Faktor, desto langsamer bewegt sich der Layer (0 = steht still)
     const layers = [
-        { path: '../assets/img/5_background/layers/air.png', factor: 0 },      // Himmel bleibt statisch
-        { path: '../assets/img/5_background/layers/3_third_layer/full.png', factor: 0.6 },  // Ferne Berge - sehr langsam
-        { path: '../assets/img/5_background/layers/2_second_layer/full.png', factor: 0.8 }, // Mittlere Ebene - halbe Geschwindigkeit
-        { path: '../assets/img/5_background/layers/1_first_layer/full.png', factor: 1 }     // Vordergrund - volle Geschwindigkeit
+        { path: 'assets/img/5_background/layers/air.png', factor: 0 },      // Himmel bleibt statisch
+        { path: 'assets/img/5_background/layers/3_third_layer/full.png', factor: 0.6 },  // Ferne Berge - sehr langsam
+        { path: 'assets/img/5_background/layers/2_second_layer/full.png', factor: 0.8 }, // Mittlere Ebene - halbe Geschwindigkeit
+        { path: 'assets/img/5_background/layers/1_first_layer/full.png', factor: 1 }     // Vordergrund - volle Geschwindigkeit
     ];
 
     for (let x = levelStart; x <= levelEnd; x += canvasWidth * 2) {

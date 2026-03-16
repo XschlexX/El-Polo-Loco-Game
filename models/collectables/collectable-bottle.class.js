@@ -12,8 +12,8 @@ class CollectableBottle extends CollectableObject {
 
     // Animations-Bilder
     images = [
-        '../assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
-        '../assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
+        'assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
+        'assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
     ];
 
     constructor(x) {

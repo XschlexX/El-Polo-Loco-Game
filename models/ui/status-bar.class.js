@@ -1,26 +1,26 @@
 class StatusBar extends DrawableObject {
     imagesHealthBar = [
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
-        '../assets/img/7_statusbars/3_icons/icon_health.png'
+        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
+        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
+        'assets/img/7_statusbars/3_icons/icon_health.png'
     ];
 
     imagesBottleBar = [
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
-        '../assets/img/7_statusbars/3_icons/icon_salsa_bottle.png'
+        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
+        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
+        'assets/img/7_statusbars/3_icons/icon_salsa_bottle.png'
     ];
 
     imagesCoinBar = [
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
-        '../assets/img/7_statusbars/3_icons/icon_coin.png'
+        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
+        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
+        'assets/img/7_statusbars/3_icons/icon_coin.png'
     ];
 
     imagesHealthBarEndboss = [
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_empty_endboss.png',
-        '../assets/img/7_statusbars/4_bar_elements/statusbar_blue_endboss.png',
-        '../assets/img/7_statusbars/3_icons/icon_health_endboss.png'
+        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_endboss.png',
+        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_endboss.png',
+        'assets/img/7_statusbars/3_icons/icon_health_endboss.png'
     ];
 
     x = 30;
