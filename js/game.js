@@ -118,7 +118,7 @@ function initOrientationCheck() {
 
     function checkOrientation() {
         const isPortrait = window.innerHeight > window.innerWidth;
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = window.innerWidth <= 500;
 
         if (isMobile && isPortrait) {
             rotateScreen.style.display = 'flex';

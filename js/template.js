@@ -1,6 +1,7 @@
 function mainScreenTemplate() {
     return /*html*/`
-        <div id="startscreen" class="startscreen">
+        <div id="startscreen" class="all-screens main-screen">
+            <img class="background-image" src="assets/img/9_intro_outro_screens/start/startscreen_2.png" alt="Info">
             <div class="startscreen-controls">
                 <button class="button" onclick="showInfoScreen()">INFO</button>
                 <button class="button" onclick="showControlScreen()">CONTROLS</button>
@@ -11,6 +12,7 @@ function mainScreenTemplate() {
                 <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                     <img src="assets/icon/mute.png" alt="mute">
                 </button>
+                <!-- <div id="you_lost_screen"></div> -->
                 <button class="button" onclick="startGame(0)">START DEBUG MODE</button>
                 <button class="button fz32" onclick="startGame(1)">START GAME</button>
             </div>
