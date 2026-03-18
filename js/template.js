@@ -29,7 +29,7 @@ function infoScreenTemplate() {
             <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                 <img src="assets/icon/mute.png" alt="mute">
             </button>
-            <div class="info-screen">
+            <div class="info-screen-content">
                 <div class="info-text">
                     <h2>Info</h2>
                     <p>Help Pepe, the brave Mexican, navigate through the desert! Collect coins and bottles, dodge enemies,
