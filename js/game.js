@@ -24,6 +24,7 @@ const KEY_CODE_MAP = {
 
 function init() {
     window.soundManager = new SoundManager();
+    loadVolumeSettings();
     mainScreen();
     initOrientationCheck();
 }

@@ -3,6 +3,14 @@ class SoundManager {
     loopSounds = ['menuTheme', 'gameTheme', 'endbossTheme', 'characterRun', 'characterSleep', 'endbossAngry']; // Liste der Loop-Sounds
     muted = true; // Sound-Status: true = stumm (Standard), false = an
 
+    // Volume-Einstellungen (0.0 - 1.0)
+    masterVolume = 1.0;
+    musicVolume = 1.0;
+    sfxVolume = 1.0;
+
+    // Musik-Sounds (werden mit musicVolume multipliziert)
+    musicSounds = ['menuTheme', 'gameTheme', 'endbossTheme'];
+
     // Globaler Sound-Cache für alle SoundManager Instanzen
     static globalSoundCache = {};
 
@@ -185,6 +193,64 @@ class SoundManager {
                     });
                 }
             }
+        });
+    }
+
+    /**
+     * Berechnet die finale Lautstärke für einen Sound
+     * @param {string} soundName - Name des Sounds
+     * @param {number} baseVolume - Basis-Lautstärke des Sounds
+     * @returns {number} - Finale Lautstärke
+     */
+    getFinalVolume(soundName, baseVolume) {
+        const isMusic = this.musicSounds.includes(soundName);
+        const categoryVolume = isMusic ? this.musicVolume : this.sfxVolume;
+        return baseVolume * this.masterVolume * categoryVolume;
+    }
+
+    /**
+     * Setzt die Master-Lautstärke
+     * @param {number} volume - Lautstärke (0.0 - 1.0)
+     */
+    setMasterVolume(volume) {
+        this.masterVolume = Math.max(0, Math.min(1, volume));
+        this.applyVolumeSettings();
+    }
+
+    /**
+     * Setzt die Musik-Lautstärke
+     * @param {number} volume - Lautstärke (0.0 - 1.0)
+     */
+    setMusicVolume(volume) {
+        this.musicVolume = Math.max(0, Math.min(1, volume));
+        this.applyVolumeSettings();
+    }
+
+    /**
+     * Setzt die SFX-Lautstärke
+     * @param {number} volume - Lautstärke (0.0 - 1.0)
+     */
+    setSfxVolume(volume) {
+        this.sfxVolume = Math.max(0, Math.min(1, volume));
+        this.applyVolumeSettings();
+    }
+
+    /**
+     * Wendet die Volume-Einstellungen auf alle Sounds an
+     */
+    applyVolumeSettings() {
+        // Speichere die Basis-Lautstärken beim ersten Aufruf
+        if (!this.baseVolumes) {
+            this.baseVolumes = {};
+            Object.keys(this.sounds).forEach(name => {
+                this.baseVolumes[name] = this.sounds[name].volume;
+            });
+        }
+
+        // Aktualisiere alle Sounds
+        Object.keys(this.sounds).forEach(name => {
+            const baseVolume = this.baseVolumes[name] || 1.0;
+            this.sounds[name].volume = this.getFinalVolume(name, baseVolume);
         });
     }
 }

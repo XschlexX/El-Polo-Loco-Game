@@ -4,7 +4,7 @@ function mainScreenTemplate() {
             <img class="background-image" src="assets/img/9_intro_outro_screens/start/startscreen_2.png" alt="Info">
             <div class="startscreen-controls">
                 <button class="button" onclick="showInfoScreen()">INFO</button>
-                <button class="button" onclick="showControlScreen()">CONTROLS</button>
+                <button class="button" onclick="showSettingsScreen()">SETTINGS</button>
             </div>
                 <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                     <img src="assets/icon/unmute.png" alt="unmute">
@@ -29,7 +29,7 @@ function infoScreenTemplate() {
             <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                 <img src="assets/icon/mute.png" alt="mute">
             </button>
-            <div class="info-screen-content">
+            <div class="screen-content">
                 <div class="info-text">
                     <h2>Info</h2>
                     <p>Help Pepe, the brave Mexican, navigate through the desert! Collect coins and bottles, dodge enemies,
@@ -64,19 +64,47 @@ function infoScreenTemplate() {
     `;
 }
 
-function controlsScreenTemplate() {
-    return /*html*/`
-        <div id="controls_screen" class="all-screens">
-            <img class="background-image" src="assets/img/5_background/first_half_background.png" alt="Controls">
+function settingsScreenTemplate() {
+    return /*html*/ `
+        <div id="settings_screen" class="all-screens">
+            <img class="background-image" src="assets/img/5_background/first_half_background.png" alt="Settings">
             <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                 <img src="assets/icon/unmute.png" alt="unmute">
             </button>
             <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                 <img src="assets/icon/mute.png" alt="mute">
             </button>
-            <div class="screen-container">
+            <div class="screen-content">
+                <h2>Settings</h2>
+                <div class="settings-container">
+                    <h2 class="settings-title">Audio Settings</h2>
+                    
+                    <div class="volume-control">
+                        <label for="master-volume">Master Volume</label>
+                        <div class="slider-container">
+                            <input type="range" id="master-volume" class="volume-slider" min="0" max="100" value="100" oninput="updateMasterVolume(this.value)">
+                            <span id="master-volume-value" class="volume-value">100%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="volume-control">
+                        <label for="music-volume">Music Volume</label>
+                        <div class="slider-container">
+                            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="100" oninput="updateMusicVolume(this.value)">
+                            <span id="music-volume-value" class="volume-value">100%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="volume-control">
+                        <label for="sfx-volume">SFX Volume</label>
+                        <div class="slider-container">
+                            <input type="range" id="sfx-volume" class="volume-slider" min="0" max="100" value="100" oninput="updateSfxVolume(this.value)">
+                            <span id="sfx-volume-value" class="volume-value">100%</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="button" onclick="mainScreen()">BACK</button>
             </div>
-            <button class="button" onclick="mainScreen()">BACK</button>
         </div>
     `;
 }

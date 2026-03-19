@@ -71,9 +71,10 @@ function showInfoScreen() {
     updateSoundButtonState();
 }
 
-function showControlScreen() {
-    document.getElementById('game_container').innerHTML = controlsScreenTemplate();
+function showSettingsScreen() {
+    document.getElementById('game_container').innerHTML = settingsScreenTemplate();
     updateSoundButtonState();
+    initializeVolumeSliders();
 }
 
 function showYouWonScreen(delay = 0) {
@@ -286,4 +287,91 @@ function hideHtmlDefeatOverlay() {
 function tryAgainFromOverlay() {
     hideHtmlDefeatOverlay();
     startGame();
+}
+
+/**
+ * Aktualisiert die Master-Lautstärke
+ * @param {number} value - Lautstärke-Wert (0-100)
+ */
+function updateMasterVolume(value) {
+    if (window.soundManager) {
+        window.soundManager.setMasterVolume(value / 100);
+        document.getElementById('master-volume-value').textContent = value + '%';
+        saveVolumeSettings();
+    }
+}
+
+/**
+ * Aktualisiert die Musik-Lautstärke
+ * @param {number} value - Lautstärke-Wert (0-100)
+ */
+function updateMusicVolume(value) {
+    if (window.soundManager) {
+        window.soundManager.setMusicVolume(value / 100);
+        document.getElementById('music-volume-value').textContent = value + '%';
+        saveVolumeSettings();
+    }
+}
+
+/**
+ * Aktualisiert die SFX-Lautstärke
+ * @param {number} value - Lautstärke-Wert (0-100)
+ */
+function updateSfxVolume(value) {
+    if (window.soundManager) {
+        window.soundManager.setSfxVolume(value / 100);
+        document.getElementById('sfx-volume-value').textContent = value + '%';
+        saveVolumeSettings();
+    }
+}
+
+/**
+ * Speichert die Volume-Einstellungen im localStorage
+ */
+function saveVolumeSettings() {
+    if (window.soundManager) {
+        const settings = {
+            master: window.soundManager.masterVolume,
+            music: window.soundManager.musicVolume,
+            sfx: window.soundManager.sfxVolume
+        };
+        localStorage.setItem('elPoloLoco_volumeSettings', JSON.stringify(settings));
+    }
+}
+
+/**
+ * Lädt die Volume-Einstellungen aus dem localStorage
+ */
+function loadVolumeSettings() {
+    const saved = localStorage.getItem('elPoloLoco_volumeSettings');
+    if (saved && window.soundManager) {
+        const settings = JSON.parse(saved);
+        window.soundManager.setMasterVolume(settings.master || 1.0);
+        window.soundManager.setMusicVolume(settings.music || 1.0);
+        window.soundManager.setSfxVolume(settings.sfx || 1.0);
+    }
+}
+
+/**
+ * Initialisiert die Volume-Slider mit den gespeicherten Werten
+ */
+function initializeVolumeSliders() {
+    if (window.soundManager) {
+        const masterSlider = document.getElementById('master-volume');
+        const musicSlider = document.getElementById('music-volume');
+        const sfxSlider = document.getElementById('sfx-volume');
+
+        if (masterSlider) {
+            masterSlider.value = Math.round(window.soundManager.masterVolume * 100);
+            document.getElementById('master-volume-value').textContent = masterSlider.value + '%';
+        }
+        if (musicSlider) {
+            musicSlider.value = Math.round(window.soundManager.musicVolume * 100);
+            document.getElementById('music-volume-value').textContent = musicSlider.value + '%';
+        }
+        if (sfxSlider) {
+            sfxSlider.value = Math.round(window.soundManager.sfxVolume * 100);
+            document.getElementById('sfx-volume-value').textContent = sfxSlider.value + '%';
+        }
+    }
 }
