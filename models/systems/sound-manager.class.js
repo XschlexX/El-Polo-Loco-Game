@@ -1,50 +1,67 @@
 class SoundManager {
     sounds = {}; // Hier werden alle Sounds gespeichert: { 'jump': Audio-Objekt, 'hurt': Audio-Objekt }
-    loopSounds = ['menuTheme', 'gameTheme', 'endbossTheme', 'characterRun', 'characterSleep', 'endbossAngry']; // Liste der Loop-Sounds
+    loopSounds = ['menuTheme', 'gameTheme', 'characterRun', 'characterSleep', 'endbossAngry']; // Liste der Loop-Sounds
     muted = true; // Sound-Status: true = stumm (Standard), false = an
 
     // Volume-Einstellungen (0.0 - 1.0)
     masterVolume = 1.0;
-    musicVolume = 1.0;
-    sfxVolume = 1.0;
+    musicVolume = 0.5;
+    sfxVolume = 0.5;
 
     // Musik-Sounds (werden mit musicVolume multipliziert)
-    musicSounds = ['menuTheme', 'gameTheme', 'endbossTheme'];
+    musicSounds = ['menuTheme', 'gameTheme'];
 
     // Globaler Sound-Cache für alle SoundManager Instanzen
     static globalSoundCache = {};
 
     constructor() {
         this.initializeSounds();
+        this.applyVolumeSettings();
+        this.initializeVolumeSettings();
+    }
+
+    /**
+     * Initialisiert die Volume-Einstellungen im localStorage
+     * Speichert die Default-Werte nur wenn noch keine Einstellungen existieren
+     */
+    initializeVolumeSettings() {
+        // Prüfe ob bereits Einstellungen im localStorage existieren
+        const existing = localStorage.getItem('elPoloLoco_volumeSettings');
+        if (!existing) {
+            // Speichere aktuelle Default-Werte
+            const settings = {
+                master: this.masterVolume,
+                music: this.musicVolume,
+                sfx: this.sfxVolume
+            };
+            localStorage.setItem('elPoloLoco_volumeSettings', JSON.stringify(settings));
+        }
     }
 
     /**
      * Lädt alle Sounds des Spiels
      */
     initializeSounds() {
-        this.addSound('menuTheme', 'sounds/music/menu-theme.mp3', 0.5);
-        this.addSound('gameTheme', 'sounds/music/game-theme1.mp3', 0.5);
-        this.addSound('endbossTheme', 'sounds/music/endboss-theme.mp3', 0.5);
-        this.addSound('characterSleep', 'sounds/effects/character/character-sleep.mp3', 0.3);
-        this.addSound('characterJump', 'sounds/effects/character/character-jump.mp3', 0.1);
-        this.addSound('characterLand', 'sounds/effects/character/character-land.mp3', 0.3);  // Leiser!
-        this.addSound('characterRun', 'sounds/effects/character/character-run.mp3', 0.3);
-        this.addSound('characterHurt', 'sounds/effects/character/character-hurt.mp3', 0.6);
-        this.addSound('characterDead', 'sounds/effects/character/character-dead.mp3', 0.6);
-        this.addSound('chickenDead', 'sounds/effects/enemies/chicken-dead.mp3', 1.0);  // Volle Lautstärke!
+        this.addSound('menuTheme', 'sounds/music/menu-theme.mp3', 1.0);
+        this.addSound('gameTheme', 'sounds/music/game-theme.mp3', 1.0);
+        this.addSound('characterSleep', 'sounds/effects/character/character-sleep.mp3', 1.0);
+        this.addSound('characterJump', 'sounds/effects/character/character-jump.mp3', 0.3);
+        this.addSound('characterLand', 'sounds/effects/character/character-land.mp3', 1.0);
+        this.addSound('characterRun', 'sounds/effects/character/character-run.mp3', 1.0);
+        this.addSound('characterHurt', 'sounds/effects/character/character-hurt.mp3', 1.0);
+        this.addSound('characterDead', 'sounds/effects/character/character-dead.mp3', 1.0);
+        this.addSound('chickenDead', 'sounds/effects/enemies/chicken-dead.mp3', 1.0);
         this.addSound('chickenSmallDead', 'sounds/effects/enemies/chicken-small-dead.mp3', 1.0);
-        this.addSound('bottleCollect', 'sounds/effects/bottle-collect.mp3', 0.2);
-        this.addSound('bottleThrow', 'sounds/effects/bottle-throw.mp3', 0.4);
-        this.addSound('bottleSplash', 'sounds/effects/bottle-splash.mp3', 0.6);
-        this.addSound('coinCollect', 'sounds/effects/coin-collect.mp3', 0.4);
-        this.addSound('endbossHurt', 'sounds/effects/enemies/endboss-hurt.mp3', 0.4);
-        this.addSound('endbossAngry', 'sounds/effects/enemies/endboss-angry.mp3', 1);
-        this.addSound('endbossDead', 'sounds/effects/enemies/endboss-dead.mp3', 0.1);
-        this.addSound('youWon', 'sounds/win-lose/win-sound.mov', 0.5);
-        this.addSound('youLost', 'sounds/win-lose/lose-sound.wav', 0.5);
-        this.addSound('buttonHover', 'sounds/effects/button/button-hover.mp3', 0.5);
-        this.addSound('buttonClick', 'sounds/effects/button/button-click.mp3', 0.5);
-
+        this.addSound('bottleCollect', 'sounds/effects/bottle-collect.mp3', 1.0);
+        this.addSound('bottleThrow', 'sounds/effects/bottle-throw.mp3', 1.0);
+        this.addSound('bottleSplash', 'sounds/effects/bottle-splash.mp3', 1.0);
+        this.addSound('coinCollect', 'sounds/effects/coin-collect.mp3', 1.0);
+        this.addSound('endbossHurt', 'sounds/effects/enemies/endboss-hurt.mp3', 1.0);
+        this.addSound('endbossAngry', 'sounds/effects/enemies/endboss-angry.mp3', 1.0);
+        this.addSound('endbossDead', 'sounds/effects/enemies/endboss-dead.mp3', 0.6);
+        this.addSound('youWon', 'sounds/win-lose/win-sound.mov', 1.0);
+        this.addSound('youLost', 'sounds/win-lose/lose-sound.wav', 1.0);
+        this.addSound('buttonHover', 'sounds/effects/button/button-hover.mp3', 1.0);
     }
 
     /**
@@ -162,6 +179,7 @@ class SoundManager {
      */
     unmuteAll() {
         this.muted = false;
+        this.applyVolumeSettings();
     }
 
     /**
@@ -250,7 +268,8 @@ class SoundManager {
         // Aktualisiere alle Sounds
         Object.keys(this.sounds).forEach(name => {
             const baseVolume = this.baseVolumes[name] || 1.0;
-            this.sounds[name].volume = this.getFinalVolume(name, baseVolume);
+            const finalVolume = this.getFinalVolume(name, baseVolume);
+            this.sounds[name].volume = finalVolume;
         });
     }
 }

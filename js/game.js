@@ -119,7 +119,9 @@ function initOrientationCheck() {
 
     function checkOrientation() {
         const isPortrait = window.innerHeight > window.innerWidth;
-        const isMobile = window.innerWidth <= 500;
+        const isMobile = window.innerWidth <= 600;
+        const isSettingsOverlayOpen = document.getElementById('settings-overlay')?.classList.contains('active');
+        const isAudioSettingsOverlayOpen = document.getElementById('audio-settings-overlay')?.classList.contains('active');
 
         if (isMobile && isPortrait) {
             rotateScreen.style.display = 'flex';
@@ -128,7 +130,8 @@ function initOrientationCheck() {
             }
         } else {
             rotateScreen.style.display = 'none';
-            if (world) {
+            // Nur resume wenn kein Settings-Overlay geöffnet ist
+            if (world && !isSettingsOverlayOpen && !isAudioSettingsOverlayOpen) {
                 world.resumeGame();
             }
         }

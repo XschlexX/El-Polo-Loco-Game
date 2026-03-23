@@ -124,17 +124,18 @@ function toggleSoundButton() {
     const unmuteBtn = document.getElementById('unmute-btn');
     const muteBtn = document.getElementById('mute-btn');
 
-    if (unmuteBtn.style.display === 'none') {
-        // Mute-Button ist sichtbar, switch to Unmute
-        unmuteBtn.style.display = 'block';
-        muteBtn.style.display = 'none';
-        disableSound();
-    } else {
-        // Unmute-Button ist sichtbar, switch to Mute
-        unmuteBtn.style.display = 'none';
-        muteBtn.style.display = 'block';
+    if (window.soundManager && window.soundManager.muted) {
+        // Sound ist aus, schalte ein
+        if (unmuteBtn) unmuteBtn.style.display = 'none';
+        if (muteBtn) muteBtn.style.display = 'block';
         enableSound();
+    } else {
+        // Sound ist an, schalte aus
+        if (unmuteBtn) unmuteBtn.style.display = 'block';
+        if (muteBtn) muteBtn.style.display = 'none';
+        disableSound();
     }
+    updateOverlayAudioToggleButton();
 }
 
 /**
@@ -158,7 +159,6 @@ function showHtmlSettingsOverlay() {
     const overlay = document.getElementById('settings-overlay');
     if (overlay && window.world) {
         overlay.classList.add('active');
-        updateSettingsSoundButtonText();
         window.world.pauseGame();
     }
 }
@@ -175,27 +175,95 @@ function hideHtmlSettingsOverlay() {
 }
 
 /**
- * Aktualisiert den Sound-Button Text im Settings Overlay
+ * Zeigt das Audio Settings Overlay an
  */
-function updateSettingsSoundButtonText() {
-    const soundBtn = document.getElementById('settings-sound-btn');
-    if (soundBtn && window.soundManager) {
-        soundBtn.textContent = window.soundManager.muted ? 'Sound: OFF' : 'Sound: ON';
+function showAudioSettingsOverlay() {
+    const audioOverlay = document.getElementById('audio-settings-overlay');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    if (audioOverlay && settingsOverlay) {
+        settingsOverlay.classList.remove('active');
+        audioOverlay.classList.add('active');
+        initializeOverlayVolumeSliders();
     }
 }
 
 /**
- * Toggle Sound aus dem Settings Overlay
+ * Schließt das Audio Settings Overlay und zeigt das Menu Overlay wieder an
  */
-function toggleSettingsSound() {
+function closeAudioSettingsOverlay() {
+    const audioOverlay = document.getElementById('audio-settings-overlay');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    if (audioOverlay && settingsOverlay) {
+        audioOverlay.classList.remove('active');
+        settingsOverlay.classList.add('active');
+    }
+}
+
+/**
+ * Initialisiert die Volume-Slider im Audio Settings Overlay
+ */
+function initializeOverlayVolumeSliders() {
     if (window.soundManager) {
-        if (window.soundManager.muted) {
-            window.soundManager.unmuteAll();
-            window.soundManager.playMusic('menuTheme');
-        } else {
-            window.soundManager.muteAll();
+        const masterSlider = document.getElementById('overlay-master-volume');
+        const musicSlider = document.getElementById('overlay-music-volume');
+        const sfxSlider = document.getElementById('overlay-sfx-volume');
+
+        if (masterSlider) {
+            masterSlider.value = Math.round(window.soundManager.masterVolume * 100);
+            document.getElementById('overlay-master-volume-value').textContent = masterSlider.value + '%';
         }
-        updateSettingsSoundButtonText();
+        if (musicSlider) {
+            musicSlider.value = Math.round(window.soundManager.musicVolume * 100);
+            document.getElementById('overlay-music-volume-value').textContent = musicSlider.value + '%';
+        }
+        if (sfxSlider) {
+            sfxSlider.value = Math.round(window.soundManager.sfxVolume * 100);
+            document.getElementById('overlay-sfx-volume-value').textContent = sfxSlider.value + '%';
+        }
+        updateOverlayAudioToggleButton();
+    }
+}
+
+/**
+ * Aktualisiert den Audio Toggle Button Text im Overlay
+ */
+function updateOverlayAudioToggleButton() {
+    const toggleBtn = document.getElementById('overlay-audio-toggle-btn');
+    if (toggleBtn && window.soundManager) {
+        toggleBtn.textContent = window.soundManager.muted ? 'Sound: OFF' : 'Sound: ON';
+    }
+}
+
+/**
+ * Aktualisiert die Master-Lautstärke aus dem Overlay
+ */
+function updateOverlayMasterVolume(value) {
+    if (window.soundManager) {
+        window.soundManager.setMasterVolume(value / 100);
+        document.getElementById('overlay-master-volume-value').textContent = value + '%';
+        saveVolumeSettings();
+    }
+}
+
+/**
+ * Aktualisiert die Musik-Lautstärke aus dem Overlay
+ */
+function updateOverlayMusicVolume(value) {
+    if (window.soundManager) {
+        window.soundManager.setMusicVolume(value / 100);
+        document.getElementById('overlay-music-volume-value').textContent = value + '%';
+        saveVolumeSettings();
+    }
+}
+
+/**
+ * Aktualisiert die SFX-Lautstärke aus dem Overlay
+ */
+function updateOverlaySfxVolume(value) {
+    if (window.soundManager) {
+        window.soundManager.setSfxVolume(value / 100);
+        document.getElementById('overlay-sfx-volume-value').textContent = value + '%';
+        saveVolumeSettings();
     }
 }
 
@@ -341,14 +409,22 @@ function saveVolumeSettings() {
 
 /**
  * Lädt die Volume-Einstellungen aus dem localStorage
+ * oder initialisiert sie mit den Default-Werten aus dem SoundManager
  */
 function loadVolumeSettings() {
     const saved = localStorage.getItem('elPoloLoco_volumeSettings');
     if (saved && window.soundManager) {
         const settings = JSON.parse(saved);
-        window.soundManager.setMasterVolume(settings.master || 1.0);
-        window.soundManager.setMusicVolume(settings.music || 1.0);
-        window.soundManager.setSfxVolume(settings.sfx || 1.0);
+        // Prüfe ob master existiert und eine gültige Zahl ist, sonst verwende Default
+        const masterVol = (typeof settings.master === 'number') ? settings.master : window.soundManager.masterVolume;
+        const musicVol = (typeof settings.music === 'number') ? settings.music : window.soundManager.musicVolume;
+        const sfxVol = (typeof settings.sfx === 'number') ? settings.sfx : window.soundManager.sfxVolume;
+        window.soundManager.setMasterVolume(masterVol);
+        window.soundManager.setMusicVolume(musicVol);
+        window.soundManager.setSfxVolume(sfxVol);
+    } else if (window.soundManager) {
+        // Keine gespeicherten Einstellungen - speichere die aktuellen Default-Werte
+        saveVolumeSettings();
     }
 }
 

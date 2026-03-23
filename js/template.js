@@ -117,6 +117,7 @@ function showCanvasTemplate() {
     </button>
     ${touchControlsTemplate()}
     ${settingsOverlayTemplate()}
+    ${audioSettingsOverlayTemplate()}
     ${victoryOverlayTemplate()}
     ${defeatOverlayTemplate()}
     `;
@@ -178,10 +179,48 @@ function settingsOverlayTemplate() {
         <div id="settings-overlay" class="game-overlay">
             <div class="overlay-container">
                 <h2 class="overlay-title">Menu</h2>
-                <button id="settings-sound-btn" class="overlay-button" onclick="toggleSettingsSound()">Sound: ON</button>
+                <button class="overlay-button" onclick="showAudioSettingsOverlay()">Audio Settings</button>
                 <button class="overlay-button" onclick="restartGameFromOverlay()">Restart Game</button>
                 <button class="overlay-button" onclick="exitToMainMenu()">Exit Game</button>
                 <button class="overlay-button" onclick="resumeGameFromOverlay()">Resume</button>
+            </div>
+        </div>
+    `;
+}
+
+function audioSettingsOverlayTemplate() {
+    return /*html*/`
+        <div id="audio-settings-overlay" class="game-overlay">
+            <div class="overlay-container">
+                <h2 class="overlay-title">Audio Settings</h2>
+                
+                <button id="overlay-audio-toggle-btn" class="overlay-button" onclick="toggleSoundButton()">Sound: OFF</button>
+                
+                <div class="volume-control">
+                    <label for="overlay-master-volume">Master Volume</label>
+                    <div class="slider-container">
+                        <input type="range" id="overlay-master-volume" class="volume-slider" min="0" max="100" value="100" oninput="updateOverlayMasterVolume(this.value)">
+                        <span id="overlay-master-volume-value" class="volume-value">100%</span>
+                    </div>
+                </div>
+                
+                <div class="volume-control">
+                    <label for="overlay-music-volume">Music Volume</label>
+                    <div class="slider-container">
+                        <input type="range" id="overlay-music-volume" class="volume-slider" min="0" max="100" value="100" oninput="updateOverlayMusicVolume(this.value)">
+                        <span id="overlay-music-volume-value" class="volume-value">100%</span>
+                    </div>
+                </div>
+                
+                <div class="volume-control">
+                    <label for="overlay-sfx-volume">SFX Volume</label>
+                    <div class="slider-container">
+                        <input type="range" id="overlay-sfx-volume" class="volume-slider" min="0" max="100" value="100" oninput="updateOverlaySfxVolume(this.value)">
+                        <span id="overlay-sfx-volume-value" class="volume-value">100%</span>
+                    </div>
+                </div>
+                
+                <button class="overlay-button" onclick="closeAudioSettingsOverlay()">Back</button>
             </div>
         </div>
     `;
