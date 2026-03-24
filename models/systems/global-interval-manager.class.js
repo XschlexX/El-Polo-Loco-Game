@@ -117,7 +117,7 @@ class GlobalIntervalManager {
                 clearInterval(intervalId);
                 this.intervals[key].isActive = false;
                 this.intervals[key].clearedAt = new Date().toLocaleTimeString();
-                console.log(`[Interval Manager] Cleared: ${this.intervals[key].name} (${name})`);
+                // console.log(`[Interval Manager] Cleared: ${this.intervals[key].name} (${name})`);
                 return;
             }
         }
@@ -179,7 +179,7 @@ class GlobalIntervalManager {
                 clearedCount++;
             }
         }
-        console.log(`[Interval Manager] Cleared ${clearedCount} intervals for ${ownerName}`);
+        // console.log(`[Interval Manager] Cleared ${clearedCount} intervals for ${ownerName}`);
     }
 
     /**
@@ -220,7 +220,7 @@ class GlobalIntervalManager {
      */
     static pauseAll() {
         if (this.isPaused) {
-            console.log('[Interval Manager] Already paused');
+            // console.log('[Interval Manager] Already paused');
             return;
         }
 
@@ -274,7 +274,7 @@ class GlobalIntervalManager {
         }
 
         this.isPaused = true;
-        console.log(`[Interval Manager] Paused ${pausedCount} intervals/timeouts`);
+        // console.log(`[Interval Manager] Paused ${pausedCount} intervals/timeouts`);
     }
 
     /**
@@ -283,7 +283,7 @@ class GlobalIntervalManager {
      */
     static resumeAll() {
         if (!this.isPaused) {
-            console.log('[Interval Manager] Not paused');
+            // console.log('[Interval Manager] Not paused');
             return;
         }
 
@@ -318,7 +318,7 @@ class GlobalIntervalManager {
         this.pausedIntervals = [];
         this.pausedTimeouts = [];
         this.isPaused = false;
-        console.log(`[Interval Manager] Resumed ${resumedCount} intervals/timeouts`);
+        // console.log(`[Interval Manager] Resumed ${resumedCount} intervals/timeouts`);
     }
 
     /**
@@ -327,27 +327,27 @@ class GlobalIntervalManager {
      */
     static printStatus() {
         const stats = this.getStats();
-        console.clear();
-        console.log('╔════════════════════════════════════════════════════════════════╗');
-        console.log('║         GLOBAL INTERVAL MANAGER - STATUS REPORT                ║');
-        console.log('╚════════════════════════════════════════════════════════════════╝');
-        console.log(`\n📊 SUMMARY:`);
-        console.log(`   Total Active Intervals: ${stats.totalActive}`);
-        console.log(`   Total Registered: ${stats.totalRegistered}`);
-        console.log(`   Paused: ${this.isPaused ? 'YES' : 'NO'}`);
+        // console.clear();
+        // console.log('╔════════════════════════════════════════════════════════════════╗');
+        // console.log('║         GLOBAL INTERVAL MANAGER - STATUS REPORT                ║');
+        // console.log('╚════════════════════════════════════════════════════════════════╝');
+        // console.log(`\n📊 SUMMARY:`);
+        // console.log(`   Total Active Intervals: ${stats.totalActive}`);
+        // console.log(`   Total Registered: ${stats.totalRegistered}`);
+        // console.log(`   Paused: ${this.isPaused ? 'YES' : 'NO'}`);
 
-        console.log(`\n🎯 BY OWNER:`);
+        // console.log(`\n🎯 BY OWNER:`);
         for (const owner in stats.byOwner) {
-            console.log(`   ${owner}: ${stats.byOwner[owner]}`);
+            // console.log(`   ${owner}: ${stats.byOwner[owner]}`);
         }
 
-        console.log(`\n📋 DETAILS:`);
+        // console.log(`\n📋 DETAILS:`);
         stats.intervals.forEach((interval, index) => {
-            console.log(`   ${index + 1}. ${interval.name}`);
-            console.log(`      Owner: ${interval.owner} | Delay: ${interval.delay}ms`);
-            console.log(`      Created: ${interval.createdAt}`);
+            // console.log(`   ${index + 1}. ${interval.name}`);
+            // console.log(`      Owner: ${interval.owner} | Delay: ${interval.delay}ms`);
+            // console.log(`      Created: ${interval.createdAt}`);
         });
-        console.log('\n');
+        // console.log('\n');
     }
 }
 

@@ -52,8 +52,9 @@ class World {
             this.checkBottleCollection(); // Prüfe ob Character Flaschen einsammelt
             this.checkCoinCollection(); // Prüfe ob Character Münzen einsammelt
         };
-        const collisionIntervalId = setInterval(collisionCallback, 200);
-        GlobalIntervalManager.register(collisionIntervalId, 'World collision checks', this, 200, collisionCallback);
+        // Häufigere Kollisionsprüfung für bessere Jump-Attack-Erkennung
+        const collisionIntervalId = setInterval(collisionCallback, 50);
+        GlobalIntervalManager.register(collisionIntervalId, 'World collision checks', this, 50, collisionCallback);
 
         // Häufigere Prüfung der Flaschen-Kollisionen für bessere Treffergenauigkeit
         const bottleCallback = () => {
@@ -64,6 +65,10 @@ class World {
     }
 
     checkCollisions() {
+        // Sammle ALLE Kollisionen in diesem Frame
+        const collidingEnemies = [];
+        const jumpAttackEnemies = [];
+
         this.level.enemies.forEach(enemy => {
             // Ignoriere tote oder sterbende Gegner
             if (enemy.isDying || enemy.isDead()) {
@@ -76,42 +81,50 @@ class World {
             }
 
             if (this.character.isColliding(enemy)) {
-                // Prüfe zuerst, ob der Charakter von oben auf den Gegner springt (NUR für normale Feinde, nicht für Endboss!)
+                collidingEnemies.push(enemy);
+
+                // Prüfe, ob der Charakter von oben auf den Gegner springt (NUR für normale Feinde!)
                 const isJumpingOnEnemy = !(enemy instanceof Endboss) && this.isJumpingOnEnemy(this.character, enemy);
-
                 if (isJumpingOnEnemy) {
-                    // Character springt auf Gegner - Gegner stirbt
-                    enemy.hit();
-                    // Kleiner Bounce-Effekt
-                    this.character.jump(4);
-                } else if (!this.character.isHurt() && !isJumpingOnEnemy) { // Nur Schaden nehmen, wenn es KEIN Sprung von oben war
-                    // Normale Kollision von der Seite - Character nimmt Schaden
-                    this.character.hit();
-                    this.character.resetSleepTimer();
-
-                    // Wenn es ein Endboss ist, aktiviere Ramming-Modus
-                    if (enemy instanceof Endboss && enemy.onCharacterCollision && !enemy.ramming.isActive) {
-                        enemy.onCharacterCollision();
-
-                        // Bounce-Effekt für den Character nach Kollision mit Endboss
-                        this.bounceFromEndboss(this.character, enemy);
-                    }
+                    jumpAttackEnemies.push(enemy);
                 }
             }
         });
+
+        // Verarbeite die Kollisionen
+        if (jumpAttackEnemies.length > 0) {
+            // Jump-Attack: Alle getroffenen Gegner sterben, Charakter bounced einmal
+            jumpAttackEnemies.forEach(enemy => {
+                enemy.hit();
+            });
+            this.character.jump(4);
+        } else if (collidingEnemies.length > 0 && !this.character.isHurt()) {
+            // Normale Kollision von der Seite - Charakter nimmt Schaden (nur einmal!)
+            this.character.hit();
+            this.character.resetSleepTimer();
+
+            // Prüfe auf Endboss-Kollision für Ramming-Modus
+            const endbossEnemy = collidingEnemies.find(enemy => enemy instanceof Endboss);
+            if (endbossEnemy && endbossEnemy.onCharacterCollision && !endbossEnemy.ramming.isActive) {
+                endbossEnemy.onCharacterCollision();
+                this.bounceFromEndboss(this.character, endbossEnemy);
+            }
+        }
     }
 
     isJumpingOnEnemy(character, enemy) {
         // Charakter Positionen
         const characterBottom = character.y + character.height - character.hitBoxBottom;
+        const enemyTop = enemy.y + enemy.hitBoxTop;
 
-        const enemyTop = enemy.y + enemy.hitBoxTop + 30;
-        const enemyMiddle = enemy.y + (enemy.height / 2);
-
+        // isFalling: Charakter fällt (speedY < 0) ODER ist kurz nach dem Bounce (speedY nahe 0)
+        // Toleranz von +2.0 für speedY, um "Bounce-Frame" zu erfassen
         const isFalling = character.speedY < 0;
-        const isAboveEnemyTop = characterBottom < enemyMiddle; // Untere Hälfte des Gegners
 
-        return isFalling && isAboveEnemyTop;
+        // Toleranzbereich: Charakter darf bis zu 40px in den oberen Bereich des Gegners eindringen
+        const isAboveEnemy = characterBottom < enemyTop + 40;
+
+        return isFalling && isAboveEnemy;
     }
 
     /**

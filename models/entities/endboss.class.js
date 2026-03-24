@@ -24,7 +24,7 @@ class Endboss extends MovableObjects {
     ramming = {
         isActive: false,         // Ramm-Modus aktiv?
         direction: 1,            // 1 = rechts, -1 = links
-        distance: 100,  // Wie weit nach Kollision weiterlaufen
+        distance: 300,  // Wie weit nach Kollision weiterlaufen
         distanceTraveled: 0      // Wie weit bereits gelaufen
     };
 
@@ -287,7 +287,7 @@ class Endboss extends MovableObjects {
             } else {
                 GlobalIntervalManager.clear(deathInterval, 'Endboss death');
                 this.state.isPlayingDeath = false;
-                showYouWonScreen(1000);
+                showYouWonScreen(500);
             }
         };
         const deathInterval = setInterval(deathCallback, 150);
@@ -325,8 +325,8 @@ class Endboss extends MovableObjects {
             distance = (this.x) - (character.x + character.width);
         }
 
-        // Nur sichtbar wenn: VOR dem Endboss (distance > 0) UND nah genug (< 100px)
-        return distance > 0 && distance < 100;
+        // Nur sichtbar wenn: VOR dem Endboss (distance > 0) UND nah genug (< 400px)
+        return distance > 0 && distance < 400;
     }
 
     /**
