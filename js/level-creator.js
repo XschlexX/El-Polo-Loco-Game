@@ -38,9 +38,6 @@ function createLevel(levelNumber) {
             new GameTimer()
         ],
         [
-            new DebugInfo()
-        ],
-        [
             new LevelDisplay(lvlData.levelNumber)
         ],
         generateBottlesWithMinDistance(lvlData.bottleAmount, 100),

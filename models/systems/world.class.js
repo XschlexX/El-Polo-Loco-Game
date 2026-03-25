@@ -7,9 +7,9 @@ class World {
     camera_x = 0;
     throwableObjects = [];
     lastThrow;
-    settingsOverlay;
-    victoryOverlay;
-    defeatOverlay;
+    // settingsOverlay;
+    // victoryOverlay;
+    // defeatOverlay;
     soundManager;
 
     constructor(canvas, keyboard) {
@@ -27,7 +27,7 @@ class World {
         this.draw();
         this.setWorld();
         this.runGame();
-        this.setupCanvasListeners();
+        // this.setupCanvasListeners();
     }
 
     setWorld() {
@@ -39,18 +39,14 @@ class World {
             enemy.world = this;
         });
 
-        // Setze world-Referenz für DebugInfo
-        this.level.debugInfo.forEach(debug => {
-            debug.world = this;
-        });
+        // DebugOverlay ist jetzt HTML-basiert und wird in start.js initialisiert
     }
 
     runGame() {
         const collisionCallback = () => {
             this.checkCollisions();
-            this.checkThrowableObject();
-            this.checkBottleCollection(); // Prüfe ob Character Flaschen einsammelt
-            this.checkCoinCollection(); // Prüfe ob Character Münzen einsammelt
+            this.checkBottleCollection();
+            this.checkCoinCollection();
         };
         // Häufigere Kollisionsprüfung für bessere Jump-Attack-Erkennung
         const collisionIntervalId = setInterval(collisionCallback, 50);
@@ -225,11 +221,6 @@ class World {
         });
     }
 
-    checkThrowableObject() {
-        // Flaschenwurf wird jetzt in der Character-Klasse gesteuert
-        // (in startThrowAnimation() -> throwBottle())
-    }
-
     throwInterval() {
         let timeSinceLastThrow = new Date().getTime() - this.lastThrow;
         timeSinceLastThrow = timeSinceLastThrow / 1000;
@@ -238,33 +229,20 @@ class World {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Parallax-Hintergründe zeichnen - jeder Layer mit eigenem Faktor
         this.drawParallaxBackgrounds();
-
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.clouds);
         this.ctx.translate(-this.camera_x, 0);
-
         this.addObjectsToMap(this.level.statusBars);
         this.addObjectsToMap(this.level.gameTimer);
         this.addObjectsToMap(this.level.levelDisplay);
-
-        // Debug-Info zeichnen (falls vorhanden)
-        if (this.level.debugInfo && this.level.debugInfo.length > 0) {
-            this.addObjectsToMap(this.level.debugInfo);
-        }
-
         this.ctx.translate(this.camera_x, 0);
-
         this.addToMap(this.character);
-        this.addObjectsToMap(this.level.collectableBottles); // Zeichne sammelbare Flaschen
-        this.addObjectsToMap(this.level.collectableCoins); // Zeichne sammelbare Coins
+        this.addObjectsToMap(this.level.collectableBottles);
+        this.addObjectsToMap(this.level.collectableCoins);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
-
-        // Overlays sind jetzt HTML-basiert und werden nicht mehr auf dem Canvas gezeichnet
 
         let self = this;
         requestAnimationFrame(() => self.draw());
@@ -336,82 +314,82 @@ class World {
         mo.x = -mo.x;
     }
 
-    setupCanvasListeners() {
-        // Click-Event für Settings-Button und Overlay
-        this.canvas.addEventListener('click', (e) => {
-            const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
-            this.handleCanvasClick(coords.x, coords.y);
-        });
+    // setupCanvasListeners() {
+    //     // Click-Event für Settings-Button und Overlay
+    //     this.canvas.addEventListener('click', (e) => {
+    //         const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
+    //         this.handleCanvasClick(coords.x, coords.y);
+    //     });
 
-        // Touch-Event für mobile Geräte
-        this.canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const touch = e.touches[0];
-            const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
-            this.handleCanvasClick(coords.x, coords.y);
-        }, { passive: false });
+    //     // Touch-Event für mobile Geräte
+    //     this.canvas.addEventListener('touchstart', (e) => {
+    //         e.preventDefault();
+    //         e.stopPropagation();
+    //         const touch = e.touches[0];
+    //         const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
+    //         this.handleCanvasClick(coords.x, coords.y);
+    //     }, { passive: false });
 
-        // Touchend-Event hinzufügen für bessere Kompatibilität
-        this.canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        }, { passive: false });
+    //     // Touchend-Event hinzufügen für bessere Kompatibilität
+    //     this.canvas.addEventListener('touchend', (e) => {
+    //         e.preventDefault();
+    //         e.stopPropagation();
+    //     }, { passive: false });
 
-        // Mousemove-Event für Hover-Effekt
-        this.canvas.addEventListener('mousemove', (e) => {
-            const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
-            this.handleCanvasHover(coords.x, coords.y);
-        });
+    //     // Mousemove-Event für Hover-Effekt
+    //     this.canvas.addEventListener('mousemove', (e) => {
+    //         const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
+    //         this.handleCanvasHover(coords.x, coords.y);
+    //     });
 
-        // Touch-Move für Hover-Effekt auf Mobile
-        this.canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
-            this.handleCanvasHover(coords.x, coords.y);
-        }, { passive: false });
-    }
+    //     // Touch-Move für Hover-Effekt auf Mobile
+    //     this.canvas.addEventListener('touchmove', (e) => {
+    //         e.preventDefault();
+    //         const touch = e.touches[0];
+    //         const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
+    //         this.handleCanvasHover(coords.x, coords.y);
+    //     }, { passive: false });
+    // }
 
-    /**
-     * Konvertiert Screen-Koordinaten zu Canvas-Koordinaten
-     * Berücksichtigt CSS-Scaling und Canvas-Resolution
-     * @param {number} clientX - X-Position auf dem Screen
-     * @param {number} clientY - Y-Position auf dem Screen
-     * @returns {Object} - {x, y} Canvas-Koordinaten
-     */
-    getCanvasCoordinates(clientX, clientY) {
-        const rect = this.canvas.getBoundingClientRect();
+    // /**
+    //  * Konvertiert Screen-Koordinaten zu Canvas-Koordinaten
+    //  * Berücksichtigt CSS-Scaling und Canvas-Resolution
+    //  * @param {number} clientX - X-Position auf dem Screen
+    //  * @param {number} clientY - Y-Position auf dem Screen
+    //  * @returns {Object} - {x, y} Canvas-Koordinaten
+    //  */
+    // getCanvasCoordinates(clientX, clientY) {
+    //     const rect = this.canvas.getBoundingClientRect();
 
-        // Berechne die relative Position im Canvas (0-1)
-        const relativeX = (clientX - rect.left) / rect.width;
-        const relativeY = (clientY - rect.top) / rect.height;
+    //     // Berechne die relative Position im Canvas (0-1)
+    //     const relativeX = (clientX - rect.left) / rect.width;
+    //     const relativeY = (clientY - rect.top) / rect.height;
 
-        // Konvertiere zu Canvas-Koordinaten
-        return {
-            x: relativeX * this.canvas.width,
-            y: relativeY * this.canvas.height
-        };
-    }
+    //     // Konvertiere zu Canvas-Koordinaten
+    //     return {
+    //         x: relativeX * this.canvas.width,
+    //         y: relativeY * this.canvas.height
+    //     };
+    // }
 
-    /**
-     * Behandelt Klick-Events auf dem Canvas (für Mouse und Touch)
-     * @param {number} x - X-Position des Klicks
-     * @param {number} y - Y-Position des Klicks
-     */
-    handleCanvasClick(x, y) {
-        // Overlays sind jetzt HTML-basiert, keine Canvas-Klick-Handler mehr nötig
-    }
+    // /**
+    //  * Behandelt Klick-Events auf dem Canvas (für Mouse und Touch)
+    //  * @param {number} x - X-Position des Klicks
+    //  * @param {number} y - Y-Position des Klicks
+    //  */
+    // handleCanvasClick(x, y) {
+    //     // Overlays sind jetzt HTML-basiert, keine Canvas-Klick-Handler mehr nötig
+    // }
 
-    /**
-     * Behandelt Hover-Events auf dem Canvas (für Mouse und Touch)
-     * @param {number} x - X-Position
-     * @param {number} y - Y-Position
-     */
-    handleCanvasHover(x, y) {
-        // Overlays sind jetzt HTML-basiert, keine Canvas-Hover-Handler mehr nötig
-        this.canvas.style.cursor = 'default';
-    }
+    // /**
+    //  * Behandelt Hover-Events auf dem Canvas (für Mouse und Touch)
+    //  * @param {number} x - X-Position
+    //  * @param {number} y - Y-Position
+    //  */
+    // handleCanvasHover(x, y) {
+    //     // Overlays sind jetzt HTML-basiert, keine Canvas-Hover-Handler mehr nötig
+    //     this.canvas.style.cursor = 'default';
+    // }
 
     pauseGame() {
         // 2. Pausiere alle Intervals

@@ -1,11 +1,11 @@
 // Debug-Settings
 let debugModus = false;
 let characterDebug = true;
-let characterGodMode = false;
+let characterGodMode = true;
 let endbossDebug = true;
 let endboss = true;
-let chicken = false;
-let smallChicken = false;
+let chicken = true;
+let smallChicken = true;
 
 // Canvas-Größe
 let canvasHeight = 480;
@@ -27,7 +27,7 @@ let levels = {
         characterBottles: 100,
         smallChickenAmount: smallChicken ? 10 : 0,
         bigChickenAmount: chicken ? 10 : 0,
-        chickenSpeed: 3,
+        chickenSpeed: 5,
         coinsAmount: 10,
         bottleAmount: 10,
         endbossHP: 20,

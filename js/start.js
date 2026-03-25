@@ -35,6 +35,12 @@ function startGame(level = 1) {
     // Zeige Loading Screen
     document.getElementById('game_container').innerHTML = showCanvasTemplate() + loadingScreenTemplate();
     canvas = document.getElementById('canvas');
+    
+    // Verstecke Settings-Button während des Ladens
+    const settingsBtn = document.getElementById('settings-btn');
+    if (settingsBtn) {
+        settingsBtn.style.display = 'none';
+    }
 
     // Erstelle SoundManager falls nicht vorhanden
     if (!window.soundManager) {
@@ -55,10 +61,25 @@ function startGame(level = 1) {
         () => {
             // Alle Assets geladen - starte das Spiel
             document.getElementById('loading-screen').style.display = 'none';
+            
+            // Zeige Settings-Button wieder an
+            const settingsBtn = document.getElementById('settings-btn');
+            if (settingsBtn) {
+                settingsBtn.style.display = 'flex';
+            }
+            
             window.soundManager.stopMusic('menuTheme');
             window.soundManager.playMusic('gameTheme');
             createLevel(level);
             world = new World(canvas, keyboard);
+            
+            // Initialisiere HTML-basierten Debug-Overlay
+            if (typeof debugOverlay !== 'undefined') {
+                debugOverlay.destroy();
+            }
+            window.debugOverlay = new DebugOverlay();
+            window.debugOverlay.setWorld(world);
+            
             keyboardActive = true;
             // Initialisiere Touch-Controls für mobile Geräte
             initTouchControls();
