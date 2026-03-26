@@ -141,6 +141,20 @@ function initOrientationCheck() {
     checkOrientation();
 
     // Bei Größenänderung prüfen
-    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('resize', () => {
+        checkOrientation();
+        logWindowSize(); // Window-Größe loggen
+    });
     window.addEventListener('orientationchange', checkOrientation);
+}
+
+/**
+ * Loggt die aktuelle Window-Größe in die Konsole
+ */
+function logWindowSize() {
+    console.log('Window Size:', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        aspectRatio: (window.innerWidth / window.innerHeight).toFixed(2)
+    });
 }

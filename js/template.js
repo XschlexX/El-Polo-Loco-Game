@@ -13,7 +13,7 @@ function mainScreenTemplate() {
                     <img src="assets/icon/mute.png" alt="mute">
                 </button>
                 <!-- <div id="you_lost_screen"></div> -->
-                <button class="button" onclick="startGame(0)">START DEBUG MODE</button>
+                <!-- <button class="button" onclick="startGame(0)">START DEBUG MODE</button> -->
                 <button class="button fz32" onclick="startGame(1)">START GAME</button>
             </div>
     `;
