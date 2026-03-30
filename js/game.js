@@ -27,6 +27,33 @@ function init() {
     loadVolumeSettings();
     mainScreen();
     initOrientationCheck();
+    initButtonHoverSounds();
+}
+
+/**
+ * Fügt Hover-Sound-Effekt zu allen Buttons hinzu
+ * Wird nach jedem Screen-Wechsel aufgerufen
+ */
+function initButtonHoverSounds() {
+    // Warte kurz, damit DOM aktualisiert ist
+    setTimeout(() => {
+        const allButtons = document.querySelectorAll('button');
+        allButtons.forEach(button => {
+            // Entferne alten Listener falls vorhanden (verhindert Duplikate)
+            button.removeEventListener('mouseenter', playButtonHoverSound);
+            // Füge neuen Listener hinzu
+            button.addEventListener('mouseenter', playButtonHoverSound);
+        });
+    }, 50);
+}
+
+/**
+ * Spielt den Button-Hover-Sound ab
+ */
+function playButtonHoverSound() {
+    if (window.soundManager && !window.soundManager.muted) {
+        window.soundManager.play('buttonHover');
+    }
 }
 
 /**
@@ -122,16 +149,25 @@ function initOrientationCheck() {
         const isMobile = window.innerWidth <= 600;
         const isSettingsOverlayOpen = document.getElementById('settings-overlay')?.classList.contains('active');
         const isAudioSettingsOverlayOpen = document.getElementById('audio-settings-overlay')?.classList.contains('active');
+        const isVictoryOverlayOpen = document.getElementById('victory-overlay')?.classList.contains('active');
+        const isDefeatOverlayOpen = document.getElementById('defeat-overlay')?.classList.contains('active');
+        const isGameEnded = isVictoryOverlayOpen || isDefeatOverlayOpen;
+        // Prüfe ob das Spiel aktiv ist (Canvas existiert und world ist vorhanden)
+        const canvas = document.getElementById('canvas');
+        const isGameActive = world && canvas;
 
         if (isMobile && isPortrait) {
             rotateScreen.style.display = 'flex';
-            if (world) {
+            if (isGameActive && !isGameEnded) {
                 world.pauseGame();
             }
         } else {
             rotateScreen.style.display = 'none';
-            // Nur resume wenn kein Settings-Overlay geöffnet ist
-            if (world && !isSettingsOverlayOpen && !isAudioSettingsOverlayOpen) {
+            // Nur resume wenn:
+            // - Spiel ist aktiv (world existiert UND Canvas existiert)
+            // - Kein Settings-Overlay geöffnet ist
+            // - Das Spiel nicht beendet ist (kein Victory/Defeat Overlay)
+            if (isGameActive && !isSettingsOverlayOpen && !isAudioSettingsOverlayOpen && !isGameEnded) {
                 world.resumeGame();
             }
         }

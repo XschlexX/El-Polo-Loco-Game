@@ -38,23 +38,20 @@ function infoScreenTemplate() {
                         luck on your adventure!</p>
                 </div>
                 <div class="keys-info">
-                    <div>
-                        <div class="key-display">
-                            <span class="key">⬅</span>
-                            <span class="key">➡</span>
-                        </div>
-                        <div>Move Left/Right</div>
+                    <div class="key">
+                        <img src="assets/icon/arrow_left.png" alt="Left">
+                        <div>Move Left</div>
                     </div>
-                    <div>
-                        <div class="key-display">
-                            <span class="key">⬆</span>
-                        </div>
+                    <div class="key">
+                        <img src="assets/icon/arrow_right.png" alt="Right">
+                        <div>Move Right</div>
+                    </div>
+                    <div class="key">
+                        <img src="assets/icon/arrow_up.png" alt="Up">
                         <div>Jump</div>
                     </div>
-                    <div>
-                        <div class="key-display">
-                            <span class="key key-space">SPACE</span>
-                        </div>
+                    <div class="key">
+                        <img src="assets/icon/spacebar.png" alt="Space">
                         <div>Throw Bottle</div>
                     </div>
                 </div>

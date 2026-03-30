@@ -2,6 +2,7 @@ function mainScreen() {
     document.getElementById('game_container').innerHTML = mainScreenTemplate();
     // Setze den Sound-Button-Status basierend auf dem aktuellen Mute-Status
     updateSoundButtonState();
+    initButtonHoverSounds();
 }
 
 function updateSoundButtonState() {
@@ -35,7 +36,7 @@ function startGame(level = 1) {
     // Zeige Loading Screen
     document.getElementById('game_container').innerHTML = showCanvasTemplate() + loadingScreenTemplate();
     canvas = document.getElementById('canvas');
-    
+
     // Verstecke Settings-Button während des Ladens
     const settingsBtn = document.getElementById('settings-btn');
     if (settingsBtn) {
@@ -61,28 +62,30 @@ function startGame(level = 1) {
         () => {
             // Alle Assets geladen - starte das Spiel
             document.getElementById('loading-screen').style.display = 'none';
-            
+
             // Zeige Settings-Button wieder an
             const settingsBtn = document.getElementById('settings-btn');
             if (settingsBtn) {
                 settingsBtn.style.display = 'flex';
             }
-            
+
             window.soundManager.stopMusic('menuTheme');
             window.soundManager.playMusic('gameTheme');
             createLevel(level);
             world = new World(canvas, keyboard);
-            
+
             // Initialisiere HTML-basierten Debug-Overlay
             if (typeof debugOverlay !== 'undefined') {
                 debugOverlay.destroy();
             }
             window.debugOverlay = new DebugOverlay();
             window.debugOverlay.setWorld(world);
-            
+
             keyboardActive = true;
             // Initialisiere Touch-Controls für mobile Geräte
             initTouchControls();
+            // Initialisiere Button-Hover-Sounds für Overlay-Buttons
+            initButtonHoverSounds();
         }
     );
 }
@@ -90,12 +93,14 @@ function startGame(level = 1) {
 function showInfoScreen() {
     document.getElementById('game_container').innerHTML = infoScreenTemplate();
     updateSoundButtonState();
+    initButtonHoverSounds();
 }
 
 function showSettingsScreen() {
     document.getElementById('game_container').innerHTML = settingsScreenTemplate();
     updateSoundButtonState();
     initializeVolumeSliders();
+    initButtonHoverSounds();
 }
 
 function showYouWonScreen(delay = 0) {

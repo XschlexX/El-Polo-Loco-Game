@@ -61,13 +61,17 @@ main {
 
 h1 {
     /* font-family: 'Smokum', serif; */
-    font-size: 3em;
+    font-size: clamp(2.5rem, calc(0.9rem + 3.2vw), 3.5rem);
 }
 
 #game_container {
     position: relative;
-    height: var(--canvas-height);
-    width: var(--canvas-width);
+    width: 95vw;
+    height: 90vh;
+    /* Die tatsächliche Größe ist das Minimum von Breite und Höhe basierend auf dem Aspect Ratio */
+    max-width: min(95vw, calc(90vh * 720 / 480));
+    max-height: min(90vh, calc(95vw * 480 / 720));
+    aspect-ratio: 720 / 480;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -80,8 +84,10 @@ h1 {
 /* Screens */
 .all-screens {
     position: relative;
-    height: var(--canvas-height);
-    width: var(--canvas-width);
+    /* height: var(--canvas-height); */
+    /* width: var(--canvas-width); */
+    /* height: inherit;
+    width: inherit; */
     width: 100%;
     height: 100%;
     display: flex;
@@ -117,10 +123,14 @@ h1 {
     width: 100%;
     flex: 1;
 
+    & h2 {
+        font-size: clamp(1.5rem, calc(-0.1rem + 3.2vw), 2.5rem);
+    }
+
     & p {
         padding-top: 16px;
         text-align: center;
-        font-size: 1.2em;
+        font-size: clamp(16px, calc(2.286px + 2.286vw), 32px);
         line-height: 1.6;
     }
 }
@@ -129,7 +139,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 40px;
+    gap: clamp(24px, calc(-1.6px + 3.2vw), 40px);
 }
 
 canvas {
@@ -153,7 +163,8 @@ canvas {
     padding: 0 8px;
     text-decoration: none;
     font-family: inherit;
-    font-size: clamp(1rem, 0.78rem + 1.11vw, 1.5rem);
+    font-size: clamp(16px, calc(-11.429px + 4.571vw), 48px);
+    /* font-size: clamp(1rem, 0.78rem + 1.11vw, 1.5rem); */
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
@@ -166,50 +177,32 @@ canvas {
 
 .fz32 {
     /* Font size 32px  */
-    font-size: clamp(1rem, 0.56rem + 2.22vw, 2rem);
+    font-size: clamp(24px, calc(-3.429px + 4.571vw), 56px);
+    /* font-size: clamp(1rem, 0.56rem + 2.22vw, 2rem); */
     color: var(--accent-red);
     -webkit-text-stroke: .5px black;
 }
 
 .keys-info {
     display: flex;
-    gap: 32px;
-    justify-content: center;
+    width: 100%;
+    /* gap: clamp(16px, calc(-9.6px + 3.2vw), 32px); */
+    justify-content: space-evenly;
     align-items: center;
-}
 
-.keys-info>div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--gap-s);
-}
+    & .key {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        gap: clamp(8px, calc(-17.6px + 3.2vw), 24px);
+        font-size: clamp(16px, calc(3.2px + 1.6vw), 24px);
 
-.key-display {
-    display: flex;
-    gap: var(--gap-s);
-}
-
-.key {
-    background: linear-gradient(to bottom, #f0f0f0, #d0d0d0);
-    border: 2px solid #333;
-    border-radius: var(--border-radius);
-    padding: 0px 16px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    box-shadow: 0 4px 0 #666, 0 6px 8px rgba(0, 0, 0, 0.3);
-    min-width: 50px;
-    text-align: center;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.key-space {
-    min-width: 120px;
-    font-size: 16px;
-    padding: 6px 16px;
+        & img {
+            height: clamp(56px, calc(-33.6px + 11.2vw), 112px);
+        }
+    }
 }
 
 .unmute-button {
@@ -624,9 +617,12 @@ canvas {
 
 /* Touch-Buttons auf mobilen Geräten anzeigen */
 /* Kombinierte Media Query: Touchscreen ODER kleine Bildschirme */
-@media (pointer: coarse)
-/* (max-width: 1024px)  */
-    {
+@media (pointer: coarse) {
+    :root {
+        --canvas-height: 95dvh;
+        --canvas-width: 66.67vw;
+    }
+
     .touch-controls {
         display: flex;
     }
