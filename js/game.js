@@ -188,9 +188,17 @@ function initOrientationCheck() {
  * Loggt die aktuelle Window-Größe in die Konsole
  */
 function logWindowSize() {
+    const gameContainer = document.getElementById('game_container');
+    const containerInfo = gameContainer ? {
+        width: gameContainer.offsetWidth,
+        height: gameContainer.offsetHeight,
+        aspectRatio: (gameContainer.offsetWidth / gameContainer.offsetHeight).toFixed(2)
+    } : 'not found';
+
     console.log('Window Size:', {
         width: window.innerWidth,
         height: window.innerHeight,
         aspectRatio: (window.innerWidth / window.innerHeight).toFixed(2)
     });
+    console.log('Game Container:', containerInfo);
 }
