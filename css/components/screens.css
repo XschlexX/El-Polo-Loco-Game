@@ -42,10 +42,6 @@
     width: 100%;
     flex: 1;
 
-    & h2 {
-        font-size: clamp(1.5rem, calc(-0.1rem + 3.2cqmin), 2.5rem);
-    }
-
     & p {
         padding-top: clamp(var(--gap-s), calc(2.667px + 1.667cqh), var(--gap-l));
         text-align: center;
