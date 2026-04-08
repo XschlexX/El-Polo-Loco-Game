@@ -1,28 +1,28 @@
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    scroll-behavior: smooth;
-}
+/*
+ * El Pollo Loco - Main Stylesheet
+ * Imports all modular CSS files
+ */
 
-/* smokum-regular - latin */
-@font-face {
-    font-display: swap;
-    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: 'Smokum';
-    font-style: normal;
-    font-weight: 400;
-    src: url('assets/fonts/smokum-v30-latin-regular.woff2') format('woff2');
-    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-}
+/* Base */
+@import url('css/base/reset.css');
+@import url('css/base/variables.css');
+@import url('css/base/fonts.css');
 
-/* rye-regular - latin */
-@font-face {
-    font-display: swap;
-    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: 'Rye';
-    font-style: normal;
-    font-weight: 400;
-    src: url('assets/fonts/rye-v17-latin-regular.woff2') format('woff2');
-    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-}
+/* Layout */
+@import url('css/layout/body.css');
+@import url('css/layout/game-container.css');
+
+/* Components */
+@import url('css/components/typography.css');
+@import url('css/components/buttons.css');
+@import url('css/components/screens.css');
+@import url('css/components/keys-info.css');
+@import url('css/components/settings.css');
+@import url('css/components/overlays.css');
+@import url('css/components/victory-defeat.css');
+@import url('css/components/loading.css');
+@import url('css/components/rotate-screen.css');
+@import url('css/components/touch-controls.css');
+
+/* Utilities */
+@import url('css/utilities/media-queries.css');

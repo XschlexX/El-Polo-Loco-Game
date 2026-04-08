@@ -1,0 +1,34 @@
+/* Utility Media Queries */
+
+/* Zeige Rotate-Screen nur auf mobilen Geräten im Portrait-Modus */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    .rotate-screen {
+        display: flex;
+    }
+}
+
+/* Touch-Buttons auf mobilen Geräten anzeigen */
+@media (pointer: coarse) {
+    .touch-controls {
+        display: flex;
+    }
+}
+
+/* Überschrift nur ausblenden, wenn wenig vertikaler Platz ist */
+@media (max-height: 600px) {
+    h1 {
+        display: none !important;
+    }
+}
+
+/* Tablets und kleinere Geräte */
+@media (max-width: 932px) {
+    .touch-btn {
+        width: 55px;
+        height: 55px;
+    }
+
+    .touch-btn-icon {
+        font-size: 20px;
+    }
+}

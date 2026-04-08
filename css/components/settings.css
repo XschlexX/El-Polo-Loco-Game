@@ -1,0 +1,89 @@
+/* Settings Screen - Audio Settings */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    /* gap: clamp(8px, 1.5vw, 20px); */
+    width: 70%;
+    height: 80%;
+    padding: clamp(8px, calc(-13.333px + 6.667cqh), 40px);
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--primary-orange);
+    transform-origin: center center;
+}
+
+.settings-title {
+    color: var(--primary-orange);
+    -webkit-text-stroke: .3px var(--accent-red);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.volume-control {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+}
+
+.volume-control label {
+    color: var(--primary-orange);
+    font-size: clamp(1rem, calc(0.667rem + 1.667cqh), 1.5rem);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-align: left;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.volume-slider {
+    flex: 1;
+    height: clamp(4px, calc(1.333px + 0.833cqh), 8px);
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #444, #666);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: clamp(15px, calc(8.333px + 2.083cqh), 25px);
+    aspect-ratio: 1/1;
+    margin-top: clamp(-10px, calc(0px - 1.25cqh), -4px);
+    background: var(--button-gradient);
+    border: 2px solid var(--accent-red);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    margin-top: -6px;
+    background: var(--button-gradient);
+    border: 2px solid var(--accent-red);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 4px;
+}
+
+.volume-value {
+    font-size: 0.9em;
+    color: var(--primary-orange);
+    min-width: 45px;
+    text-align: right;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}

@@ -58,7 +58,7 @@ class SoundManager {
         this.addSound('coinCollect', 'sounds/effects/coin-collect.mp3', 1.0);
         this.addSound('endbossHurt', 'sounds/effects/enemies/endboss-hurt.mp3', 1.0);
         this.addSound('endbossAngry', 'sounds/effects/enemies/endboss-angry.mp3', 1.0);
-        this.addSound('endbossDead', 'sounds/effects/enemies/endboss-dead.mp3', 0.6);
+        this.addSound('endbossDead', 'sounds/effects/enemies/endboss-dead.mp3', 0.5);
         this.addSound('youWon', 'sounds/win-lose/win-sound.mov', 1.0);
         this.addSound('youLost', 'sounds/win-lose/lose-sound.wav', 1.0);
         this.addSound('buttonHover', 'sounds/effects/button/button-hover.mp3', 1.0);

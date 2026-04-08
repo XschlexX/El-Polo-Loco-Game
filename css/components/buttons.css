@@ -1,0 +1,111 @@
+.button {
+    background: var(--button-gradient);
+    /* -webkit-background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+    /* background-clip: text; */
+    color: var(--primary-orange);
+    -webkit-text-stroke: .5px var(--accent-red);
+    /* text-stroke: 1px black; */
+    border: none;
+    border-radius: 12px;
+    padding: 0px 8px;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: clamp(1rem, calc(0rem + 5cqh), 2.5rem);
+    /* font-size: clamp(16px, calc(-11.429px + 4.571vw), 48px); */
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        /* text-shadow: 2px 2px 4px rgba(253, 173, 1, 0.5); */
+        scale: 1.1;
+    }
+}
+
+.fz32 {
+    /* Font size 32px  */
+    font-size: clamp(1.5rem, calc(0.5rem + 5cqh), 3rem);
+    /* font-size: clamp(1rem, 0.56rem + 2.22vw, 2rem); */
+    color: var(--primary-orange);
+
+    /* color: var(--accent-red); */
+    -webkit-text-stroke: .5px black;
+}
+
+.unmute-button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 4%;
+    right: 3%;
+    padding: 6px;
+    height: 8%;
+    aspect-ratio: 1/1;
+    background: var(--button-gradient);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.075s ease-in-out;
+
+    & img {
+        height: 100%;
+        aspect-ratio: 1/1;
+    }
+
+    &:hover {
+        scale: 1.1;
+    }
+}
+
+/* Settings Button - über dem Canvas */
+.settings-button {
+    position: absolute;
+    top: 11%;
+    right: 3%;
+    width: 6%;
+    aspect-ratio: 1/1;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid #FFD700;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.1);
+    }
+
+    & .hamburger-icon {
+        display: block;
+        width: 50%;
+        height: 6%;
+        background-color: #FFD700;
+        position: relative;
+    }
+
+    & .hamburger-icon::before,
+    .hamburger-icon::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #FFD700;
+        left: 0;
+    }
+
+    & .hamburger-icon::before {
+        top: -6px;
+    }
+
+    & .hamburger-icon::after {
+        top: 6px;
+    }
+}

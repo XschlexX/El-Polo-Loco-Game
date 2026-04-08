@@ -1,0 +1,61 @@
+/* Touch Controls - Mobile Gamepad Buttons */
+.touch-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: none;
+    /* Standardmäßig ausgeblendet, nur auf Mobile sichtbar */
+    justify-content: space-between;
+    padding: 0 var(--gap-xl);
+    pointer-events: none;
+    /* Erlaubt Klicks durch den Container */
+    z-index: var(--z-ui);
+}
+
+.touch-controls-row {
+    display: flex;
+    gap: var(--gap-m);
+    pointer-events: auto;
+    /* Aktiviert Klicks auf Buttons */
+}
+
+.touch-btn {
+    width: 60px;
+    height: 60px;
+    min-width: 44px;
+    min-height: 44px;
+    /* Apple Human Interface Guidelines: mindestens 44x44px */
+    background: rgba(255, 255, 255, var(--opacity-light));
+    border: 2px solid rgba(255, 215, 0, var(--opacity-overlay));
+    border-radius: var(--border-radius-round);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    /* Verhindert iOS Callout */
+    touch-action: manipulation;
+    /* Verhindert Double-Tap Zoom */
+    -webkit-tap-highlight-color: transparent;
+    /* Verhindert blauen Highlight auf Android */
+}
+
+.touch-btn:active,
+.touch-btn.pressed {
+    background: rgba(255, 215, 0, var(--opacity-medium));
+    transform: scale(0.92);
+    border-color: var(--color-gold);
+    box-shadow: 0 0 15px rgba(255, 215, 0, var(--opacity-medium));
+}
+
+.touch-btn-icon {
+    font-size: 24px;
+    color: var(--color-gold);
+    text-shadow: var(--shadow-default);
+    pointer-events: none;
+    /* Verhindert, dass das Icon Events abfängt */
+}

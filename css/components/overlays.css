@@ -1,0 +1,59 @@
+/* Game Overlays - HTML Version */
+.game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    border-radius: var(--border-radius);
+}
+
+.game-overlay.active {
+    display: flex;
+}
+
+.overlay-container {
+    background: linear-gradient(135deg, rgba(139, 90, 43, 0.95), rgba(101, 67, 33, 0.95));
+    border: 4px solid #d4a84b;
+    border-radius: 12px;
+    padding: 3% 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 40%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.overlay-title {
+    font-size: 32px;
+    color: #FFD700;
+    margin: 0 0 10px 0;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.overlay-button {
+    background: var(--button-gradient);
+    border: 2px solid #a0220a;
+    border-radius: 12px;
+    padding: 12px 24px;
+    /* font-family: 'Rye', Arial; */
+    font-size: 18px;
+    font-weight: bold;
+    color: orange;
+    -webkit-text-stroke: 0.5px #a0220a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.overlay-button:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}

@@ -1,0 +1,25 @@
+#game_container {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: min(95vw, calc(min(90vh, 800px) * 720 / 480));
+    max-height: min(90vh, calc(min(95vw, 1200px) * 480 / 720));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: var(--main-border);
+    border-radius: var(--border-radius);
+    outline-offset: -3px;
+    overflow: hidden;
+    /* Container-Query für Kind-Elemente ermöglichen */
+    container-type: size;
+    container-name: game;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: black;
+    border-radius: var(--border-radius);
+}

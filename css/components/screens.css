@@ -1,0 +1,55 @@
+/* Screens */
+.all-screens {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(var(--gap-s), calc(-2.667px + 3.333cqh), var(--gap-xxl));
+
+    & .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: -1;
+        filter: blur(5px);
+    }
+}
+
+.main-screen {
+    gap: clamp(var(--gap-s), calc(-20px + 7.5cqh), 40px);
+
+    & .background-image {
+        filter: unset;
+    }
+}
+
+.startscreen-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(var(--gap-s), calc(-8px + 5cqh), 32px);
+}
+
+.screen-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1;
+
+    & h2 {
+        font-size: clamp(1.5rem, calc(-0.1rem + 3.2cqmin), 2.5rem);
+    }
+
+    & p {
+        padding-top: clamp(var(--gap-s), calc(2.667px + 1.667cqh), var(--gap-l));
+        text-align: center;
+        font-size: clamp(1rem, calc(0.333rem + 3.333cqh), 2rem);
+        line-height: 1.1;
+    }
+}

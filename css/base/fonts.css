@@ -1,0 +1,17 @@
+/* smokum-regular - latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Smokum';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../../assets/fonts/smokum-v30-latin-regular.woff2') format('woff2');
+}
+
+/* rye-regular - latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Rye';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../../assets/fonts/rye-v17-latin-regular.woff2') format('woff2');
+}
