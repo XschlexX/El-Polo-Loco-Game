@@ -1,3 +1,7 @@
+/**
+ * World class - Main game world controller
+ * Manages game state, initialization, and control flow
+ */
 class World {
     character;
     level = currentLevel;
@@ -7,416 +11,110 @@ class World {
     camera_x = 0;
     throwableObjects = [];
     lastThrow;
-    // settingsOverlay;
-    // victoryOverlay;
-    // defeatOverlay;
     soundManager;
 
+    /**
+     * Creates a new World instance
+     * @param {HTMLCanvasElement} canvas - The game canvas
+     * @param {Keyboard} keyboard - Keyboard input handler
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.lastThrow = new Date().getTime();
-        this.character = this.level.character; // Character aus dem Level holen
-        this.character.world = this; // World-Referenz setzen
+        this.character = this.level.character;
+        this.character.world = this;
         this.soundManager = window.soundManager;
         window.world = this;
+        this.startGameLoop();
+    }
 
-        // Overlays sind jetzt HTML-basiert, keine Canvas-Overlays mehr nötig
-
+    /** Starts the game loop */
+    startGameLoop() {
         this.draw();
         this.setWorld();
         this.runGame();
-        // this.setupCanvasListeners();
     }
 
+    /** Sets up world references for game objects */
     setWorld() {
         this.character.world = this;
-        this.throwableObjects.forEach(object => {
-            object.world = this;
-        });
-        this.level.enemies.forEach(enemy => {
-            enemy.world = this;
-        });
-
-        // DebugOverlay ist jetzt HTML-basiert und wird in start.js initialisiert
+        this.throwableObjects.forEach(object => object.world = this);
+        this.level.enemies.forEach(enemy => enemy.world = this);
     }
 
+    /** Starts game intervals and collision checks */
     runGame() {
-        const collisionCallback = () => {
+        this.startCollisionInterval();
+        this.startBottleCollisionInterval();
+    }
+
+    /** Starts main collision check interval */
+    startCollisionInterval() {
+        const callback = () => {
             this.checkCollisions();
             this.checkBottleCollection();
             this.checkCoinCollection();
         };
-        // Häufigere Kollisionsprüfung für bessere Jump-Attack-Erkennung
-        const collisionIntervalId = setInterval(collisionCallback, 50);
-        GlobalIntervalManager.register(collisionIntervalId, 'World collision checks', this, 50, collisionCallback);
-
-        // Häufigere Prüfung der Flaschen-Kollisionen für bessere Treffergenauigkeit
-        const bottleCallback = () => {
-            this.checkBottleCollisions();
-        };
-        const bottleIntervalId = setInterval(bottleCallback, 50);
-        GlobalIntervalManager.register(bottleIntervalId, 'World bottle collision checks', this, 50, bottleCallback);
+        const id = setInterval(callback, 50);
+        GlobalIntervalManager.register(id, 'World collision checks', this, 50, callback);
     }
 
-    checkCollisions() {
-        // Sammle ALLE Kollisionen in diesem Frame
-        const collidingEnemies = [];
-        const jumpAttackEnemies = [];
-
-        this.level.enemies.forEach(enemy => {
-            // Ignoriere tote oder sterbende Gegner
-            if (enemy.isDying || enemy.isDead()) {
-                return;
-            }
-
-            // Ignoriere Endboss während Ramming (soll durchlaufen)
-            if (enemy instanceof Endboss && enemy.ramming.isActive) {
-                return;
-            }
-
-            if (this.character.isColliding(enemy)) {
-                collidingEnemies.push(enemy);
-
-                // Prüfe, ob der Charakter von oben auf den Gegner springt (NUR für normale Feinde!)
-                const isJumpingOnEnemy = !(enemy instanceof Endboss) && this.isJumpingOnEnemy(this.character, enemy);
-                if (isJumpingOnEnemy) {
-                    jumpAttackEnemies.push(enemy);
-                }
-            }
-        });
-
-        // Verarbeite die Kollisionen
-        if (jumpAttackEnemies.length > 0) {
-            // Jump-Attack: Alle getroffenen Gegner sterben, Charakter bounced einmal
-            jumpAttackEnemies.forEach(enemy => {
-                enemy.hit();
-            });
-            this.character.jump(4);
-        } else if (collidingEnemies.length > 0 && !this.character.isHurt()) {
-            // Normale Kollision von der Seite - Charakter nimmt Schaden (nur einmal!)
-            this.character.hit();
-            this.character.resetSleepTimer();
-
-            // Prüfe auf Endboss-Kollision für Ramming-Modus
-            const endbossEnemy = collidingEnemies.find(enemy => enemy instanceof Endboss);
-            if (endbossEnemy && endbossEnemy.onCharacterCollision && !endbossEnemy.ramming.isActive) {
-                endbossEnemy.onCharacterCollision();
-                this.bounceFromEndboss(this.character, endbossEnemy);
-            }
-        }
-    }
-
-    isJumpingOnEnemy(character, enemy) {
-        // Charakter Positionen
-        const characterBottom = character.y + character.height - character.hitBoxBottom;
-        const enemyTop = enemy.y + enemy.hitBoxTop;
-
-        // isFalling: Charakter fällt (speedY < 0) ODER ist kurz nach dem Bounce (speedY nahe 0)
-        // Toleranz von +2.0 für speedY, um "Bounce-Frame" zu erfassen
-        const isFalling = character.speedY < 0;
-
-        // Toleranzbereich: Charakter darf bis zu 40px in den oberen Bereich des Gegners eindringen
-        const isAboveEnemy = characterBottom < enemyTop + 40;
-
-        return isFalling && isAboveEnemy;
+    /** Starts bottle collision check interval */
+    startBottleCollisionInterval() {
+        const callback = () => this.checkBottleCollisions();
+        const id = setInterval(callback, 50);
+        GlobalIntervalManager.register(id, 'World bottle collision checks', this, 50, callback);
     }
 
     /**
-     * Gibt dem Character einen Bounce-Effekt nach Kollision mit dem Endboss
-     * @param {Character} character - Der Character, der den Bounce-Effekt bekommt
-     * @param {Endboss} enemy - Der Endboss, mit dem kollidiert wurde
+     * Checks if throw cooldown has passed
+     * @returns {boolean} True if can throw
      */
-    bounceFromEndboss(character, enemy) {
-        character.jump();
-
-        // Bestimme Richtung für horizontalen Bounce basierend auf Position des Endboss
-        let bounceDirection;
-        if ((character.x + character.width) / 2 < (enemy.x + enemy.width) / 2) {
-            // Character ist links vom Endboss, bewege nach links (weg vom Endboss)
-            bounceDirection = 'left';
-        } else {
-            // Character ist rechts vom Endboss, bewege nach rechts (weg vom Endboss)
-            bounceDirection = 'right';
-        };
-
-        // Setze Flag, um zu kennzeichnen, dass der Character sich im Bounce-Zustand befindet
-        character.isBouncing = true;
-
-        // Callback-Funktion für das Bounce-Intervall
-        const bounceCallback = () => {
-            if (!character.isAboveGround(character.groundLevel)) {
-                // Wenn Character wieder am Boden ist, stoppe das Intervall
-                GlobalIntervalManager.clear(bounceIntervalId, 'Character bounce effect');
-                character.isBouncing = false;
-            } else {
-                // Solange der Character in der Luft ist, bewege ihn in die richtige Richtung
-                if (bounceDirection === 'left') {
-                    character.moveLeft(false);
-                } else {
-                    character.moveRight(true);
-                }
-            }
-        };
-
-        // Starte Intervall, das den Character solange bewegt, wie er in der Luft ist
-        const bounceIntervalId = setInterval(bounceCallback, 1000 / 60); // 60 FPS, gleiche Frequenz wie die Bewegungs-Intervalle
-        GlobalIntervalManager.register(bounceIntervalId, 'Character bounce effect', this, 1000 / 60, bounceCallback);
-    }
-
-    checkBottleCollisions() {
-        this.throwableObjects.forEach(bottle => {
-            this.level.enemies.forEach(enemy => {
-                // Ignoriere tote oder sterbende Gegner
-                if (enemy.isDying || enemy.isDead()) {
-                    return;
-                }
-
-                if (bottle.isColliding(enemy) && !bottle.hasSplashed) {
-                    bottle.splash(); // Flasche zerbricht
-                    enemy.hit(); // Gegner nimmt Schaden
-
-                    // Wenn es ein Endboss ist, triggere Alert/Attack Sequenz
-                    if (enemy instanceof Endboss && enemy.onBottleHit) {
-                        enemy.onBottleHit();
-                        // Spiele Endboss-Hurt Sound ab
-                        if (this.soundManager) {
-                            this.soundManager.play('endbossHurt');
-                        }
-                    }
-                }
-            });
-        });
-    }
-
-    checkBottleCollection() {
-        this.level.collectableBottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle) && this.character.bottles < 10) {
-                // Character sammelt Flasche ein
-                this.level.collectableBottles.splice(index, 1); // Entferne Flasche aus Level
-                this.character.bottles++; // Erhöhe Flaschenanzahl
-                if (this.character.bottles > 10) {
-                    this.character.bottles = 10; // Maximum 10 Flaschen
-                }
-                // Spiele Collect-Sound ab
-                if (this.soundManager) {
-                    this.soundManager.play('bottleCollect');
-                }
-            }
-        });
-    }
-
-    checkCoinCollection() {
-        this.level.collectableCoins.forEach((coin, index) => {
-            if (this.character.isColliding(coin) && this.character.coins < 10) {
-                // Character sammelt Münze ein
-                this.level.collectableCoins.splice(index, 1); // Entferne Münze aus Level
-                this.character.coins++; // Erhöhe Münzenanzahl
-                // Spiele Collect-Sound ab
-                if (this.soundManager) {
-                    this.soundManager.play('coinCollect'); // Benutze gleichen Sound wie Flaschen
-                }
-            }
-        });
-    }
-
     throwInterval() {
-        let timeSinceLastThrow = new Date().getTime() - this.lastThrow;
-        timeSinceLastThrow = timeSinceLastThrow / 1000;
+        const timeSinceLastThrow = (new Date().getTime() - this.lastThrow) / 1000;
         return timeSinceLastThrow > 1;
     }
 
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawParallaxBackgrounds();
-        this.ctx.translate(this.camera_x, 0);
-        this.addObjectsToMap(this.level.clouds);
-        this.ctx.translate(-this.camera_x, 0);
-        this.addObjectsToMap(this.level.statusBars);
-        this.addObjectsToMap(this.level.gameTimer);
-        this.addObjectsToMap(this.level.levelDisplay);
-        this.ctx.translate(this.camera_x, 0);
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.level.collectableBottles);
-        this.addObjectsToMap(this.level.collectableCoins);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.throwableObjects);
-        this.ctx.translate(-this.camera_x, 0);
-
-        let self = this;
-        requestAnimationFrame(() => self.draw());
-    }
-
-    /**
-     * Zeichnet Hintergrund-Layer mit Parallax-Effekt
-     * Jeder Layer bewegt sich mit unterschiedlicher Geschwindigkeit basierend auf seinem parallaxFactor
-     */
-    drawParallaxBackgrounds() {
-        // Gruppiere nach Faktor
-        const factorGroups = {};
-        this.level.backgroundObjects.forEach(bg => {
-            if (!factorGroups[bg.parallaxFactor]) {
-                factorGroups[bg.parallaxFactor] = [];
-            }
-            factorGroups[bg.parallaxFactor].push(bg);
-        });
-
-        // Sortiere Faktoren aufsteigend (von hinten nach vorne: 0, 0.2, 0.5, 1)
-        const sortedFactors = Object.keys(factorGroups)
-            .map(f => parseFloat(f))
-            .sort((a, b) => a - b);
-
-        // Zeichne jede Gruppe mit ihrem Parallax-Offset (von hinten nach vorne)
-        sortedFactors.forEach(factor => {
-            const parallaxOffset = this.camera_x * factor;
-            this.ctx.translate(parallaxOffset, 0);
-            this.addObjectsToMap(factorGroups[factor]);
-            this.ctx.translate(-parallaxOffset, 0);
-        });
-    }
-
-    addObjectsToMap(objects) {
-        objects.forEach(o => {
-            // Objekte, die zum Löschen markiert sind, nicht zeichnen
-            if (!o.markedForDeletion) {
-                this.addToMap(o);
-            }
-        });
-    }
-
-    addToMap(mo) {
-        // Enemies haben umgekehrte Logik für otherDirection
-        const isEnemy = mo instanceof Chicken || mo instanceof ChickenSmall || mo instanceof Endboss;
-        const shouldFlip = isEnemy ? !mo.otherDirection : mo.otherDirection;
-
-        if (shouldFlip) {
-            this.flipImage(mo);
-        }
-        mo.draw(this.ctx);
-        // mo.drawFrame(this.ctx);
-        // mo.drawCollisionFrame(this.ctx);
-
-        if (shouldFlip) {
-            this.flipImageBack(mo);
-        }
-    }
-
-    flipImage(mo) {
-        this.ctx.save();
-        this.ctx.translate(mo.width, 0);
-        this.ctx.scale(-1, 1);
-        mo.x = -mo.x;
-    }
-
-    flipImageBack(mo) {
-        this.ctx.restore();
-        mo.x = -mo.x;
-    }
-
-    // setupCanvasListeners() {
-    //     // Click-Event für Settings-Button und Overlay
-    //     this.canvas.addEventListener('click', (e) => {
-    //         const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
-    //         this.handleCanvasClick(coords.x, coords.y);
-    //     });
-
-    //     // Touch-Event für mobile Geräte
-    //     this.canvas.addEventListener('touchstart', (e) => {
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //         const touch = e.touches[0];
-    //         const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
-    //         this.handleCanvasClick(coords.x, coords.y);
-    //     }, { passive: false });
-
-    //     // Touchend-Event hinzufügen für bessere Kompatibilität
-    //     this.canvas.addEventListener('touchend', (e) => {
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //     }, { passive: false });
-
-    //     // Mousemove-Event für Hover-Effekt
-    //     this.canvas.addEventListener('mousemove', (e) => {
-    //         const coords = this.getCanvasCoordinates(e.clientX, e.clientY);
-    //         this.handleCanvasHover(coords.x, coords.y);
-    //     });
-
-    //     // Touch-Move für Hover-Effekt auf Mobile
-    //     this.canvas.addEventListener('touchmove', (e) => {
-    //         e.preventDefault();
-    //         const touch = e.touches[0];
-    //         const coords = this.getCanvasCoordinates(touch.clientX, touch.clientY);
-    //         this.handleCanvasHover(coords.x, coords.y);
-    //     }, { passive: false });
-    // }
-
-    // /**
-    //  * Konvertiert Screen-Koordinaten zu Canvas-Koordinaten
-    //  * Berücksichtigt CSS-Scaling und Canvas-Resolution
-    //  * @param {number} clientX - X-Position auf dem Screen
-    //  * @param {number} clientY - Y-Position auf dem Screen
-    //  * @returns {Object} - {x, y} Canvas-Koordinaten
-    //  */
-    // getCanvasCoordinates(clientX, clientY) {
-    //     const rect = this.canvas.getBoundingClientRect();
-
-    //     // Berechne die relative Position im Canvas (0-1)
-    //     const relativeX = (clientX - rect.left) / rect.width;
-    //     const relativeY = (clientY - rect.top) / rect.height;
-
-    //     // Konvertiere zu Canvas-Koordinaten
-    //     return {
-    //         x: relativeX * this.canvas.width,
-    //         y: relativeY * this.canvas.height
-    //     };
-    // }
-
-    // /**
-    //  * Behandelt Klick-Events auf dem Canvas (für Mouse und Touch)
-    //  * @param {number} x - X-Position des Klicks
-    //  * @param {number} y - Y-Position des Klicks
-    //  */
-    // handleCanvasClick(x, y) {
-    //     // Overlays sind jetzt HTML-basiert, keine Canvas-Klick-Handler mehr nötig
-    // }
-
-    // /**
-    //  * Behandelt Hover-Events auf dem Canvas (für Mouse und Touch)
-    //  * @param {number} x - X-Position
-    //  * @param {number} y - Y-Position
-    //  */
-    // handleCanvasHover(x, y) {
-    //     // Overlays sind jetzt HTML-basiert, keine Canvas-Hover-Handler mehr nötig
-    //     this.canvas.style.cursor = 'default';
-    // }
-
+    /** Pauses the game */
     pauseGame() {
-        // 2. Pausiere alle Intervals
         GlobalIntervalManager.pauseAll();
+        this.pauseGameTimer();
+        this.pauseSounds();
+    }
 
-        // 3. Pausiere den GameTimer
-        if (this.level.gameTimer && this.level.gameTimer[0]) {
+    /** Pauses the game timer */
+    pauseGameTimer() {
+        if (this.level.gameTimer?.[0]) {
             this.level.gameTimer[0].pause();
         }
+    }
 
-        // 4. Pausiere alle Sounds und starte menuTheme
+    /** Pauses sounds and plays menu theme */
+    pauseSounds() {
         if (this.soundManager) {
             this.soundManager.pauseAllSounds();
             this.soundManager.playMusic('menuTheme');
         }
     }
 
+    /** Resumes the game */
     resumeGame() {
-        // 2. Setze alle Intervals fort
         GlobalIntervalManager.resumeAll();
+        this.resumeGameTimer();
+        this.resumeSounds();
+    }
 
-        // 3. Setze den GameTimer fort
-        if (this.level.gameTimer && this.level.gameTimer[0]) {
+    /** Resumes the game timer */
+    resumeGameTimer() {
+        if (this.level.gameTimer?.[0]) {
             this.level.gameTimer[0].resume();
         }
+    }
 
-        // 4. Stoppe menuTheme und setze Spiel-Sounds fort
+    /** Resumes sounds and plays game theme */
+    resumeSounds() {
         if (this.soundManager) {
             this.soundManager.stopMusic('menuTheme');
             this.soundManager.resumeAllSounds();
@@ -424,54 +122,53 @@ class World {
         }
     }
 
+    /** Stops the game completely */
     stopGame() {
-        // 1. Stoppe ALLE Intervals permanent
         GlobalIntervalManager.clearAll();
+        this.disableKeyboard();
+        this.pauseGameTimer();
+        this.stopCharacterSounds();
+        this.stopSoundEffects();
+    }
 
-        // 2. Deaktiviere Keyboard-Inputs
+    /** Disables all keyboard inputs */
+    disableKeyboard() {
         if (this.keyboard) {
-            Object.keys(this.keyboard).forEach(key => {
-                this.keyboard[key] = false;
-            });
+            Object.keys(this.keyboard).forEach(key => this.keyboard[key] = false);
         }
+    }
 
-        // 3. Pausiere den GameTimer
-        if (this.level.gameTimer && this.level.gameTimer[0]) {
-            this.level.gameTimer[0].pause();
-        }
-
-        // 4. Stoppe alle Character-spezifischen Sounds
+    /** Stops character-specific sounds */
+    stopCharacterSounds() {
         if (this.character) {
-            // Verhindere dass Character einschläft und Sleep-Sound spielt
             this.character.isSleeping = false;
             this.character.isIdle = false;
             if (this.character.sleepTimer) {
                 GlobalIntervalManager.clearTimeout(this.character.sleepTimer, 'Character sleep timer');
             }
         }
-
-        // 5. Stoppe nur Sound-Effekte, NICHT die Musik
-        if (this.soundManager) {
-            // Stoppe alle Sound-Effekte, aber ändere nicht den muted-Status
-            this.soundManager.stopAllSounds();
-        }
-
-        // console.log('[World] Game stopped');
     }
 
-    /**
-     * Toggelt den Sound-Status (Mute/Unmute) und aktualisiert den Button-Text
-     */
-    toggleSound() {
+    /** Stops sound effects */
+    stopSoundEffects() {
         if (this.soundManager) {
-            if (this.soundManager.muted) {
-                this.soundManager.unmuteAll();
-                // Wenn im Pause-Menü, spiele menuTheme
-                this.soundManager.playMusic('menuTheme');
-            } else {
-                this.soundManager.muteAll();
-            }
+            this.soundManager.stopAllSounds();
+        }
+    }
+
+    /** Toggles sound mute/unmute */
+    toggleSound() {
+        if (!this.soundManager) return;
+        if (this.soundManager.muted) {
+            this.soundManager.unmuteAll();
+            this.soundManager.playMusic('menuTheme');
+        } else {
+            this.soundManager.muteAll();
         }
     }
 
 }
+
+// Apply mixins to World class
+Object.assign(World.prototype, WorldCollisionMixin);
+Object.assign(World.prototype, WorldRenderingMixin);

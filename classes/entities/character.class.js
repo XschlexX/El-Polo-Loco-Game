@@ -225,7 +225,6 @@ class Character extends MovableObjects {
                     this.world.keyboard[key] = false;
                 });
             }
-            console.log(keyboardActive);
         }
 
         this.playAnimation(this.images.imagesDead);
