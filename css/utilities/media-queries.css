@@ -16,6 +16,12 @@
 
 /* Überschrift nur ausblenden, wenn wenig vertikaler Platz ist */
 @media (max-height: 600px) {
+    body {
+        background-image: none;
+        background-color: black;
+        overflow: hidden;
+    }
+
     h1 {
         display: none !important;
     }

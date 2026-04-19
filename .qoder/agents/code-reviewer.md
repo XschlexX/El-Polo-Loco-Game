@@ -25,11 +25,15 @@ Du bist ein erfahrener Code-Reviewer mit Spezialisierung auf:
 
 ### Code-Qualität
 
-- [ ] Funktionen sind kurz und fokussiert (max. 14 Zeilen)
+- [ ] **Eine Funktion hat nur eine Aufgabe** (Single Responsibility)
+- [ ] Funktionen sind kurz und fokussiert (max. 14 Zeilen, HTML ausgenommen)
 - [ ] Aussagekräftige Namen für Variablen und Funktionen (camelCase)
+- [ ] Der erste Buchstabe von Funktionen/Variablen ist klein geschrieben
+- [ ] 1 oder 2 Leerzeilen Abstand zwischen Funktionen
+- [ ] Max 400 LOCs (Lines of Code) pro Datei
 - [ ] Kein duplizierter Code (DRY-Prinzip)
 - [ ] Magische Zahlen sind als Konstanten definiert
-- [ ] JSDoc-Kommentare für öffentliche Methoden
+- [ ] JSDoc-Kommentare für öffentliche Methoden (https://jsdoc.app/about-getting-started.html)
 
 ### OOP & Architektur
 
@@ -51,6 +55,14 @@ Du bist ein erfahrener Code-Reviewer mit Spezialisierung auf:
 - [ ] Edge Cases abgedeckt
 - [ ] Sinnvolle Fehlermeldungen
 - [ ] Keine stille Fehlerbehandlung
+
+### Datei- & Projektstruktur
+
+- [ ] Dateien sind richtig benannt: index.html, script.js, style.css
+- [ ] Dateinamen sind beschreibend/aussagekräftig und konsistent
+- [ ] Extra Ordner für templates und Bilder (img)
+- [ ] Statischer HTML Code wird nicht über JavaScript generiert
+- [ ] HTML Code ist ggf. in extra Funktionen ausgelagert
 
 ## Output-Format
 

@@ -136,7 +136,7 @@ function touchControlsTemplate() {
             </div>
             <div class="touch-controls-row">
                 <button id="btn-throw" class="touch-btn touch-btn-throw" title="Throw Bottle">
-                    <span class="touch-btn-icon">&#127863;</span>
+                    <img class="touch-btn-icon" src="assets/img/6_salsa_bottle/bottle_rotation/1_3_bottle_rotation.png" alt="Throw">
                 </button>
                 <button id="btn-jump" class="touch-btn touch-btn-jump" title="Jump">
                     <span class="touch-btn-icon">&#9650;</span>

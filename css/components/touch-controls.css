@@ -59,3 +59,10 @@
     pointer-events: none;
     /* Verhindert, dass das Icon Events abfängt */
 }
+
+.touch-btn-icon img,
+img.touch-btn-icon {
+    width: 80%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
