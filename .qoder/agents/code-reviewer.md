@@ -26,7 +26,11 @@ Du bist ein erfahrener Code-Reviewer mit Spezialisierung auf:
 ### Code-Qualität
 
 - [ ] **Eine Funktion hat nur eine Aufgabe** (Single Responsibility)
-- [ ] Funktionen sind kurz und fokussiert (max. 14 Zeilen, HTML ausgenommen)
+- [ ] Funktionen sind kurz und fokussiert (max. 14 Zeilen Code, HTML ausgenommen)
+  - **WICHTIG:** JSDoc-Kommentare zählen NICHT zu den 14 Zeilen
+  - Funktionsname + öffnende Klammer + schließende Klammer zählen NICHT zu den 14 Zeilen
+  - **Nur der Code INNERHALB der Funktion zählt (max. 14 Zeilen)**
+  - Insgesamt kann eine Funktion also max. 16 Zeilen haben (Name + 14 Zeilen Code + })
 - [ ] Aussagekräftige Namen für Variablen und Funktionen (camelCase)
 - [ ] Der erste Buchstabe von Funktionen/Variablen ist klein geschrieben
 - [ ] 1 oder 2 Leerzeilen Abstand zwischen Funktionen

@@ -1,3 +1,7 @@
+/**
+ * Endboss - Der finale Boss-Gegner
+ * @extends MovableObjects
+ */
 class Endboss extends MovableObjects {
     height = 400;
     width = this.height * 0.8;
@@ -17,6 +21,10 @@ class Endboss extends MovableObjects {
     state = { isChasing: false, hasPlayedAlert: false, hasPlayedAttack: false, hasPlayedDeath: false, isPlayingAlert: false, isPlayingAttack: false, isPlayingHurt: false, isPlayingDeath: false };
     images = imagePaths.endboss;
 
+    /**
+     * Creates an Endboss instance
+     * @param {number} endbossHP - Starting health points
+     */
     constructor(endbossHP) {
         super();
         this.energy = endbossHP;
@@ -27,22 +35,27 @@ class Endboss extends MovableObjects {
         this.animate();
     }
 
+    /** Loads all required images */
     loadAllImages() {
         this.loadImage(this.images.imagesWalk[0]);
-        ['imagesWalk', 'imagesAlert', 'imagesAttack', 'imagesAttackRun', 'imagesHurt', 'imagesDead'].forEach(img => this.loadImages(this.images[img]));
+        ['imagesWalk', 'imagesAlert', 'imagesAttack', 'imagesAttackRun', 'imagesHurt', 'imagesDead']
+            .forEach(img => this.loadImages(this.images[img]));
     }
 
+    /** Starts animation loops */
     animate() {
         this.startMovementInterval();
         this.startAnimationInterval();
     }
 
+    /** Starts movement update loop */
     startMovementInterval() {
         const callback = () => this.updateMovement();
         const interval = setInterval(callback, 1000 / 60);
         GlobalIntervalManager.register(interval, 'Endboss movement', this, 1000 / 60, callback);
     }
 
+    /** Updates position based on current state */
     updateMovement() {
         if (this.state.isPlayingAlert || this.state.isPlayingAttack) return;
         if (this.handleRamming()) return;
@@ -50,6 +63,10 @@ class Endboss extends MovableObjects {
         this.handlePatrol();
     }
 
+    /**
+     * Handles ramming attack movement
+     * @returns {boolean} True if ramming was handled
+     */
     handleRamming() {
         if (!this.ramming.isActive) return false;
         const newX = this.x + (this.movement.chasingSpeed * this.ramming.direction);
@@ -64,6 +81,7 @@ class Endboss extends MovableObjects {
         return true;
     }
 
+    /** Stops ramming and resets state */
     stopRammingMode() {
         this.ramming.isActive = false;
         this.ramming.distanceTraveled = 0;
@@ -73,6 +91,10 @@ class Endboss extends MovableObjects {
         this.state.hasPlayedAttack = true;
     }
 
+    /**
+     * Handles chasing movement towards character
+     * @returns {boolean} True if chasing was handled
+     */
     handleChasing() {
         if (!this.state.isChasing) return false;
         const character = this.world?.character;
@@ -90,6 +112,7 @@ class Endboss extends MovableObjects {
         return true;
     }
 
+    /** Handles patrol movement between boundaries */
     handlePatrol() {
         if (this.movement.movingRight) {
             this.moveRight(false, this.movement.speed, this.rightBoundary);
@@ -100,14 +123,17 @@ class Endboss extends MovableObjects {
         }
     }
 
+    /** Starts animation update loop */
     startAnimationInterval() {
         const callback = () => this.updateAnimation();
         const interval = setInterval(callback, 150);
         GlobalIntervalManager.register(interval, 'Endboss animation', this, 150, callback);
     }
 
+    /** Updates current animation based on state */
     updateAnimation() {
         if (this.isDead()) { this.handleDeathAnimation(); return; }
+        if (this.state.isPlayingAlert || this.state.isPlayingAttack) return;
         if (!this.state.hasPlayedAlert && this.canSeeCharacter()) { this.handleAlertAnimation(); return; }
         if (this.shouldResetAlert()) { this.resetAlertState(); return; }
         if (this.isHurt()) { this.playAnimation(this.images.imagesHurt); return; }
@@ -116,16 +142,20 @@ class Endboss extends MovableObjects {
         this.world?.soundManager?.stopMusic('endbossAngry');
     }
 
+    /** @returns {boolean} True if alert state should be reset */
     shouldResetAlert() {
-        return !this.canSeeCharacter() && (this.state.hasPlayedAlert || this.state.hasPlayedAttack) && !this.ramming.isActive && !this.state.isChasing;
+        return !this.canSeeCharacter() && (this.state.hasPlayedAlert || this.state.hasPlayedAttack)
+            && !this.ramming.isActive && !this.state.isChasing;
     }
 
+    /** Resets alert and attack states */
     resetAlertState() {
         this.state.hasPlayedAlert = false;
         this.state.hasPlayedAttack = false;
         this.state.isChasing = false;
     }
 
+    /** Handles death sequence initiation */
     handleDeathAnimation() {
         if (this.state.hasPlayedDeath || this.state.isPlayingHurt || this.state.isPlayingDeath) return;
         this.state.hasPlayedDeath = true;
@@ -138,10 +168,12 @@ class Endboss extends MovableObjects {
         this.playHurtAnimationOnce();
     }
 
+    /** Stops all active intervals */
     stopAllIntervals() {
         GlobalIntervalManager.clearByOwner(this);
     }
 
+    /** Plays hurt animation once, then triggers death animation */
     playHurtAnimationOnce() {
         this.state.isPlayingHurt = true;
         let frameIndex = 0;
@@ -160,6 +192,7 @@ class Endboss extends MovableObjects {
         GlobalIntervalManager.register(hurtInterval, 'Endboss hurt animation', this, 150, callback);
     }
 
+    /** Plays death animation and shows win screen */
     playDeathAnimationOnce() {
         this.state.isPlayingDeath = true;
         this.world?.soundManager?.play('endbossDead');
@@ -179,16 +212,24 @@ class Endboss extends MovableObjects {
         GlobalIntervalManager.register(deathInterval, 'Endboss death animation', this, 150, callback);
     }
 
+    /**
+     * Checks if character is visible to endboss
+     * @returns {boolean} True if character can be seen
+     */
     canSeeCharacter() {
         const character = this.world?.character;
-        const distance = this.otherDirection ? this.x - (character.x + character.width) : character.x - (this.x + this.width);
+        const distance = this.otherDirection
+            ? this.x - (character.x + character.width)
+            : character.x - (this.x + this.width);
         return distance > 0 && distance < 400;
     }
 
+    /** Triggers alert animation if not played yet */
     handleAlertAnimation() {
         if (!this.state.hasPlayedAlert) this.playAlertAnimationOnce();
     }
 
+    /** Plays alert animation once */
     playAlertAnimationOnce() {
         this.state.hasPlayedAlert = true;
         this.state.isPlayingAlert = true;
@@ -210,10 +251,12 @@ class Endboss extends MovableObjects {
         GlobalIntervalManager.register(alertInterval, 'Endboss alert animation', this, 150, callback);
     }
 
+    /** Triggers attack animation if not played yet */
     handleAttackAnimation() {
         if (!this.state.hasPlayedAttack) this.playAttackAnimationOnce();
     }
 
+    /** Plays attack animation once */
     playAttackAnimationOnce() {
         this.state.hasPlayedAttack = true;
         this.state.isPlayingAttack = true;
@@ -234,6 +277,7 @@ class Endboss extends MovableObjects {
         GlobalIntervalManager.register(attackInterval, 'Endboss attack animation', this, 150, callback);
     }
 
+    /** Called when colliding with character */
     onCharacterCollision() {
         if (this.state.isChasing && !this.ramming.isActive) {
             this.ramming.isActive = true;
@@ -241,6 +285,7 @@ class Endboss extends MovableObjects {
         }
     }
 
+    /** Called when hit by bottle */
     onBottleHit() {
         if (this.state.hasPlayedAlert || this.state.isPlayingAlert || this.state.isPlayingAttack) return;
         this.otherDirection = this.world?.character?.x > this.x;
