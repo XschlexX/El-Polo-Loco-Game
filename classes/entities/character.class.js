@@ -9,12 +9,11 @@ class Character extends MovableObjects {
     bottles = 0;
     coins = 0;
     sleep = false;
-    isRunSoundPlaying = false;  // Track ob Run-Sound läuft
-    isSleepSoundPlaying = false;  // Track ob Sleep-Sound läuft
-    wasAboveGround = false;  // Track ob Character in der Luft war
-    defeatScreenShown = false; // Track ob Defeat-Screen bereits angezeigt wurde
-    isThrowing = false;  // Track ob Werfe-Animation läuft
-    throwAnimationFrame = 0;  // Zähler für Werfe-Animation Bilder
+    isRunSoundPlaying = false;
+    isSleepSoundPlaying = false;
+    wasAboveGround = false;
+    isThrowing = false;
+    throwAnimationFrame = 0;
 
     hitBoxLeft = 30;
     hitBoxTop = 130;
@@ -22,7 +21,7 @@ class Character extends MovableObjects {
     hitBoxBottom = 15 + this.hitBoxTop;
 
     world;
-    cameraEasingSpeed = 0.05; // Geschwindigkeit der Kamera-Anpassung (0.05-0.15 ist gut)
+    cameraEasingSpeed = 0.05;
 
     images = imagePaths.character;
 
@@ -52,32 +51,27 @@ class Character extends MovableObjects {
                 this.resetSleepTimer();
             }
         };
-        const interval1 = setInterval(interval1Callback, 100); // Häufigere Überprüfung, aber nicht zu oft
+        const interval1 = setInterval(interval1Callback, 100);
         GlobalIntervalManager.register(interval1, 'Character sleep reset check', this, 100, interval1Callback);
 
-        // Sound-Kontrolle für Run-Sound und Landing
         const interval2Callback = () => {
             if (!this.world || !this.world.soundManager) return;
 
             const isRunning = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround(this.groundLevel) && !this.isDead();
             const isNowAboveGround = this.isAboveGround(this.groundLevel);
 
-            // Landing Detection: War in der Luft und ist jetzt am Boden
             if (this.wasAboveGround && !isNowAboveGround && !this.isDead()) {
                 this.world.soundManager.play('characterLand');
             }
 
-            // Update wasAboveGround für nächsten Frame
             this.wasAboveGround = isNowAboveGround;
 
             if (isRunning) {
-                // Spiele Run-Sound im Loop ab (falls noch nicht läuft)
                 if (!this.isRunSoundPlaying) {
                     this.world.soundManager.playMusic('characterRun');
                     this.isRunSoundPlaying = true;
                 }
             } else {
-                // Stoppe Run-Sound
                 if (this.isRunSoundPlaying) {
                     this.world.soundManager.stopMusic('characterRun');
                     this.isRunSoundPlaying = false;
@@ -88,7 +82,6 @@ class Character extends MovableObjects {
         GlobalIntervalManager.register(interval2, 'Character sound control', this, 100, interval2Callback);
 
         const interval3Callback = () => {
-            // Warte bis world gesetzt ist
             if (!this.world) return;
 
             if (this.world.keyboard.RIGHT) {
@@ -107,7 +100,6 @@ class Character extends MovableObjects {
         GlobalIntervalManager.register(interval3, 'Character movement control', this, 1000 / 60, interval3Callback);
 
         const interval4Callback = () => {
-            // Warte bis world gesetzt ist
             if (!this.world) return;
 
             if (this.isDead()) {
@@ -116,10 +108,8 @@ class Character extends MovableObjects {
                 this.playAnimation(this.images.imagesHurt);
             } else {
                 if (this.isThrowing) {
-                    // Werfe-Animation läuft - spiele sie zu Ende
                     this.handleThrowAnimation();
                 } else if (this.world.keyboard.SPACE && this.bottles > 0 && this.world.throwInterval()) {
-                    // Starte neue Werfe-Animation
                     this.startThrowAnimation();
                 } else if (this.world.keyboard.RIGHT && !this.isAboveGround(this.groundLevel) || this.world.keyboard.LEFT && !this.isAboveGround(this.groundLevel)) {
                     this.playAnimation(this.images.imagesWalk);
@@ -137,21 +127,18 @@ class Character extends MovableObjects {
     }
 
     /**
-     * Startet die Werfe-Animation und wirft die Flasche nach 100ms
+     * Starts throw animation and throws bottle after 200ms
      */
     startThrowAnimation() {
         this.isThrowing = true;
         this.throwAnimationFrame = 1;
-        this.currentImage = 1; // Starte von Bild 0
+        this.currentImage = 1;
 
-        // Wirf die Flasche nach 100ms (Animation läuft schon an)
-        setTimeout(() => {
-            this.throwBottle();
-        }, 200);
+        setTimeout(() => this.throwBottle(), 200);
     }
 
     /**
-     * Erstellt und wirft eine Flasche
+     * Creates and throws a bottle
      */
     throwBottle() {
         if (!this.world || this.bottles <= 0) return;
@@ -162,20 +149,18 @@ class Character extends MovableObjects {
         this.bottles--;
         this.world.lastThrow = new Date().getTime();
 
-        // Spiele Throw-Sound ab
         if (this.world.soundManager) {
             this.world.soundManager.play('bottleThrow');
         }
     }
 
     /**
-     * Handhabt die Werfe-Animation Bild für Bild
+     * Handles throw animation frame by frame
      */
     handleThrowAnimation() {
         this.playAnimation(this.images.imagesThrow);
         this.throwAnimationFrame++;
 
-        // Animation zu Ende? (5 Bilder in imagesThrow)
         if (this.throwAnimationFrame >= this.images.imagesThrow.length) {
             this.isThrowing = false;
             this.throwAnimationFrame = 0;
@@ -183,26 +168,23 @@ class Character extends MovableObjects {
     }
 
     /**
-     * Setzt den Sleep-Timer zurück
-     * Wird aufgerufen bei Tastendruck oder wenn der Character getroffen wird
+     * Resets sleep timer
+     * Called on key press or when character gets hit
      */
     resetSleepTimer() {
-        // Clear old timeout if exists
         if (this.sleepTimer) {
             GlobalIntervalManager.clearTimeout(this.sleepTimer, 'Character sleep timer');
         }
         this.sleep = false;
 
-        // Stoppe Sleep-Sound wenn Character aufwacht
-        if (this.isSleepSoundPlaying && this.world && this.world.soundManager) {
+        if (this.isSleepSoundPlaying && this.world?.soundManager) {
             this.world.soundManager.stopMusic('characterSleep');
             this.isSleepSoundPlaying = false;
         }
 
         const sleepCallback = () => {
             this.sleep = true;
-            // Spiele Sleep-Sound im Loop ab
-            if (this.world && this.world.soundManager) {
+            if (this.world?.soundManager) {
                 this.world.soundManager.playMusic('characterSleep');
                 this.isSleepSoundPlaying = true;
             }
@@ -212,19 +194,16 @@ class Character extends MovableObjects {
     }
 
     characterDeadHandler() {
-        // Play death sound if not already played
-        if (this.world && this.world.soundManager && !this.deathSoundPlayed) {
+        if (this.world?.soundManager && !this.deathSoundPlayed) {
             this.world.soundManager.play('characterDead');
-            this.deathSoundPlayed = true; // Prevent replaying the sound
+            this.deathSoundPlayed = true;
         }
-        // Disable keyboard inputs when character dies
-        if (this.world && this.world.keyboard) {
+
+        if (this.world?.keyboard) {
             keyboardActive = false;
-            if (this.world.keyboard) {
-                Object.keys(this.world.keyboard).forEach(key => {
-                    this.world.keyboard[key] = false;
-                });
-            }
+            Object.keys(this.world.keyboard).forEach(key => {
+                this.world.keyboard[key] = false;
+            });
         }
 
         this.playAnimation(this.images.imagesDead);
@@ -235,41 +214,28 @@ class Character extends MovableObjects {
     }
 
     /**
-     * Aktualisiert die Kamera-Position basierend auf der Character-Position und Bewegungsrichtung
-     * Die Kamera folgt dem Character asymmetrisch mit sanfter Transition (Easing)
+     * Updates camera position based on character position and direction
+     * Camera follows character asymmetrically with smooth easing transition
      */
     updateCamera() {
-        const offsetFromEdge = 50; // Abstand vom Rand
-
-        // Berechne die minimale Kamera-Position (am Level-Start)
+        const offsetFromEdge = 50;
         const minCameraX = -levelStart;
-
-        // Berechne die maximale Kamera-Position (am Level-Ende)
         const maxCameraX = -(levelEnd - canvasWidth);
 
         let targetCameraX;
 
-        // Asymmetrische Kamera basierend auf Bewegungsrichtung
         if (this.otherDirection) {
-            // Character läuft nach links: Character bleibt rechts (100px + Character-Breite vom rechten Rand)
             targetCameraX = -this.x + (canvasWidth - offsetFromEdge - this.width);
         } else {
-            // Character läuft nach rechts: Character bleibt links (100px vom linken Rand)
             targetCameraX = -this.x + offsetFromEdge;
         }
 
-        // Begrenze die Ziel-Kamera-Position an beiden Level-Enden
         targetCameraX = Math.min(Math.max(targetCameraX, maxCameraX), minCameraX);
 
-        // Sanfte Kamera-Transition (Easing): Kamera gleitet zur Zielposition
-        // Je näher die Kamera am Ziel ist, desto langsamer bewegt sie sich
         const currentCameraX = this.world.camera_x;
         const cameraDiff = targetCameraX - currentCameraX;
-
-        // Easing: Bewege die Kamera einen Teil der Distanz (z.B. 8% pro Frame)
         const newCameraX = currentCameraX + (cameraDiff * this.cameraEasingSpeed);
 
-        // Runde auf ganze Pixel, um schwarze Striche zwischen Hintergrundbildern zu vermeiden
         this.world.camera_x = Math.round(newCameraX);
     }
 }
