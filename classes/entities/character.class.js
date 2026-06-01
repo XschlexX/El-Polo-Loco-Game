@@ -45,85 +45,114 @@ class Character extends MovableObjects {
     animate() {
         this.sleepTimer = null;
         this.resetSleepTimer();
+        this.startSleepResetInterval();
+        this.startSoundControlInterval();
+        this.startMovementInterval();
+        this.startAnimationInterval();
+    }
 
-        const interval1Callback = () => {
-            if (this.world && this.world.keyboard && this.world.keyboard.ANY) {
-                this.resetSleepTimer();
-            }
+    /** Starts interval to reset sleep timer on keyboard input */
+    startSleepResetInterval() {
+        const callback = () => {
+            if (this.world?.keyboard?.ANY) this.resetSleepTimer();
         };
-        const interval1 = setInterval(interval1Callback, 100);
-        GlobalIntervalManager.register(interval1, 'Character sleep reset check', this, 100, interval1Callback);
+        const id = setInterval(callback, 100);
+        GlobalIntervalManager.register(id, 'Character sleep reset check', this, 100, callback);
+    }
 
-        const interval2Callback = () => {
-            if (!this.world || !this.world.soundManager) return;
+    /** Starts interval for sound control (run sound, landing) */
+    startSoundControlInterval() {
+        const callback = () => this.handleSoundControl();
+        const id = setInterval(callback, 100);
+        GlobalIntervalManager.register(id, 'Character sound control', this, 100, callback);
+    }
 
-            const isRunning = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround(this.groundLevel) && !this.isDead();
-            const isNowAboveGround = this.isAboveGround(this.groundLevel);
+    /** Handles sound control logic */
+    handleSoundControl() {
+        if (!this.world?.soundManager) return;
+        const isRunning = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround(this.groundLevel) && !this.isDead();
+        const isNowAboveGround = this.isAboveGround(this.groundLevel);
 
-            if (this.wasAboveGround && !isNowAboveGround && !this.isDead()) {
-                this.world.soundManager.play('characterLand');
+        if (this.wasAboveGround && !isNowAboveGround && !this.isDead()) {
+            this.world.soundManager.play('characterLand');
+        }
+        this.wasAboveGround = isNowAboveGround;
+        this.updateRunSound(isRunning);
+    }
+
+    /** Updates run sound based on running state */
+    updateRunSound(isRunning) {
+        if (isRunning) {
+            if (!this.isRunSoundPlaying) {
+                this.world.soundManager.playMusic('characterRun');
+                this.isRunSoundPlaying = true;
             }
-
-            this.wasAboveGround = isNowAboveGround;
-
-            if (isRunning) {
-                if (!this.isRunSoundPlaying) {
-                    this.world.soundManager.playMusic('characterRun');
-                    this.isRunSoundPlaying = true;
-                }
-            } else {
-                if (this.isRunSoundPlaying) {
-                    this.world.soundManager.stopMusic('characterRun');
-                    this.isRunSoundPlaying = false;
-                }
+        } else {
+            if (this.isRunSoundPlaying) {
+                this.world.soundManager.stopMusic('characterRun');
+                this.isRunSoundPlaying = false;
             }
-        };
-        const interval2 = setInterval(interval2Callback, 100);
-        GlobalIntervalManager.register(interval2, 'Character sound control', this, 100, interval2Callback);
+        }
+    }
 
-        const interval3Callback = () => {
-            if (!this.world) return;
+    /** Starts interval for character movement */
+    startMovementInterval() {
+        const callback = () => this.handleMovement();
+        const id = setInterval(callback, 1000 / 60);
+        GlobalIntervalManager.register(id, 'Character movement control', this, 1000 / 60, callback);
+    }
 
-            if (this.world.keyboard.RIGHT) {
-                this.moveRight();
-            }
-            if (this.world.keyboard.LEFT) {
-                this.moveLeft(true);
-            }
-            if (this.world.keyboard.UP && !this.isAboveGround(this.groundLevel)) {
-                this.jump();
-                this.currentImage = 2;
-            }
-            this.updateCamera();
-        };
-        const interval3 = setInterval(interval3Callback, 1000 / 60);
-        GlobalIntervalManager.register(interval3, 'Character movement control', this, 1000 / 60, interval3Callback);
+    /** Handles character movement input */
+    handleMovement() {
+        if (!this.world) return;
+        if (this.world.keyboard.RIGHT) this.moveRight();
+        if (this.world.keyboard.LEFT) this.moveLeft(true);
+        if (this.world.keyboard.UP && !this.isAboveGround(this.groundLevel)) {
+            this.jump();
+            this.currentImage = 2;
+        }
+        this.updateCamera();
+    }
 
-        const interval4Callback = () => {
-            if (!this.world) return;
+    /** Starts interval for animation control */
+    startAnimationInterval() {
+        const callback = () => this.handleAnimation();
+        const id = setInterval(callback, 150);
+        GlobalIntervalManager.register(id, 'Character animation control', this, 150, callback);
+    }
 
-            if (this.isDead()) {
-                this.characterDeadHandler();
-            } else if (this.isHurt()) {
-                this.playAnimation(this.images.imagesHurt);
-            } else {
-                if (this.isThrowing) {
-                    this.handleThrowAnimation();
-                } else if (this.world.keyboard.SPACE && this.bottles > 0 && this.world.throwInterval()) {
-                    this.startThrowAnimation();
-                } else if (this.world.keyboard.RIGHT && !this.isAboveGround(this.groundLevel) || this.world.keyboard.LEFT && !this.isAboveGround(this.groundLevel)) {
-                    this.playAnimation(this.images.imagesWalk);
-                } else if (this.isAboveGround(this.groundLevel)) {
-                    this.playAnimation(this.images.imagesJump);
-                } else if (this.sleep) {
-                    this.playAnimation(this.images.imagesLongIdle);
-                } else {
-                    this.playAnimation(this.images.imagesIdle);
-                }
-            }
-        };
-        const interval4 = setInterval(interval4Callback, 150);
-        GlobalIntervalManager.register(interval4, 'Character animation control', this, 150, interval4Callback);
+    /** Handles character animation state */
+    handleAnimation() {
+        if (!this.world) return;
+        if (this.isDead()) {
+            this.characterDeadHandler();
+        } else if (this.isHurt()) {
+            this.playAnimation(this.images.imagesHurt);
+        } else {
+            this.playActiveAnimation();
+        }
+    }
+
+    /** Plays the appropriate animation based on current state */
+    playActiveAnimation() {
+        if (this.isThrowing) {
+            this.handleThrowAnimation();
+        } else if (this.world.keyboard.SPACE && this.bottles > 0 && this.world.throwInterval()) {
+            this.startThrowAnimation();
+        } else if (this.isWalkingOnGround()) {
+            this.playAnimation(this.images.imagesWalk);
+        } else if (this.isAboveGround(this.groundLevel)) {
+            this.playAnimation(this.images.imagesJump);
+        } else if (this.sleep) {
+            this.playAnimation(this.images.imagesLongIdle);
+        } else {
+            this.playAnimation(this.images.imagesIdle);
+        }
+    }
+
+    /** Checks if character is walking on ground */
+    isWalkingOnGround() {
+        return (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround(this.groundLevel);
     }
 
     /**
@@ -172,25 +201,41 @@ class Character extends MovableObjects {
      * Called on key press or when character gets hit
      */
     resetSleepTimer() {
+        this.clearSleepTimer();
+        this.sleep = false;
+        this.stopSleepSound();
+        this.scheduleSleepTimeout();
+    }
+
+    /** Clears existing sleep timer */
+    clearSleepTimer() {
         if (this.sleepTimer) {
             GlobalIntervalManager.clearTimeout(this.sleepTimer, 'Character sleep timer');
         }
-        this.sleep = false;
+    }
 
+    /** Stops sleep sound when character wakes up */
+    stopSleepSound() {
         if (this.isSleepSoundPlaying && this.world?.soundManager) {
             this.world.soundManager.stopMusic('characterSleep');
             this.isSleepSoundPlaying = false;
         }
+    }
 
-        const sleepCallback = () => {
-            this.sleep = true;
-            if (this.world?.soundManager) {
-                this.world.soundManager.playMusic('characterSleep');
-                this.isSleepSoundPlaying = true;
-            }
-        };
+    /** Schedules new sleep timeout */
+    scheduleSleepTimeout() {
+        const sleepCallback = () => this.enterSleepState();
         this.sleepTimer = setTimeout(sleepCallback, 3000);
         GlobalIntervalManager.registerTimeout(this.sleepTimer, 'Character sleep timer', this, 3000, sleepCallback);
+    }
+
+    /** Puts character into sleep state */
+    enterSleepState() {
+        this.sleep = true;
+        if (this.world?.soundManager) {
+            this.world.soundManager.playMusic('characterSleep');
+            this.isSleepSoundPlaying = true;
+        }
     }
 
     characterDeadHandler() {

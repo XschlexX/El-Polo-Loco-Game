@@ -31,24 +31,21 @@ function init() {
 }
 
 /**
- * Fügt Hover-Sound-Effekt zu allen Buttons hinzu
- * Wird nach jedem Screen-Wechsel aufgerufen
+ * Adds hover sound effect to all buttons
+ * Called after each screen change
  */
 function initButtonHoverSounds() {
-    // Warte kurz, damit DOM aktualisiert ist
     setTimeout(() => {
         const allButtons = document.querySelectorAll('button');
         allButtons.forEach(button => {
-            // Entferne alten Listener falls vorhanden (verhindert Duplikate)
             button.removeEventListener('mouseenter', playButtonHoverSound);
-            // Füge neuen Listener hinzu
             button.addEventListener('mouseenter', playButtonHoverSound);
         });
     }, 50);
 }
 
 /**
- * Spielt den Button-Hover-Sound ab
+ * Plays button hover sound
  */
 function playButtonHoverSound() {
     if (window.soundManager && !window.soundManager.muted) {
@@ -57,7 +54,7 @@ function playButtonHoverSound() {
 }
 
 /**
- * Prüft, ob eine beliebige Taste gedrückt ist
+ * Checks if any key is pressed
  * @returns {boolean}
  */
 function isAnyKeyPressed() {
@@ -65,9 +62,9 @@ function isAnyKeyPressed() {
 }
 
 /**
- * Setzt den Keyboard-Status für eine Taste
- * @param {string} key - Die Keyboard-Property (z.B. 'LEFT', 'SPACE')
- * @param {boolean} pressed - true für gedrückt, false für losgelassen
+ * Sets keyboard state for a key
+ * @param {string} key - Keyboard property (e.g. 'LEFT', 'SPACE')
+ * @param {boolean} pressed - true for pressed, false for released
  */
 function setKeyState(key, pressed) {
     keyboard[key] = pressed;
@@ -75,8 +72,8 @@ function setKeyState(key, pressed) {
 }
 
 /**
- * Initialisiert die Touch-Controls für mobile Geräte
- * Wird aufgerufen, nachdem das Canvas geladen wurde
+ * Initializes touch controls for mobile devices
+ * Called after canvas is loaded
  */
 function initTouchControls() {
     const buttons = {
@@ -137,7 +134,7 @@ window.addEventListener('keyup', (e) => {
 });
 
 /**
- * Überwacht die Bildschirmausrichtung und zeigt/versteckt den Rotate-Screen
+ * Monitors screen orientation and shows/hides rotate screen
  */
 function initOrientationCheck() {
     const rotateScreen = document.getElementById('rotate-screen');
@@ -147,45 +144,62 @@ function initOrientationCheck() {
     function checkOrientation() {
         const isPortrait = window.innerHeight > window.innerWidth;
         const isMobile = window.innerWidth <= 600;
-        const isSettingsOverlayOpen = document.getElementById('settings-overlay')?.classList.contains('active');
-        const isAudioSettingsOverlayOpen = document.getElementById('audio-settings-overlay')?.classList.contains('active');
-        const isVictoryOverlayOpen = document.getElementById('victory-overlay')?.classList.contains('active');
-        const isDefeatOverlayOpen = document.getElementById('defeat-overlay')?.classList.contains('active');
-        const isGameEnded = isVictoryOverlayOpen || isDefeatOverlayOpen;
-        // Prüfe ob das Spiel aktiv ist (Canvas existiert und world ist vorhanden)
-        const canvas = document.getElementById('canvas');
-        const isGameActive = world && canvas;
 
         if (isMobile && isPortrait) {
-            rotateScreen.style.display = 'flex';
-            if (isGameActive && !isGameEnded) {
-                world.pauseGame();
-            }
+            showRotateScreen();
         } else {
-            rotateScreen.style.display = 'none';
-            // Nur resume wenn:
-            // - Spiel ist aktiv (world existiert UND Canvas existiert)
-            // - Kein Settings-Overlay geöffnet ist
-            // - Das Spiel nicht beendet ist (kein Victory/Defeat Overlay)
-            if (isGameActive && !isSettingsOverlayOpen && !isAudioSettingsOverlayOpen && !isGameEnded) {
-                world.resumeGame();
-            }
+            hideRotateScreen();
         }
     }
 
-    // Initial prüfen
+    /** Shows rotate screen and pauses game */
+    function showRotateScreen() {
+        rotateScreen.style.display = 'flex';
+        if (shouldPauseGame()) {
+            world.pauseGame();
+        }
+    }
+
+    /** Hides rotate screen and resumes game if appropriate */
+    function hideRotateScreen() {
+        rotateScreen.style.display = 'none';
+        if (shouldResumeGame()) {
+            world.resumeGame();
+        }
+    }
+
+    /** Checks if game should be paused */
+    function shouldPauseGame() {
+        return world && document.getElementById('canvas') && !isGameEnded();
+    }
+
+    /** Checks if game should be resumed */
+    function shouldResumeGame() {
+        if (!world || !document.getElementById('canvas')) return false;
+        if (isGameEnded()) return false;
+        return !isOverlayOpen('settings-overlay') && !isOverlayOpen('audio-settings-overlay');
+    }
+
+    /** Checks if game has ended */
+    function isGameEnded() {
+        return isOverlayOpen('victory-overlay') || isOverlayOpen('defeat-overlay');
+    }
+
+    /** Checks if overlay is open */
+    function isOverlayOpen(id) {
+        return document.getElementById(id)?.classList.contains('active');
+    }
+
     checkOrientation();
 
-    // Bei Größenänderung prüfen
     window.addEventListener('resize', () => {
         checkOrientation();
-        // logWindowSize(); // Window-Größe loggen
     });
     window.addEventListener('orientationchange', checkOrientation);
 }
 
 /**
- * Loggt die aktuelle Window-Größe in die Konsole
+ * Logs current window size to console
  */
 // function logWindowSize() {
 //     const gameContainer = document.getElementById('game_container');
