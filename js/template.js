@@ -1,3 +1,7 @@
+/**
+ * Returns the HTML template for the main menu screen.
+ * @returns {string} HTML markup for the main screen
+ */
 function mainScreenTemplate() {
     return /*html*/`
         <div id="startscreen" class="all-screens main-screen">
@@ -12,13 +16,15 @@ function mainScreenTemplate() {
                 <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                     <img src="assets/icon/mute.png" alt="mute">
                 </button>
-                <!-- <div id="you_lost_screen"></div> -->
-                <!-- <button class="button" onclick="startGame(0)">START DEBUG MODE</button> -->
                 <button class="button fz32" onclick="startGame(1)">START GAME</button>
             </div>
     `;
 }
 
+/**
+ * Returns the HTML template for the info / instructions screen.
+ * @returns {string} HTML markup for the info screen
+ */
 function infoScreenTemplate() {
     return /*html*/`
         <div id="info_screen" class="all-screens">
@@ -63,7 +69,8 @@ function infoScreenTemplate() {
 }
 
 /**
- * Impressum Screen Template - Legal Notice (Impressum) per §5 TMG
+ * Returns the HTML template for the legal notice (Impressum) screen per §5 TMG.
+ * @returns {string} HTML markup for the Impressum screen
  */
 function impressumScreenTemplate() {
     return /*html*/`
@@ -115,6 +122,10 @@ function impressumScreenTemplate() {
     `;
 }
 
+/**
+ * Returns the HTML template for the audio settings screen.
+ * @returns {string} HTML markup for the settings screen
+ */
 function settingsScreenTemplate() {
     return /*html*/ `
         <div id="settings_screen" class="all-screens">
@@ -160,6 +171,10 @@ function settingsScreenTemplate() {
     `;
 }
 
+/**
+ * Returns the HTML template for the game canvas and its surrounding UI elements.
+ * @returns {string} HTML markup for the canvas area with overlays
+ */
 function showCanvasTemplate() {
     return /*html*/`
     <canvas id="canvas" class="canvas" width="${canvasWidth}" height="${canvasHeight}"></canvas>
@@ -175,7 +190,8 @@ function showCanvasTemplate() {
 }
 
 /**
- * Touch Controls Template - Mobile Touch Buttons
+ * Returns the HTML template for mobile on-screen touch controls.
+ * @returns {string} HTML markup for the touch control buttons
  */
 function touchControlsTemplate() {
     return /*html*/`
@@ -200,6 +216,10 @@ function touchControlsTemplate() {
     `;
 }
 
+/**
+ * Returns the HTML template for the loading screen with progress indicator.
+ * @returns {string} HTML markup for the loading screen
+ */
 function loadingScreenTemplate() {
     return /*html*/`
         <div id="loading-screen" class="loading-screen">
@@ -210,6 +230,10 @@ function loadingScreenTemplate() {
     `;
 }
 
+/**
+ * Returns the HTML template for the device-rotation prompt screen.
+ * @returns {string} HTML markup for the rotate-device screen
+ */
 function rotateScreenTemplate() {
     return /*html*/`
         <div id="rotate-screen" class="rotate-screen">
@@ -223,7 +247,8 @@ function rotateScreenTemplate() {
 }
 
 /**
- * Settings Overlay Template - HTML Overlay
+ * Returns the HTML template for the in-game settings/pause overlay.
+ * @returns {string} HTML markup for the settings overlay
  */
 function settingsOverlayTemplate() {
     return /*html*/`
@@ -239,6 +264,10 @@ function settingsOverlayTemplate() {
     `;
 }
 
+/**
+ * Returns the HTML template for the in-game audio settings overlay.
+ * @returns {string} HTML markup for the audio settings overlay
+ */
 function audioSettingsOverlayTemplate() {
     return /*html*/`
         <div id="audio-settings-overlay" class="game-overlay">
@@ -278,8 +307,9 @@ function audioSettingsOverlayTemplate() {
 }
 
 /**
- * Victory Overlay Template - HTML Overlay
- * Zeigt "Next Level" Button nur an, wenn es nicht das letzte Level ist
+ * Returns the HTML template for the victory overlay.
+ * Shows a "Next Level" button only when the current level is not the last one.
+ * @returns {string} HTML markup for the victory overlay
  */
 function victoryOverlayTemplate() {
     const maxLevel = 5;
@@ -308,7 +338,8 @@ function victoryOverlayTemplate() {
 }
 
 /**
- * Defeat Overlay Template - HTML Overlay
+ * Returns the HTML template for the defeat / game-over overlay.
+ * @returns {string} HTML markup for the defeat overlay
  */
 function defeatOverlayTemplate() {
     return /*html*/`

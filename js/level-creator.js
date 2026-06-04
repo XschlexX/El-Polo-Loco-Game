@@ -1,12 +1,11 @@
 let currentLevel;
 
 /**
- * Erstellt ein Level basierend auf der übergebenen Level-Nummer
- * @param {number} levelNumber - Die Level-Nummer (1-5 oder 999999 für God Mode)
- * @returns {Level} Das erstellte Level-Objekt
+ * Creates a level based on the given level number.
+ * @param {number} levelNumber - The level number (1–5, or 999 for god mode)
+ * @returns {Level|null} The created Level object, or null if not found
  */
 function createLevel(levelNumber) {
-    // Hole die Level-Konfiguration aus global.js
     const levelKey = levelNumber === 999 ? 'godModeLevel' : `level${levelNumber}`;
     const lvlData = levels[levelKey];
 
@@ -17,8 +16,6 @@ function createLevel(levelNumber) {
 
     currentLevelNumber = lvlData.levelNumber;
 
-    // Setze globale Variablen für die Generator-Funktionen
-    // Diese werden in level-gen-functions.js verwendet
     levelStart = lvlData.levelStart;
     levelEnd = lvlData.levelEnd;
 

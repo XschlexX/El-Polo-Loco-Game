@@ -1,20 +1,26 @@
 /**
- * Audio and volume control functions
+ * Audio and volume control functions for menu and in-game overlays.
  * @file start-audio.js
  */
 
-/** Enables sound and starts menu music */
+/**
+ * Enables sound output and starts the menu music.
+ */
 function enableSound() {
     window.soundManager.unmuteAll();
     window.soundManager.playMusic('menuTheme');
 }
 
-/** Disables sound */
+/**
+ * Mutes all sound output.
+ */
 function disableSound() {
     window.soundManager.muteAll();
 }
 
-/** Toggles sound button state and updates UI */
+/**
+ * Toggles the sound mute state and updates all audio UI elements.
+ */
 function toggleSoundButton() {
     const unmuteBtn = document.getElementById('unmute-btn');
     const muteBtn = document.getElementById('mute-btn');
@@ -30,7 +36,9 @@ function toggleSoundButton() {
     updateOverlayAudioToggleButton();
 }
 
-/** Updates sound button visibility based on mute state */
+/**
+ * Synchronizes the sound button visibility with the current mute state.
+ */
 function updateSoundButtonState() {
     const unmuteBtn = document.getElementById('unmute-btn');
     const muteBtn = document.getElementById('mute-btn');
@@ -46,8 +54,8 @@ function updateSoundButtonState() {
 }
 
 /**
- * Updates master volume
- * @param {number} value - Volume value (0-100)
+ * Updates the master volume from the settings screen slider.
+ * @param {number} value - Volume percentage (0–100)
  */
 function updateMasterVolume(value) {
     if (window.soundManager) {
@@ -58,8 +66,8 @@ function updateMasterVolume(value) {
 }
 
 /**
- * Updates music volume
- * @param {number} value - Volume value (0-100)
+ * Updates the music volume from the settings screen slider.
+ * @param {number} value - Volume percentage (0–100)
  */
 function updateMusicVolume(value) {
     if (window.soundManager) {
@@ -70,8 +78,8 @@ function updateMusicVolume(value) {
 }
 
 /**
- * Updates SFX volume
- * @param {number} value - Volume value (0-100)
+ * Updates the SFX volume from the settings screen slider.
+ * @param {number} value - Volume percentage (0–100)
  */
 function updateSfxVolume(value) {
     if (window.soundManager) {
@@ -82,8 +90,8 @@ function updateSfxVolume(value) {
 }
 
 /**
- * Updates master volume from overlay
- * @param {number} value - Volume value (0-100)
+ * Updates the master volume from the in-game overlay slider.
+ * @param {number} value - Volume percentage (0–100)
  */
 function updateOverlayMasterVolume(value) {
     if (window.soundManager) {
@@ -94,8 +102,8 @@ function updateOverlayMasterVolume(value) {
 }
 
 /**
- * Updates music volume from overlay
- * @param {number} value - Volume value (0-100)
+ * Updates the music volume from the in-game overlay slider.
+ * @param {number} value - Volume percentage (0–100)
  */
 function updateOverlayMusicVolume(value) {
     if (window.soundManager) {
@@ -106,8 +114,8 @@ function updateOverlayMusicVolume(value) {
 }
 
 /**
- * Updates SFX volume from overlay
- * @param {number} value - Volume value (0-100)
+ * Updates the SFX volume from the in-game overlay slider.
+ * @param {number} value - Volume percentage (0–100)
  */
 function updateOverlaySfxVolume(value) {
     if (window.soundManager) {
@@ -117,7 +125,9 @@ function updateOverlaySfxVolume(value) {
     }
 }
 
-/** Saves volume settings to localStorage */
+/**
+ * Persists the current volume settings to localStorage.
+ */
 function saveVolumeSettings() {
     if (window.soundManager) {
         const settings = {
@@ -129,7 +139,9 @@ function saveVolumeSettings() {
     }
 }
 
-/** Loads volume settings from localStorage */
+/**
+ * Restores volume settings from localStorage and applies them.
+ */
 function loadVolumeSettings() {
     const saved = localStorage.getItem('elPoloLoco_volumeSettings');
     if (saved && window.soundManager) {
@@ -145,7 +157,9 @@ function loadVolumeSettings() {
     }
 }
 
-/** Initializes volume sliders with saved values */
+/**
+ * Initializes all volume sliders on the settings screen with saved values.
+ */
 function initializeVolumeSliders() {
     if (!window.soundManager) return;
     initMasterSlider();
@@ -153,7 +167,9 @@ function initializeVolumeSliders() {
     initSfxSlider();
 }
 
-/** Initializes master volume slider */
+/**
+ * Sets the master volume slider to the current volume value.
+ */
 function initMasterSlider() {
     const slider = document.getElementById('master-volume');
     if (slider) {
@@ -162,7 +178,9 @@ function initMasterSlider() {
     }
 }
 
-/** Initializes music volume slider */
+/**
+ * Sets the music volume slider to the current volume value.
+ */
 function initMusicSlider() {
     const slider = document.getElementById('music-volume');
     if (slider) {
@@ -171,7 +189,9 @@ function initMusicSlider() {
     }
 }
 
-/** Initializes SFX volume slider */
+/**
+ * Sets the SFX volume slider to the current volume value.
+ */
 function initSfxSlider() {
     const slider = document.getElementById('sfx-volume');
     if (slider) {
@@ -180,7 +200,9 @@ function initSfxSlider() {
     }
 }
 
-/** Initializes overlay volume sliders */
+/**
+ * Initializes all volume sliders on the in-game audio overlay with saved values.
+ */
 function initializeOverlayVolumeSliders() {
     if (!window.soundManager) return;
     initOverlayMasterSlider();
@@ -189,7 +211,9 @@ function initializeOverlayVolumeSliders() {
     updateOverlayAudioToggleButton();
 }
 
-/** Initializes overlay master volume slider */
+/**
+ * Sets the overlay master volume slider to the current volume value.
+ */
 function initOverlayMasterSlider() {
     const slider = document.getElementById('overlay-master-volume');
     if (slider) {
@@ -198,7 +222,9 @@ function initOverlayMasterSlider() {
     }
 }
 
-/** Initializes overlay music volume slider */
+/**
+ * Sets the overlay music volume slider to the current volume value.
+ */
 function initOverlayMusicSlider() {
     const slider = document.getElementById('overlay-music-volume');
     if (slider) {
@@ -207,7 +233,9 @@ function initOverlayMusicSlider() {
     }
 }
 
-/** Initializes overlay SFX volume slider */
+/**
+ * Sets the overlay SFX volume slider to the current volume value.
+ */
 function initOverlaySfxSlider() {
     const slider = document.getElementById('overlay-sfx-volume');
     if (slider) {
@@ -216,7 +244,9 @@ function initOverlaySfxSlider() {
     }
 }
 
-/** Updates overlay audio toggle button text */
+/**
+ * Updates the overlay audio toggle button text to reflect the current mute state.
+ */
 function updateOverlayAudioToggleButton() {
     const toggleBtn = document.getElementById('overlay-audio-toggle-btn');
     if (toggleBtn && window.soundManager) {

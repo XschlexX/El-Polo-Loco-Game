@@ -6,7 +6,6 @@ let keyboardActive = true;
 let keyboard = new Keyboard();
 let soundManager;
 
-// Mapping: Button ID -> Keyboard Property
 const BUTTON_KEY_MAP = {
     'btn-left': 'LEFT',
     'btn-right': 'RIGHT',
@@ -14,7 +13,6 @@ const BUTTON_KEY_MAP = {
     'btn-throw': 'SPACE'
 };
 
-// Mapping: Keyboard Event Code -> Keyboard Property
 const KEY_CODE_MAP = {
     'ArrowLeft': 'LEFT',
     'ArrowRight': 'RIGHT',
@@ -22,6 +20,9 @@ const KEY_CODE_MAP = {
     'Space': 'SPACE'
 };
 
+/**
+ * Initializes the game by setting up audio, UI, orientation check and hover sounds.
+ */
 function init() {
     window.soundManager = new SoundManager();
     loadVolumeSettings();
@@ -31,8 +32,7 @@ function init() {
 }
 
 /**
- * Adds hover sound effect to all buttons
- * Called after each screen change
+ * Attaches hover sound effect to all buttons on the current screen.
  */
 function initButtonHoverSounds() {
     setTimeout(() => {
@@ -45,7 +45,7 @@ function initButtonHoverSounds() {
 }
 
 /**
- * Plays button hover sound
+ * Plays the button hover sound if audio is enabled.
  */
 function playButtonHoverSound() {
     if (window.soundManager && !window.soundManager.muted) {
@@ -54,17 +54,17 @@ function playButtonHoverSound() {
 }
 
 /**
- * Checks if any key is pressed
- * @returns {boolean}
+ * Checks whether any game key is currently pressed.
+ * @returns {boolean} True if any key is active
  */
 function isAnyKeyPressed() {
     return keyboard.LEFT || keyboard.RIGHT || keyboard.SPACE || keyboard.UP;
 }
 
 /**
- * Sets keyboard state for a key
- * @param {string} key - Keyboard property (e.g. 'LEFT', 'SPACE')
- * @param {boolean} pressed - true for pressed, false for released
+ * Sets the pressed state for a keyboard key.
+ * @param {string} key - Keyboard property name (e.g. 'LEFT', 'SPACE')
+ * @param {boolean} pressed - True for key down, false for key up
  */
 function setKeyState(key, pressed) {
     keyboard[key] = pressed;
@@ -72,8 +72,7 @@ function setKeyState(key, pressed) {
 }
 
 /**
- * Initializes touch controls for mobile devices
- * Called after canvas is loaded
+ * Initializes on-screen touch controls for mobile devices.
  */
 function initTouchControls() {
     const buttons = {
@@ -134,7 +133,7 @@ window.addEventListener('keyup', (e) => {
 });
 
 /**
- * Monitors screen orientation and shows/hides rotate screen
+ * Monitors screen orientation and shows/hides the rotate-screen overlay on mobile.
  */
 function initOrientationCheck() {
     const rotateScreen = document.getElementById('rotate-screen');
@@ -197,22 +196,3 @@ function initOrientationCheck() {
     });
     window.addEventListener('orientationchange', checkOrientation);
 }
-
-/**
- * Logs current window size to console
- */
-// function logWindowSize() {
-//     const gameContainer = document.getElementById('game_container');
-//     const containerInfo = gameContainer ? {
-//         width: gameContainer.offsetWidth,
-//         height: gameContainer.offsetHeight,
-//         aspectRatio: (gameContainer.offsetWidth / gameContainer.offsetHeight).toFixed(2)
-//     } : 'not found';
-
-//     console.log('Window Size:', {
-//         width: window.innerWidth,
-//         height: window.innerHeight,
-//         aspectRatio: (window.innerWidth / window.innerHeight).toFixed(2)
-//     });
-//     console.log('Game Container:', containerInfo);
-// }

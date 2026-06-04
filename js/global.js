@@ -1,4 +1,8 @@
-// Debug-Settings
+/**
+ * Global game configuration: debug flags, canvas dimensions, level definitions and asset paths.
+ * @file global.js
+ */
+
 let debugModus = false;
 let characterDebug = true;
 let characterGodMode = true;
@@ -7,18 +11,19 @@ let endboss = true;
 let chicken = true;
 let smallChicken = true;
 
-// Canvas-Größe
 let canvasHeight = 480;
 let canvasWidth = 720;
 
-// Level-Variablen (werden von level-creator.js gesetzt)
 let levelStart;
 let levelEnd;
 let currentLevelNumber = 1;
 
 
-
-
+/**
+ * Level configuration registry.
+ * Each key defines starting parameters for a specific level.
+ * @type {Object}
+ */
 let levels = {
     level0: {
         levelStart: - canvasWidth * 1,
@@ -98,19 +103,6 @@ let levels = {
         endbossHP: 200,
         levelNumber: 5
     },
-    // level5: {
-    //     levelStart: - canvasWidth * 5,
-    //     levelEnd: canvasWidth * 10,
-    //     characterHP: 250,
-    //     characterBottles: 0,
-    //     smallChickenAmount: 0,
-    //     bigChickenAmount: 0,
-    //     chickenSpeed: 1.4,
-    //     coinsAmount: 10,
-    //     bottleAmount: 30,
-    //     endbossHP: 20,
-    //     levelNumber: 5
-    // },
     godModeLevel: {
         levelStart: - canvasWidth * 6,
         levelEnd: canvasWidth * 24,
@@ -127,6 +119,10 @@ let levels = {
 };
 
 
+/**
+ * Sprite image paths for all game entities.
+ * @type {Object}
+ */
 let imagePaths = {
     character: {
         imagesIdle: [

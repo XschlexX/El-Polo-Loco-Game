@@ -1,17 +1,15 @@
 /**
- * Generiert Hintergrund-Objekte für das Level mit Parallax-Effekt
- * @returns {Array} Array von BackgroundObject Objekten
+ * Generates parallax background objects for the level.
+ * @returns {Array} Array of BackgroundObject instances
  */
 function generateBackgrounds() {
     const backgrounds = [];
 
-    // Layer-Konfiguration mit Parallax-Faktoren
-    // Je kleiner der Faktor, desto langsamer bewegt sich der Layer (0 = steht still)
     const layers = [
-        { path: 'assets/img/5_background/layers/air.png', factor: 0 },      // Himmel bleibt statisch
-        { path: 'assets/img/5_background/layers/3_third_layer/full.png', factor: 0.6 },  // Ferne Berge - sehr langsam
-        { path: 'assets/img/5_background/layers/2_second_layer/full.png', factor: 0.8 }, // Mittlere Ebene - halbe Geschwindigkeit
-        { path: 'assets/img/5_background/layers/1_first_layer/full.png', factor: 1 }     // Vordergrund - volle Geschwindigkeit
+        { path: 'assets/img/5_background/layers/air.png', factor: 0 },
+        { path: 'assets/img/5_background/layers/3_third_layer/full.png', factor: 0.6 },
+        { path: 'assets/img/5_background/layers/2_second_layer/full.png', factor: 0.8 },
+        { path: 'assets/img/5_background/layers/1_first_layer/full.png', factor: 1 }
     ];
 
     for (let x = levelStart; x <= levelEnd; x += canvasWidth * 2) {
@@ -24,8 +22,8 @@ function generateBackgrounds() {
 }
 
 /**
- * Generiert Wolken für das Level
- * @returns {Array} Array von Cloud Objekten
+ * Generates cloud objects spread evenly across the level.
+ * @returns {Array} Array of Cloud instances
  */
 function generateClouds() {
     const clouds = [];
@@ -40,23 +38,21 @@ function generateClouds() {
 }
 
 /**
- * Generiert Status-Bars für das Level
- * @param {number} amount - Anzahl der Coins im Level (0 = keine Coin-Bar)
- * @returns {Array} Array von StatusBar Objekten
+ * Generates status bar UI elements for the HUD.
+ * @param {number} coinAmount - Number of coins in the level (0 skips the coin bar)
+ * @returns {Array} Array of StatusBar instances
  */
 function generateStatusBars(amount) {
     const statusBars = [];
     const barTypes = ['imagesHealthBar', 'imagesBottleBar', 'imagesCoinBar', 'imagesHealthBarEndboss'];
 
     barTypes.forEach(barType => {
-        // Überspringe imagesCoinBar wenn keine Münzen im Level
         if (barType === 'imagesCoinBar' && amount === 0) {
-            return; // Skippe diese Bar
+            return;
         }
 
-        // Überspringe imagesHealthBarEndboss wenn Endboss deaktiviert
         if (barType === 'imagesHealthBarEndboss' && !endboss) {
-            return; // Skippe diese Bar
+            return;
         }
 
         for (let i = 0; i < 3; i++) {
@@ -68,9 +64,10 @@ function generateStatusBars(amount) {
 }
 
 /**
- * Generiert Chickens für das Level
- * @param {number} count - Anzahl der Chickens
- * @returns {Array} Array von Chicken Objekten
+ * Generates regular chicken enemies for the level.
+ * @param {number} count - Number of chickens to spawn
+ * @param {number} chickenSpeed - Movement speed of each chicken
+ * @returns {Array} Array of Chicken instances
  */
 function generateChickens(count, chickenSpeed) {
     const chickens = [];
@@ -83,9 +80,10 @@ function generateChickens(count, chickenSpeed) {
 }
 
 /**
- * Generiert kleine Chickens für das Level
- * @param {number} count - Anzahl der kleinen Chickens
- * @returns {Array} Array von ChickenSmall Objekten
+ * Generates small chicken enemies for the level.
+ * @param {number} count - Number of small chickens to spawn
+ * @param {number} chickenSpeed - Movement speed of each small chicken
+ * @returns {Array} Array of ChickenSmall instances
  */
 function generateSmallChickens(count, chickenSpeed) {
     const chickens = [];
@@ -98,10 +96,10 @@ function generateSmallChickens(count, chickenSpeed) {
 }
 
 /**
- * Generiert Flaschen mit Mindestabstand zueinander im Bereich levelStart bis levelEnd
- * @param {number} count - Anzahl der Flaschen
- * @param {number} minDistance - Mindestabstand in Pixeln
- * @returns {Array} Array von CollectableBottle Objekten
+ * Generates bottles with a minimum distance between each, within the level bounds.
+ * @param {number} count - Number of bottles to place
+ * @param {number} minDistance - Minimum pixel distance between bottles
+ * @returns {Array} Array of CollectableBottle instances
  */
 function generateBottlesWithMinDistance(count, minDistance) {
     const bottles = [];
@@ -112,13 +110,12 @@ function generateBottlesWithMinDistance(count, minDistance) {
         let newX;
         let validPosition = false;
         let attempts = 0;
-        const maxAttempts = 500; // Mehr Versuche
+        const maxAttempts = 500;
 
         while (!validPosition && attempts < maxAttempts) {
             newX = minX + Math.random() * (maxX - minX);
             validPosition = true;
 
-            // Prüfe Abstand zu allen existierenden Flaschen
             for (let bottle of bottles) {
                 if (Math.abs(newX - bottle.x) < minDistance) {
                     validPosition = false;
@@ -128,7 +125,6 @@ function generateBottlesWithMinDistance(count, minDistance) {
             attempts++;
         }
 
-        // Nur hinzufügen wenn gültige Position gefunden wurde
         if (validPosition) {
             const bottle = new CollectableBottle(newX);
             bottles.push(bottle);
@@ -141,10 +137,10 @@ function generateBottlesWithMinDistance(count, minDistance) {
 }
 
 /**
- * Generiert Münzen mit Mindestabstand zueinander im Bereich levelStart bis levelEnd
- * @param {number} count - Anzahl der Münzen
- * @param {number} minDistance - Mindestabstand in Pixeln
- * @returns {Array} Array von CollectableCoin Objekten
+ * Generates coins with a minimum distance between each, within the level bounds.
+ * @param {number} count - Number of coins to place
+ * @param {number} minDistance - Minimum pixel distance between coins
+ * @returns {Array} Array of CollectableCoin instances
  */
 function generateCoinsWithMinDistance(count, minDistance) {
     const coins = [];
@@ -155,13 +151,12 @@ function generateCoinsWithMinDistance(count, minDistance) {
         let newX;
         let validPosition = false;
         let attempts = 0;
-        const maxAttempts = 500; // Mehr Versuche
+        const maxAttempts = 500;
 
         while (!validPosition && attempts < maxAttempts) {
             newX = minX + Math.random() * (maxX - minX);
             validPosition = true;
 
-            // Prüfe Abstand zu allen existierenden Münzen
             for (let coin of coins) {
                 if (Math.abs(newX - coin.x) < minDistance) {
                     validPosition = false;
@@ -171,7 +166,6 @@ function generateCoinsWithMinDistance(count, minDistance) {
             attempts++;
         }
 
-        // Nur hinzufügen wenn gültige Position gefunden wurde
         if (validPosition) {
             const coin = new CollectableCoin(newX);
             coins.push(coin);

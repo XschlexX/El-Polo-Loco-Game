@@ -1,9 +1,11 @@
 /**
- * Overlay management functions for settings, victory and defeat screens
+ * Overlay management functions for settings, audio, victory and defeat screens.
  * @file start-overlays.js
  */
 
-/** Toggles settings menu visibility */
+/**
+ * Toggles the in-game settings menu open or closed.
+ */
 function toggleSettingsMenu() {
     const overlay = document.getElementById('settings-overlay');
     if (overlay) {
@@ -15,7 +17,9 @@ function toggleSettingsMenu() {
     }
 }
 
-/** Shows HTML settings overlay and pauses game */
+/**
+ * Displays the settings overlay and pauses the game.
+ */
 function showHtmlSettingsOverlay() {
     const overlay = document.getElementById('settings-overlay');
     if (overlay && window.world) {
@@ -24,7 +28,9 @@ function showHtmlSettingsOverlay() {
     }
 }
 
-/** Hides HTML settings overlay and resumes game */
+/**
+ * Hides the settings overlay and resumes the game.
+ */
 function hideHtmlSettingsOverlay() {
     const overlay = document.getElementById('settings-overlay');
     if (overlay && window.world) {
@@ -33,7 +39,9 @@ function hideHtmlSettingsOverlay() {
     }
 }
 
-/** Shows audio settings overlay */
+/**
+ * Opens the audio settings overlay and hides the main settings panel.
+ */
 function showAudioSettingsOverlay() {
     const audioOverlay = document.getElementById('audio-settings-overlay');
     const settingsOverlay = document.getElementById('settings-overlay');
@@ -44,7 +52,9 @@ function showAudioSettingsOverlay() {
     }
 }
 
-/** Closes audio settings and returns to main settings */
+/**
+ * Closes the audio settings overlay and returns to the main settings panel.
+ */
 function closeAudioSettingsOverlay() {
     const audioOverlay = document.getElementById('audio-settings-overlay');
     const settingsOverlay = document.getElementById('settings-overlay');
@@ -54,13 +64,17 @@ function closeAudioSettingsOverlay() {
     }
 }
 
-/** Restarts game from overlay */
+/**
+ * Restarts the current game from an overlay menu.
+ */
 function restartGameFromOverlay() {
     hideHtmlSettingsOverlay();
     startGame();
 }
 
-/** Exits to main menu */
+/**
+ * Stops the game and returns to the main menu screen.
+ */
 function exitToMainMenu() {
     if (window.world) {
         window.world.stopGame();
@@ -73,43 +87,57 @@ function exitToMainMenu() {
     if (window.soundManager) window.soundManager.playMusic('menuTheme');
 }
 
-/** Resumes game from overlay */
+/**
+ * Resumes the game by closing the settings overlay.
+ */
 function resumeGameFromOverlay() {
     hideHtmlSettingsOverlay();
 }
 
-/** Shows HTML victory overlay */
+/**
+ * Displays the victory overlay screen.
+ */
 function showHtmlVictoryOverlay() {
     const overlay = document.getElementById('victory-overlay');
     if (overlay) overlay.classList.add('active');
 }
 
-/** Hides HTML victory overlay */
+/**
+ * Hides the victory overlay screen.
+ */
 function hideHtmlVictoryOverlay() {
     const overlay = document.getElementById('victory-overlay');
     if (overlay) overlay.classList.remove('active');
 }
 
-/** Starts next level from overlay */
+/**
+ * Advances to the next level from the victory overlay.
+ */
 function nextLevelFromOverlay() {
     hideHtmlVictoryOverlay();
     currentLevelNumber++;
     startGame(currentLevelNumber);
 }
 
-/** Shows HTML defeat overlay */
+/**
+ * Displays the defeat / game-over overlay screen.
+ */
 function showHtmlDefeatOverlay() {
     const overlay = document.getElementById('defeat-overlay');
     if (overlay) overlay.classList.add('active');
 }
 
-/** Hides HTML defeat overlay */
+/**
+ * Hides the defeat / game-over overlay screen.
+ */
 function hideHtmlDefeatOverlay() {
     const overlay = document.getElementById('defeat-overlay');
     if (overlay) overlay.classList.remove('active');
 }
 
-/** Retries current level from overlay */
+/**
+ * Retries the current level from the defeat overlay.
+ */
 function tryAgainFromOverlay() {
     hideHtmlDefeatOverlay();
     startGame();

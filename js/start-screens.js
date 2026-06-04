@@ -1,9 +1,11 @@
 /**
- * Screen management functions for game navigation
+ * Screen management functions for game navigation and lifecycle.
  * @file start-screens.js
  */
 
-/** Shows main menu screen */
+/**
+ * Renders the main menu screen and initializes audio UI.
+ */
 function mainScreen() {
     document.getElementById('game_container').innerHTML = mainScreenTemplate();
     updateSoundButtonState();
@@ -11,8 +13,8 @@ function mainScreen() {
 }
 
 /**
- * Starts the game with specified level
- * @param {number} level - Level number to start
+ * Starts a new game session for the specified level.
+ * @param {number} [level=1] - Level number to start
  */
 function startGame(level = 1) {
     currentLevelNumber = level;
@@ -22,7 +24,9 @@ function startGame(level = 1) {
     loadGameAssets();
 }
 
-/** Stops existing game if running */
+/**
+ * Stops any running game instance and cleans up the world reference.
+ */
 function stopExistingGame() {
     if (world) {
         world.stopGame();
@@ -30,7 +34,9 @@ function stopExistingGame() {
     }
 }
 
-/** Shows loading screen and hides settings button */
+/**
+ * Displays the loading screen and hides the settings button.
+ */
 function showLoadingScreen() {
     document.getElementById('game_container').innerHTML = showCanvasTemplate() + loadingScreenTemplate();
     canvas = document.getElementById('canvas');
@@ -38,31 +44,37 @@ function showLoadingScreen() {
     if (settingsBtn) settingsBtn.style.display = 'none';
 }
 
-/** Creates SoundManager if not exists */
+/**
+ * Creates the SoundManager instance if it does not already exist.
+ */
 function initializeSoundManager() {
     if (!window.soundManager) {
         window.soundManager = new SoundManager();
     }
 }
 
-/** Loads game assets and starts game when complete */
+/**
+ * Begins loading all game assets and registers progress and completion callbacks.
+ */
 function loadGameAssets() {
     const assetLoader = new AssetLoader();
     assetLoader.loadAll(updateLoadingProgress, onAssetsLoaded);
 }
 
 /**
- * Updates loading progress display
- * @param {number} loaded - Assets loaded
- * @param {number} total - Total assets
- * @param {number} percentage - Loading percentage
+ * Updates the loading progress text on screen.
+ * @param {number} loaded - Number of assets loaded so far
+ * @param {number} total - Total number of assets to load
+ * @param {number} percentage - Current loading percentage (0–100)
  */
 function updateLoadingProgress(loaded, total, percentage) {
     const progressElement = document.getElementById('loading-progress');
     if (progressElement) progressElement.textContent = `${percentage}%`;
 }
 
-/** Called when all assets are loaded */
+/**
+ * Called when all assets have finished loading; transitions to gameplay.
+ */
 function onAssetsLoaded() {
     document.getElementById('loading-screen').style.display = 'none';
     showSettingsButton();
@@ -70,20 +82,26 @@ function onAssetsLoaded() {
     initializeGameWorld();
 }
 
-/** Shows settings button */
+/**
+ * Makes the in-game settings button visible.
+ */
 function showSettingsButton() {
     const settingsBtn = document.getElementById('settings-btn');
     if (settingsBtn) settingsBtn.style.display = 'flex';
 }
 
-/** Starts game music and creates level */
+/**
+ * Stops menu music, starts game music and creates the current level.
+ */
 function startGameMusic() {
     window.soundManager.stopMusic('menuTheme');
     window.soundManager.playMusic('gameTheme');
     createLevel(currentLevelNumber);
 }
 
-/** Initializes game world and debug overlay */
+/**
+ * Creates the game World, sets up the debug overlay and initializes touch controls.
+ */
 function initializeGameWorld() {
     world = new World(canvas, keyboard);
     if (typeof debugOverlay !== 'undefined') debugOverlay.destroy();
@@ -94,14 +112,18 @@ function initializeGameWorld() {
     initButtonHoverSounds();
 }
 
-/** Shows info screen */
+/**
+ * Renders the info / instructions screen.
+ */
 function showInfoScreen() {
     document.getElementById('game_container').innerHTML = infoScreenTemplate();
     updateSoundButtonState();
     initButtonHoverSounds();
 }
 
-/** Shows settings screen */
+/**
+ * Renders the audio settings screen.
+ */
 function showSettingsScreen() {
     document.getElementById('game_container').innerHTML = settingsScreenTemplate();
     updateSoundButtonState();
@@ -109,15 +131,17 @@ function showSettingsScreen() {
     initButtonHoverSounds();
 }
 
-/** Shows Impressum (legal notice) screen */
+/**
+ * Renders the legal notice (Impressum) screen.
+ */
 function showImpressumScreen() {
     document.getElementById('game_container').innerHTML = impressumScreenTemplate();
     initButtonHoverSounds();
 }
 
 /**
- * Shows victory screen after delay
- * @param {number} delay - Delay in milliseconds
+ * Shows the victory overlay and plays the win sound after a delay.
+ * @param {number} [delay=0] - Delay in milliseconds before showing the screen
  */
 function showYouWonScreen(delay = 0) {
     setTimeout(() => {
@@ -130,8 +154,8 @@ function showYouWonScreen(delay = 0) {
 }
 
 /**
- * Shows defeat screen after delay
- * @param {number} delay - Delay in milliseconds
+ * Shows the defeat overlay and plays the loss sound after a delay.
+ * @param {number} [delay=0] - Delay in milliseconds before showing the screen
  */
 function showYouLostScreen(delay = 0) {
     setTimeout(() => {
