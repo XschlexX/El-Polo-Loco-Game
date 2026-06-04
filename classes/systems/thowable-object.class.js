@@ -78,7 +78,7 @@ class ThrowableObject extends MovableObjects {
                 if (this.currentImage >= this.imagesSplash.length) {
                     this.splashAnimationComplete = true;
                     this.markedForDeletion = true;
-                    const timeoutId = setTimeout(() => {}, 100);
+                    const timeoutId = setTimeout(() => { }, 100);
                     GlobalIntervalManager.registerTimeout(timeoutId, 'ThrowableObject removal', this, 100, () => this.removeFromWorld());
                 }
             }
