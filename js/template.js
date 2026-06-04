@@ -61,8 +61,8 @@ function infoScreenTemplate() {
                         <div>Throw Bottle</div>
                     </div>
                 </div>
-                <button class="button" onclick="mainScreen()">BACK</button>
                 <button class="button" onclick="showImpressumScreen()">IMPRESSUM</button>
+                <button class="button" onclick="mainScreen()">BACK</button>
             </div>
         </div>
     `;
@@ -85,37 +85,33 @@ function impressumScreenTemplate() {
 
                 <div class="impressum-section">
                     <span class="impressum-label">Name</span>
-                    <span class="impressum-value">[Vorname Nachname]</span>
+                    <span class="impressum-value">Alexander Schmidt</span>
                 </div>
 
                 <div class="impressum-section">
                     <span class="impressum-label">Anschrift</span>
                     <span class="impressum-value">
-                        [Straße Hausnummer]<br>
-                        [PLZ Ort]
+                        Alte Poststraße 11<br>
+                        91522 Ansbach
                     </span>
                 </div>
 
                 <div class="impressum-section">
                     <span class="impressum-label">Kontakt</span>
                     <span class="impressum-value">
-                        Telefon: [Telefonnummer]<br>
-                        E-Mail: <a href="mailto:[email@example.com]">[email@example.com]</a>
+                        Telefon: 0151/12778576<br>
+                        E-Mail: <a href="mailto:alexbysmith@gmail.com">alexbysmith@gmail.com</a>
                     </span>
                 </div>
 
                 <div class="impressum-section">
                     <span class="impressum-label">Verantwortlich für den Inhalt</span>
                     <span class="impressum-value">
-                        [Vorname Nachname]<br>
-                        [Straße Hausnummer]<br>
-                        [PLZ Ort]
+                        Alexander Schmidt<br>
+                        Alte Poststraße 11<br>
+                        91522 Ansbach
                     </span>
                 </div>
-
-                <p class="impressum-disclaimer">
-                    This is a placeholder Impressum. Replace bracketed fields with your actual information before publishing.
-                </p>
             </div>
             <button class="button" onclick="showInfoScreen()">BACK</button>
         </div>
