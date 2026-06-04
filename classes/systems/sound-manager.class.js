@@ -1,17 +1,19 @@
+/**
+ * Manages all game audio including music, sound effects, and volume control.
+ * Supports per-category volume, mute/unmute, and a shared global sound cache.
+ */
 class SoundManager {
-    sounds = {}; // Hier werden alle Sounds gespeichert: { 'jump': Audio-Objekt, 'hurt': Audio-Objekt }
-    loopSounds = ['menuTheme', 'gameTheme', 'characterRun', 'characterSleep', 'endbossAngry']; // Liste der Loop-Sounds
-    muted = true; // Sound-Status: true = stumm (Standard), false = an
+    sounds = {};
+    loopSounds = ['menuTheme', 'gameTheme', 'characterRun', 'characterSleep', 'endbossAngry'];
+    muted = true;
 
-    // Volume-Einstellungen (0.0 - 1.0)
     masterVolume = 1.0;
     musicVolume = 0.5;
     sfxVolume = 0.5;
 
-    // Musik-Sounds (werden mit musicVolume multipliziert)
     musicSounds = ['menuTheme', 'gameTheme'];
 
-    // Globaler Sound-Cache für alle SoundManager Instanzen
+    /** @type {Object.<string, HTMLAudioElement>} Shared audio cache across all SoundManager instances */
     static globalSoundCache = {};
 
     constructor() {
@@ -21,14 +23,12 @@ class SoundManager {
     }
 
     /**
-     * Initialisiert die Volume-Einstellungen im localStorage
-     * Speichert die Default-Werte nur wenn noch keine Einstellungen existieren
+     * Initializes volume settings in localStorage.
+     * Saves default values only if no settings exist yet.
      */
     initializeVolumeSettings() {
-        // Prüfe ob bereits Einstellungen im localStorage existieren
         const existing = localStorage.getItem('elPoloLoco_volumeSettings');
         if (!existing) {
-            // Speichere aktuelle Default-Werte
             const settings = {
                 master: this.masterVolume,
                 music: this.musicVolume,
@@ -39,7 +39,7 @@ class SoundManager {
     }
 
     /**
-     * Lädt alle Sounds des Spiels
+     * Loads all game sounds.
      */
     initializeSounds() {
         this.addSound('menuTheme', 'sounds/music/menu-theme.mp3', 1.0);
@@ -65,31 +65,30 @@ class SoundManager {
     }
 
     /**
-     * Fügt einen Sound hinzu
-     * @param {string} name - Name des Sounds
-     * @param {string} path - Pfad zur Sound-Datei
-     * @param {number} volume - Lautstärke (0.0 - 1.0), Standard: 1.0
+     * Adds a sound to the manager, using the global cache if available.
+     * @param {string} name - Identifier for the sound
+     * @param {string} path - Path to the audio file
+     * @param {number} [volume=1.0] - Playback volume (0.0 - 1.0)
      */
     addSound(name, path, volume = 1.0) {
-        // Prüfe ob der Sound bereits im globalen Cache ist
         if (SoundManager.globalSoundCache[path]) {
             this.sounds[name] = SoundManager.globalSoundCache[path];
         } else {
             const audio = new Audio(path);
-            audio.preload = 'auto'; // Lädt Sound im Voraus
-            audio.volume = volume;  // Setze Lautstärke
+            audio.preload = 'auto';
+            audio.volume = volume;
             this.sounds[name] = audio;
             SoundManager.globalSoundCache[path] = audio;
         }
     }
 
     /**
-     * Spielt einen Sound ab
-     * @param {string} name - Name des Sounds
-     * @param {boolean} restart - Sound von vorne starten?
+     * Plays a sound by name.
+     * @param {string} name - Identifier of the sound to play
+     * @param {boolean} [restart=true] - Whether to restart the sound from the beginning
      */
     play(name, restart = true) {
-        if (this.muted) return; // Wenn stumm, nicht abspielen
+        if (this.muted) return;
 
         if (!this.sounds[name]) {
             console.warn(`Sound "${name}" nicht gefunden`);
@@ -98,7 +97,7 @@ class SoundManager {
 
         const sound = this.sounds[name];
         if (restart) {
-            sound.currentTime = 0; // Startet von vorne
+            sound.currentTime = 0;
         }
         sound.play().catch(err => {
             console.warn(`Fehler beim Abspielen von "${name}":`, err);
@@ -106,66 +105,56 @@ class SoundManager {
     }
 
     /**
-     * Spielt Musik in einer Endlosschleife
-     * @param {string} name - Name der Musik
+     * Plays music in a continuous loop.
+     * @param {string} name - Identifier of the music track
      */
     playMusic(name) {
-        // if (!this.sounds[name]) {
-        //     console.warn(`Sound "${name}" nicht gefunden`);
-        //     return;
-        // }
-
         const sound = this.sounds[name];
         sound.loop = true;
-        this.play(name, false);  // Nutzt play() ohne restart!
+        this.play(name, false);
     }
 
     /**
-     * Stoppt Musik (zurück zum Anfang)
-     * @param {string} name - Name der Musik
+     * Stops music and resets playback position to the beginning.
+     * @param {string} name - Identifier of the music track
      */
     stopMusic(name) {
-        // if (!this.sounds[name]) return;
-
         const sound = this.sounds[name];
         sound.pause();
         sound.currentTime = 0;
     }
 
     /**
-     * Pausiert Musik (Position bleibt erhalten)
-     * @param {string} name - Name der Musik
+     * Pauses music while preserving the current playback position.
+     * @param {string} name - Identifier of the music track
      */
     pauseMusic(name) {
-        // if (!this.sounds[name]) return;
         this.sounds[name].pause();
     }
 
     /**
-     * Setzt pausierte Musik fort
-     * @param {string} name - Name der Musik
+     * Resumes previously paused music.
+     * @param {string} name - Identifier of the music track
      */
     resumeMusic(name) {
-        // if (!this.sounds[name]) return;
-
         const sound = this.sounds[name];
         sound.loop = true;
-        this.play(name, false);  // Nutzt play() ohne restart!
+        this.play(name, false);
     }
 
     /**
-     * Deaktiviert alle Sounds und setzt muted-Status
+     * Mutes all sounds and sets the muted flag to true.
      */
     muteAll() {
         this.muted = true;
         Object.values(this.sounds).forEach(sound => {
             sound.pause();
-            // sound.currentTime = 0;
         });
     }
 
     /**
-     * Stoppt alle Sounds ohne muted-Status zu ändern (für Spielende)
+     * Stops all sounds without changing the muted flag.
+     * Used when the game ends.
      */
     stopAllSounds() {
         Object.values(this.sounds).forEach(sound => {
@@ -175,7 +164,7 @@ class SoundManager {
     }
 
     /**
-     * Aktiviert alle Sounds wieder
+     * Unmutes all sounds and reapplies volume settings.
      */
     unmuteAll() {
         this.muted = false;
@@ -183,7 +172,8 @@ class SoundManager {
     }
 
     /**
-     * Pausiert alle Sounds (für Settings-Overlay)
+     * Pauses all currently playing sounds.
+     * Used for the settings overlay.
      */
     pauseAllSounds() {
         Object.values(this.sounds).forEach(sound => {
@@ -192,19 +182,16 @@ class SoundManager {
     }
 
     /**
-     * Setzt alle Sounds fort die vorher liefen
-     * Nur Loop-Sounds (gameTheme, characterRun, endbossAngry) werden fortgesetzt
-     * Kurze Effekt-Sounds (bottleCollect, bottleThrow, etc.) werden NICHT fortgesetzt
+     * Resumes loop sounds that were previously playing.
+     * Only loop sounds (gameTheme, characterRun, endbossAngry) are resumed;
+     * short effect sounds are not restored.
      */
     resumeAllSounds() {
-        if (this.muted) return; // Wenn stumm, nicht fortsetzen
+        if (this.muted) return;
 
         Object.keys(this.sounds).forEach(soundName => {
-            // Nur Loop-Sounds fortsetzen!
             if (this.loopSounds.includes(soundName)) {
                 const sound = this.sounds[soundName];
-                // Nur fortsetzen wenn Sound vorher gespielt wurde (currentTime > 0)
-                // UND wenn er pausiert ist
                 if (sound.currentTime > 0 && sound.paused) {
                     sound.play().catch(err => {
                         console.warn(`Fehler beim Fortsetzen:`, err);
@@ -215,10 +202,10 @@ class SoundManager {
     }
 
     /**
-     * Berechnet die finale Lautstärke für einen Sound
-     * @param {string} soundName - Name des Sounds
-     * @param {number} baseVolume - Basis-Lautstärke des Sounds
-     * @returns {number} - Finale Lautstärke
+     * Calculates the final volume for a sound based on category and master volume.
+     * @param {string} soundName - Identifier of the sound
+     * @param {number} baseVolume - Base volume of the sound
+     * @returns {number} Final computed volume
      */
     getFinalVolume(soundName, baseVolume) {
         const isMusic = this.musicSounds.includes(soundName);
@@ -227,8 +214,8 @@ class SoundManager {
     }
 
     /**
-     * Setzt die Master-Lautstärke
-     * @param {number} volume - Lautstärke (0.0 - 1.0)
+     * Sets the master volume level.
+     * @param {number} volume - Volume level (0.0 - 1.0)
      */
     setMasterVolume(volume) {
         this.masterVolume = Math.max(0, Math.min(1, volume));
@@ -236,8 +223,8 @@ class SoundManager {
     }
 
     /**
-     * Setzt die Musik-Lautstärke
-     * @param {number} volume - Lautstärke (0.0 - 1.0)
+     * Sets the music category volume level.
+     * @param {number} volume - Volume level (0.0 - 1.0)
      */
     setMusicVolume(volume) {
         this.musicVolume = Math.max(0, Math.min(1, volume));
@@ -245,8 +232,8 @@ class SoundManager {
     }
 
     /**
-     * Setzt die SFX-Lautstärke
-     * @param {number} volume - Lautstärke (0.0 - 1.0)
+     * Sets the sound effects category volume level.
+     * @param {number} volume - Volume level (0.0 - 1.0)
      */
     setSfxVolume(volume) {
         this.sfxVolume = Math.max(0, Math.min(1, volume));
@@ -254,10 +241,10 @@ class SoundManager {
     }
 
     /**
-     * Wendet die Volume-Einstellungen auf alle Sounds an
+     * Applies current volume settings to all loaded sounds.
+     * Caches base volumes on the first call.
      */
     applyVolumeSettings() {
-        // Speichere die Basis-Lautstärken beim ersten Aufruf
         if (!this.baseVolumes) {
             this.baseVolumes = {};
             Object.keys(this.sounds).forEach(name => {
@@ -265,7 +252,6 @@ class SoundManager {
             });
         }
 
-        // Aktualisiere alle Sounds
         Object.keys(this.sounds).forEach(name => {
             const baseVolume = this.baseVolumes[name] || 1.0;
             const finalVolume = this.getFinalVolume(name, baseVolume);

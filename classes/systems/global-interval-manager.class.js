@@ -1,35 +1,33 @@
 /**
- * GLOBAL INTERVAL MANAGER
- * Centralized system to track all active intervals and timeouts in the game
- * 
- * FEATURES:
- * - Register intervals/timeouts with descriptive names
- * - Track interval/timeout ownership (which object created them)
- * - Clear intervals/timeouts individually or by category
- * - Pause and resume all intervals/timeouts
- * - Get live statistics about active intervals/timeouts
- * - Access intervals/timeouts via console for debugging
+ * Centralized system to track all active intervals and timeouts in the game.
+ * Supports registration, clearing, pause/resume, and live statistics.
  */
 class GlobalIntervalManager {
-    static intervals = {}; // Map of all intervals
-    static timeouts = {}; // Map of all timeouts
-    static intervalCounter = 0; // Counter for unique IDs
-    static timeoutCounter = 0; // Counter for unique timeout IDs
-    static isPaused = false; // Global pause state
-    static pausedIntervals = []; // Store paused interval data
-    static pausedTimeouts = []; // Store paused timeout data
-    static pauseStartTime = 0; // When pause started
+    /** @type {Object.<number, Object>} Map of all registered intervals */
+    static intervals = {};
+    /** @type {Object.<number, Object>} Map of all registered timeouts */
+    static timeouts = {};
+    /** @type {number} Counter for unique interval registration IDs */
+    static intervalCounter = 0;
+    /** @type {number} Counter for unique timeout registration IDs */
+    static timeoutCounter = 0;
+    /** @type {boolean} Global pause state */
+    static isPaused = false;
+    /** @type {Array} Stored paused interval data for resume */
+    static pausedIntervals = [];
+    /** @type {Array} Stored paused timeout data for resume */
+    static pausedTimeouts = [];
+    /** @type {number} Timestamp when pause started */
+    static pauseStartTime = 0;
 
     /**
-     * REGISTER INTERVAL
-     * Registers a setInterval call with tracking information
-     * 
+     * Registers a setInterval call with tracking information.
      * @param {number} intervalId - The ID returned from setInterval
      * @param {string} name - Descriptive name for the interval
-     * @param {object} owner - The object that created the interval (e.g., character, enemy)
+     * @param {Object} owner - The object that created the interval
      * @param {number} delay - The interval delay in milliseconds
-     * @param {function} callback - The callback function (optional, for pause/resume)
-     * @returns {number} The registered interval ID (same as input)
+     * @param {Function} [callback] - The callback function for pause/resume
+     * @returns {number} The registered interval ID
      */
     static register(intervalId, name, owner, delay, callback = null) {
         this.intervalCounter++;
@@ -51,15 +49,13 @@ class GlobalIntervalManager {
     }
 
     /**
-     * REGISTER TIMEOUT
-     * Registers a setTimeout call with tracking information
-     * 
+     * Registers a setTimeout call with tracking information.
      * @param {number} timeoutId - The ID returned from setTimeout
      * @param {string} name - Descriptive name for the timeout
-     * @param {object} owner - The object that created the timeout
+     * @param {Object} owner - The object that created the timeout
      * @param {number} delay - The timeout delay in milliseconds
-     * @param {function} callback - The callback function (required for pause/resume)
-     * @returns {number} The registered timeout ID (same as input)
+     * @param {Function} callback - The callback function for pause/resume
+     * @returns {number} The registered timeout ID
      */
     static registerTimeout(timeoutId, name, owner, delay, callback) {
         this.timeoutCounter++;
@@ -82,60 +78,47 @@ class GlobalIntervalManager {
     }
 
     /**
-     * CLEAR TIMEOUT
-     * Stops a timeout and marks it as inactive
-     * 
+     * Stops a tracked timeout and marks it as inactive.
      * @param {number} timeoutId - The timeout ID to clear
-     * @param {string} name - Optional name for logging
+     * @param {string} [name] - Optional name for logging
      */
     static clearTimeout(timeoutId, name = '') {
-        // Find the registration by timeoutId
         for (const key in this.timeouts) {
             if (this.timeouts[key].timeoutId === timeoutId) {
                 clearTimeout(timeoutId);
                 this.timeouts[key].isActive = false;
                 this.timeouts[key].clearedAt = new Date().toLocaleTimeString();
-                // console.log(`[Interval Manager] Cleared timeout: ${this.timeouts[key].name} (${name})`);
                 return;
             }
         }
-        // Fallback if not found in tracking
         clearTimeout(timeoutId);
     }
 
     /**
-     * CLEAR INTERVAL
-     * Stops an interval and marks it as inactive
-     * 
+     * Stops a tracked interval and marks it as inactive.
      * @param {number} intervalId - The interval ID to clear
-     * @param {string} name - Optional name for logging
+     * @param {string} [name] - Optional name for logging
      */
     static clear(intervalId, name = '') {
-        // Find the registration by intervalId
         for (const key in this.intervals) {
             if (this.intervals[key].intervalId === intervalId) {
                 clearInterval(intervalId);
                 this.intervals[key].isActive = false;
                 this.intervals[key].clearedAt = new Date().toLocaleTimeString();
-                // console.log(`[Interval Manager] Cleared: ${this.intervals[key].name} (${name})`);
                 return;
             }
         }
-        // Fallback if not found in tracking
         clearInterval(intervalId);
     }
 
     /**
-     * CLEAR ALL INTERVALS AND TIMEOUTS
-     * Stops all intervals and timeouts (including paused ones)
+     * Stops all intervals and timeouts, including paused ones.
      */
     static clearAll() {
         let clearedCount = 0;
 
-        // Clear all intervals (including paused ones)
         for (const key in this.intervals) {
             const interval = this.intervals[key];
-            // Clear if active OR if paused (has valid intervalId)
             if (interval.isActive || interval.intervalId) {
                 clearInterval(interval.intervalId);
                 interval.isActive = false;
@@ -143,10 +126,8 @@ class GlobalIntervalManager {
             }
         }
 
-        // Clear all timeouts (including paused ones)
         for (const key in this.timeouts) {
             const timeout = this.timeouts[key];
-            // Clear if active OR if paused (has valid timeoutId)
             if (timeout.isActive || timeout.timeoutId) {
                 clearTimeout(timeout.timeoutId);
                 timeout.isActive = false;
@@ -154,19 +135,14 @@ class GlobalIntervalManager {
             }
         }
 
-        // Reset pause state since everything is cleared
         this.isPaused = false;
         this.pausedIntervals = [];
         this.pausedTimeouts = [];
-
-        // console.log(`[Interval Manager] Cleared all ${clearedCount} intervals/timeouts`);
     }
 
     /**
-     * CLEAR BY OWNER
-     * Stops all intervals belonging to a specific object
-     * 
-     * @param {object} owner - The owner object
+     * Stops all intervals belonging to a specific owner object.
+     * @param {Object} owner - The owner object whose intervals should be cleared
      */
     static clearByOwner(owner) {
         const ownerName = owner?.constructor?.name || 'Unknown';
@@ -179,20 +155,19 @@ class GlobalIntervalManager {
                 clearedCount++;
             }
         }
-        // console.log(`[Interval Manager] Cleared ${clearedCount} intervals for ${ownerName}`);
     }
 
     /**
-     * GET ACTIVE INTERVALS
-     * Returns an array of currently active intervals
+     * Returns an array of currently active intervals.
+     * @returns {Array} Active interval registrations
      */
     static getActive() {
         return Object.values(this.intervals).filter(interval => interval.isActive);
     }
 
     /**
-     * GET STATISTICS
-     * Returns statistics about interval usage
+     * Returns statistics about interval usage.
+     * @returns {Object} Statistics including total active, total registered, and breakdown by owner
      */
     static getStats() {
         const active = this.getActive();
@@ -215,12 +190,10 @@ class GlobalIntervalManager {
     }
 
     /**
-     * PAUSE ALL INTERVALS
-     * Pauses all active intervals by clearing them and storing their data
+     * Pauses all active intervals and timeouts by clearing them and storing their data.
      */
     static pauseAll() {
         if (this.isPaused) {
-            // console.log('[Interval Manager] Already paused');
             return;
         }
 
@@ -229,11 +202,9 @@ class GlobalIntervalManager {
         this.pausedTimeouts = [];
         let pausedCount = 0;
 
-        // Pause intervals
         for (const key in this.intervals) {
             const interval = this.intervals[key];
             if (interval.isActive) {
-                // Store interval data for resume
                 this.pausedIntervals.push({
                     key: key,
                     name: interval.name,
@@ -242,22 +213,18 @@ class GlobalIntervalManager {
                     callback: interval.callback
                 });
 
-                // Clear the interval
                 clearInterval(interval.intervalId);
                 interval.isActive = false;
                 pausedCount++;
             }
         }
 
-        // Pause timeouts
         for (const key in this.timeouts) {
             const timeout = this.timeouts[key];
             if (timeout.isActive) {
-                // Calculate remaining time
                 const elapsed = Date.now() - timeout.startTime;
                 const remaining = Math.max(0, timeout.delay - elapsed);
 
-                // Store timeout data for resume
                 this.pausedTimeouts.push({
                     key: key,
                     name: timeout.name,
@@ -266,7 +233,6 @@ class GlobalIntervalManager {
                     callback: timeout.callback
                 });
 
-                // Clear the timeout
                 clearTimeout(timeout.timeoutId);
                 timeout.isActive = false;
                 pausedCount++;
@@ -274,26 +240,21 @@ class GlobalIntervalManager {
         }
 
         this.isPaused = true;
-        // console.log(`[Interval Manager] Paused ${pausedCount} intervals/timeouts`);
     }
 
     /**
-     * RESUME ALL INTERVALS
-     * Resumes all paused intervals by recreating them
+     * Resumes all paused intervals and timeouts by recreating them.
      */
     static resumeAll() {
         if (!this.isPaused) {
-            // console.log('[Interval Manager] Not paused');
             return;
         }
 
         let resumedCount = 0;
 
-        // Resume intervals
         this.pausedIntervals.forEach(pausedInterval => {
             const interval = this.intervals[pausedInterval.key];
             if (interval && interval.callback) {
-                // Recreate the interval with stored callback
                 const newIntervalId = setInterval(interval.callback, pausedInterval.delay);
                 interval.intervalId = newIntervalId;
                 interval.isActive = true;
@@ -301,11 +262,9 @@ class GlobalIntervalManager {
             }
         });
 
-        // Resume timeouts
         this.pausedTimeouts.forEach(pausedTimeout => {
             const timeout = this.timeouts[pausedTimeout.key];
             if (timeout && timeout.callback) {
-                // Recreate the timeout with remaining delay
                 const newTimeoutId = setTimeout(timeout.callback, pausedTimeout.remainingDelay);
                 timeout.timeoutId = newTimeoutId;
                 timeout.startTime = Date.now();
@@ -318,38 +277,20 @@ class GlobalIntervalManager {
         this.pausedIntervals = [];
         this.pausedTimeouts = [];
         this.isPaused = false;
-        // console.log(`[Interval Manager] Resumed ${resumedCount} intervals/timeouts`);
     }
 
     /**
-     * PRINT STATUS
-     * Prints a formatted status to console
+     * Prints a formatted status report of all intervals to the console.
      */
     static printStatus() {
         const stats = this.getStats();
-        // console.clear();
-        // console.log('╔════════════════════════════════════════════════════════════════╗');
-        // console.log('║         GLOBAL INTERVAL MANAGER - STATUS REPORT                ║');
-        // console.log('╚════════════════════════════════════════════════════════════════╝');
-        // console.log(`\n📊 SUMMARY:`);
-        // console.log(`   Total Active Intervals: ${stats.totalActive}`);
-        // console.log(`   Total Registered: ${stats.totalRegistered}`);
-        // console.log(`   Paused: ${this.isPaused ? 'YES' : 'NO'}`);
 
-        // console.log(`\n🎯 BY OWNER:`);
         for (const owner in stats.byOwner) {
-            // console.log(`   ${owner}: ${stats.byOwner[owner]}`);
         }
 
-        // console.log(`\n📋 DETAILS:`);
         stats.intervals.forEach((interval, index) => {
-            // console.log(`   ${index + 1}. ${interval.name}`);
-            // console.log(`      Owner: ${interval.owner} | Delay: ${interval.delay}ms`);
-            // console.log(`      Created: ${interval.createdAt}`);
         });
-        // console.log('\n');
     }
 }
 
-// Make it globally accessible
 window.intervalManager = GlobalIntervalManager;

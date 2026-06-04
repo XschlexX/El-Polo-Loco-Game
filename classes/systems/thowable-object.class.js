@@ -1,3 +1,7 @@
+/**
+ * Represents a throwable bottle that rotates in flight and splashes on impact.
+ * Extends MovableObjects with throw physics, rotation animation, and splash effects.
+ */
 class ThrowableObject extends MovableObjects {
 
     height = 70;
@@ -10,11 +14,6 @@ class ThrowableObject extends MovableObjects {
     throwInterval;
     throwSpeed = 5;
     markedForDeletion = false;
-    // Collision Box Offsets für bessere Treffergenauigkeit
-    // hitBoxLeft = -15;
-    // hitBoxRight = -15;
-    // hitBoxTop = -15;
-    // hitBoxBottom = -25;
 
     imagesRotate = [
         'assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
@@ -41,6 +40,10 @@ class ThrowableObject extends MovableObjects {
     ];
 
 
+    /**
+     * Creates a throwable bottle at the character's position and launches it.
+     * @param {Object} character - The character throwing the bottle
+     */
     constructor(character) {
         super();
         this.character = character;
@@ -52,15 +55,17 @@ class ThrowableObject extends MovableObjects {
         this.loadImages(this.imagesSplash);
         this.animate();
         this.throw(this.x, this.y);
-        // this.isBroken();
     }
 
+    /**
+     * Starts the rotation and splash animation loop.
+     * Plays rotation animation while airborne, then splash sequence on impact.
+     */
     animate() {
         const animationCallback = () => {
             if (!this.hasSplashed && this.isAboveGround(this.groundLevel)) {
                 this.playAnimation(this.imagesRotate);
             } else if (!this.hasSplashed && !this.isAboveGround(this.groundLevel)) {
-                // Flasche trifft den Boden
                 this.splash();
             }
 
@@ -70,11 +75,9 @@ class ThrowableObject extends MovableObjects {
                 this.img = this.imageCache[path];
                 this.currentImage++;
 
-                // Animation stoppt nach einem Durchlauf
                 if (this.currentImage >= this.imagesSplash.length) {
                     this.splashAnimationComplete = true;
-                    this.markedForDeletion = true; // Markiere zum Löschen
-                    // Nach kurzer Verzögerung aus der World entfernen
+                    this.markedForDeletion = true;
                     const timeoutId = setTimeout(() => {}, 100);
                     GlobalIntervalManager.registerTimeout(timeoutId, 'ThrowableObject removal', this, 100, () => this.removeFromWorld());
                 }
@@ -86,19 +89,25 @@ class ThrowableObject extends MovableObjects {
         GlobalIntervalManager.register(intervalId, 'ThrowableObject animation', this, 50, animationCallback);
     }
 
+    /**
+     * Triggers the splash sequence when the bottle hits the ground.
+     * Stops horizontal movement and plays the splash sound effect.
+     */
     splash() {
         if (!this.hasSplashed) {
             this.hasSplashed = true;
-            this.currentImage = 0; // Reset für Splash-Animation
-            this.stopMovement(); // Stoppe horizontale Bewegung
+            this.currentImage = 0;
+            this.stopMovement();
 
-            // Spiele Splash-Sound ab
             if (this.world && this.world.soundManager) {
                 this.world.soundManager.play('bottleSplash');
             }
         }
     }
 
+    /**
+     * Removes this bottle from the world's throwable objects array.
+     */
     removeFromWorld() {
         if (this.world) {
             const index = this.world.throwableObjects.indexOf(this);
@@ -108,12 +117,21 @@ class ThrowableObject extends MovableObjects {
         }
     }
 
+    /**
+     * Stops the horizontal throw movement by clearing the throw interval.
+     */
     stopMovement() {
         if (this.throwInterval) {
             clearInterval(this.throwInterval);
         }
     }
 
+    /**
+     * Launches the bottle in the direction the character is facing.
+     * Applies gravity and horizontal movement based on character orientation.
+     * @param {number} x - Starting X position
+     * @param {number} y - Starting Y position
+     */
     throw(x, y) {
         let throwDirection = this.character.otherDirection ? -this.throwSpeed : this.throwSpeed;
         if (!this.character.otherDirection) {
@@ -129,10 +147,12 @@ class ThrowableObject extends MovableObjects {
         };
         this.throwInterval = setInterval(throwCallback, 1000 / 60);
         GlobalIntervalManager.register(this.throwInterval, 'ThrowableObject throw', this, 1000 / 60, throwCallback);
-
-        // console.log(this.character.otherDirection);
     }
 
+    /**
+     * Checks whether the bottle is still above ground level.
+     * @returns {boolean} True if the bottle is above ground
+     */
     isBroken() {
         return this.isAboveGround(this.groundLevel);
     }
