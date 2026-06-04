@@ -1,12 +1,20 @@
+/**
+ * Base class for collectable items that can be picked up by the player.
+ * Extends MovableObjects with animation support and staggered start timing.
+ */
 class CollectableObject extends MovableObjects {
-    animationTimeoutId = null; // Speichere die Timeout-ID
+    /** @type {number|null} Timeout ID for delayed animation start */
+    animationTimeoutId = null;
 
+    /**
+     * Starts a looping animation with optional random delay for visual variety.
+     * @param {number} interval - Animation interval in milliseconds
+     * @param {number} [delay=0] - Maximum random delay before animation starts
+     */
     animate(interval, delay = 0) {
-        // Sanfte Animations-Wechsel zwischen den beiden Flaschen-Bildern
         const randomDelay = Math.random() * delay;
 
         const startAnimationCallback = () => {
-            // Markiere Timeout als abgelaufen (wenn es existiert)
             if (this.animationTimeoutId !== null) {
                 GlobalIntervalManager.clearTimeout(this.animationTimeoutId, 'CollectableObject animation start');
                 this.animationTimeoutId = null;
@@ -19,7 +27,6 @@ class CollectableObject extends MovableObjects {
             GlobalIntervalManager.register(intervalId, 'CollectableObject animation', this, interval, animationCallback);
         };
 
-        // Wenn kein Delay, starte Animation sofort ohne Timeout
         if (randomDelay === 0) {
             startAnimationCallback();
         } else {

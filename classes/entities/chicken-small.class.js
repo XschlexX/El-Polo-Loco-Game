@@ -1,3 +1,7 @@
+/**
+ * Represents a small chicken enemy that patrols back and forth within the level.
+ * Extends MovableObjects to inherit movement, animation, and collision capabilities.
+ */
 class ChickenSmall extends MovableObjects {
     height = 45;
     width = this.height * 0.8;
@@ -15,6 +19,11 @@ class ChickenSmall extends MovableObjects {
 
     images = imagePaths.smallChicken;
 
+    /**
+     * Creates a new small chicken at a random position within the level.
+     * @param {number} levelEnd - The x-coordinate marking the end of the level
+     * @param {number} chickenSpeed - The maximum random speed multiplier for the chicken
+     */
     constructor(levelEnd, chickenSpeed) {
         super();
         this.x = 200 + Math.random() * (levelEnd);
@@ -25,6 +34,10 @@ class ChickenSmall extends MovableObjects {
         this.animate();
     }
 
+    /**
+     * Starts the movement and sprite animation intervals for the chicken.
+     * The chicken patrols between levelStart and levelEnd, reversing direction at boundaries.
+     */
     animate() {
         const moveCallback = () => {
             if (!this.isDead()) {
@@ -55,34 +68,37 @@ class ChickenSmall extends MovableObjects {
         GlobalIntervalManager.register(animationInterval, 'ChickenSmall animation', this, 150, animationCallback);
     }
 
+    /**
+     * Plays the death animation sequence including the dead sprite, sound effect, and fade-out.
+     * Stops all active intervals and marks the chicken for deletion after the fade completes.
+     */
     playDeadAnimation() {
         if (!this.isDying) {
             this.isDying = true;
-            // Lade das Dead-Bild direkt aus dem Cache
             this.img = this.imageCache[this.images.imagesDead[0]];
-            // Stoppe alle Intervals dieses Objekts
             GlobalIntervalManager.clearByOwner(this);
 
-            // Spiele Small-Chicken-Dead-Sound ab
             if (this.world && this.world.soundManager) {
                 this.world.soundManager.play('chickenSmallDead');
             }
 
-            // Fade-Out-Effekt über 2 Sekunden
             const fadeCallback = () => {
-                this.opacity -= 0.02; // Reduziere Opacity
+                this.opacity -= 0.02;
                 if (this.opacity <= 0) {
                     this.opacity = 0;
                     GlobalIntervalManager.clear(fadeInterval, 'ChickenSmall fade');
-                    this.markedForDeletion = true; // Erst NACH Fade-Out markieren
+                    this.markedForDeletion = true;
                     this.removeFromWorld();
                 }
             };
-            let fadeInterval = setInterval(fadeCallback, 40); // Alle 40ms (ergibt ca. 2 Sekunden für komplettes Fade-Out)
+            let fadeInterval = setInterval(fadeCallback, 40);
             GlobalIntervalManager.register(fadeInterval, 'ChickenSmall fade-out', this, 40, fadeCallback);
         }
     }
 
+    /**
+     * Removes this chicken from the world's enemy list.
+     */
     removeFromWorld() {
         if (this.world) {
             const index = this.world.level.enemies.indexOf(this);
