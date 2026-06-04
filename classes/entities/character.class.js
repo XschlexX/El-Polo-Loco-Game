@@ -5,25 +5,17 @@
 class Character extends MovableObjects {
     height = 280;
     width = this.height * 0.5;
-    /** @type {number} Y-coordinate of the ground position for this character */
     groundLevel = 445 - this.height;
     x = 50;
     y = this.groundLevel;
-    /** @type {number} Movement speed in pixels per frame */
     speed = 5;
-    /** @type {number} Current health points of the character */
     energy = 500;
-    /** @type {number} Number of bottles available for throwing */
     bottles = 0;
-    /** @type {number} Number of coins collected */
     coins = 0;
-    /** @type {boolean} Whether the character is in the idle sleep state */
     sleep = false;
     isRunSoundPlaying = false;
     isSleepSoundPlaying = false;
-    /** @type {boolean} Tracks previous frame's airborne state for landing detection */
     wasAboveGround = false;
-    /** @type {boolean} Whether the character is currently in a throw animation */
     isThrowing = false;
     throwAnimationFrame = 0;
 
@@ -32,12 +24,9 @@ class Character extends MovableObjects {
     hitBoxRight = 45 + this.hitBoxLeft;
     hitBoxBottom = 15 + this.hitBoxTop;
 
-    /** @type {World} Reference to the game world */
     world;
-    /** @type {number} Smoothing factor for camera easing transitions */
     cameraEasingSpeed = 0.05;
 
-    /** @type {Object} Character sprite image path collections by animation state */
     images = imagePaths.character;
 
     /**

@@ -1,5 +1,6 @@
 /**
- * Endboss - Der finale Boss-Gegner
+ * Final boss enemy encountered at the end of the level.
+ * Features patrol, chase, ramming attack, alert animation, and death sequence.
  * @extends MovableObjects
  */
 class Endboss extends MovableObjects {

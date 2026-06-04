@@ -3,34 +3,20 @@
  * Extends MovableObjects with walking animation, death animation, and fade-out removal.
  */
 class Chicken extends MovableObjects {
-    /** @type {number} Height of the chicken sprite in pixels */
     height = 75;
-    /** @type {number} Width of the chicken sprite in pixels */
     width = this.height * 0.8;
-    /** @type {number} Y-coordinate of the ground level for this entity */
     groundLevel = 435 - this.height;
-    /** @type {number} Current vertical position */
     y = this.groundLevel;
-    /** @type {number} Left hitbox offset */
     hitBoxLeft = 0;
-    /** @type {number} Top hitbox offset */
     hitBoxTop = -5;
-    /** @type {number} Right hitbox offset */
     hitBoxRight = 0;
-    /** @type {number} Bottom hitbox offset */
     hitBoxBottom = 5 + this.hitBoxTop;
-    /** @type {World|undefined} Reference to the game world */
     world;
-    /** @type {boolean} Whether this chicken is queued for removal */
     markedForDeletion = false;
-    /** @type {boolean} Whether the death animation is currently playing */
     isDying = false;
-    /** @type {number} Current opacity for fade-out effects */
     opacity = 1;
-    /** @type {boolean} Whether the chicken is currently moving to the left */
     movingLeft = true;
 
-    /** @type {Object} Sprite image path collections for the chicken */
     images = imagePaths.chicken;
 
     /**
