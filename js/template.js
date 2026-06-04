@@ -56,7 +56,61 @@ function infoScreenTemplate() {
                     </div>
                 </div>
                 <button class="button" onclick="mainScreen()">BACK</button>
+                <button class="button" onclick="showImpressumScreen()">IMPRESSUM</button>
             </div>
+        </div>
+    `;
+}
+
+/**
+ * Impressum Screen Template - Legal Notice (Impressum) per §5 TMG
+ */
+function impressumScreenTemplate() {
+    return /*html*/`
+        <div id="impressum-screen" class="all-screens impressum-screen">
+            <img class="background-image" src="assets/img/5_background/first_half_background.png" alt="Impressum">
+            <div class="impressum-container">
+                <h2 class="impressum-title">Impressum</h2>
+
+                <div class="impressum-section">
+                    <span class="impressum-label">Angaben gemäß § 5 TMG</span>
+                </div>
+
+                <div class="impressum-section">
+                    <span class="impressum-label">Name</span>
+                    <span class="impressum-value">[Vorname Nachname]</span>
+                </div>
+
+                <div class="impressum-section">
+                    <span class="impressum-label">Anschrift</span>
+                    <span class="impressum-value">
+                        [Straße Hausnummer]<br>
+                        [PLZ Ort]
+                    </span>
+                </div>
+
+                <div class="impressum-section">
+                    <span class="impressum-label">Kontakt</span>
+                    <span class="impressum-value">
+                        Telefon: [Telefonnummer]<br>
+                        E-Mail: <a href="mailto:[email@example.com]">[email@example.com]</a>
+                    </span>
+                </div>
+
+                <div class="impressum-section">
+                    <span class="impressum-label">Verantwortlich für den Inhalt</span>
+                    <span class="impressum-value">
+                        [Vorname Nachname]<br>
+                        [Straße Hausnummer]<br>
+                        [PLZ Ort]
+                    </span>
+                </div>
+
+                <p class="impressum-disclaimer">
+                    This is a placeholder Impressum. Replace bracketed fields with your actual information before publishing.
+                </p>
+            </div>
+            <button class="button" onclick="showInfoScreen()">BACK</button>
         </div>
     `;
 }
@@ -169,7 +223,7 @@ function rotateScreenTemplate() {
 }
 
 /**
- * Settings Overlay Template - HTML-Version
+ * Settings Overlay Template - HTML Overlay
  */
 function settingsOverlayTemplate() {
     return /*html*/`
@@ -224,7 +278,7 @@ function audioSettingsOverlayTemplate() {
 }
 
 /**
- * Victory Overlay Template - HTML-Version mit Canvas-Styling
+ * Victory Overlay Template - HTML Overlay
  * Zeigt "Next Level" Button nur an, wenn es nicht das letzte Level ist
  */
 function victoryOverlayTemplate() {
@@ -254,7 +308,7 @@ function victoryOverlayTemplate() {
 }
 
 /**
- * Defeat Overlay Template - HTML-Version mit Canvas-Styling
+ * Defeat Overlay Template - HTML Overlay
  */
 function defeatOverlayTemplate() {
     return /*html*/`
@@ -269,3 +323,4 @@ function defeatOverlayTemplate() {
         </div>
     `;
 }
+

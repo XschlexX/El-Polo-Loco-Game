@@ -1,0 +1,70 @@
+/* Impressum Screen */
+.impressum-screen {
+    justify-content: center;
+    gap: clamp(var(--gap-m), calc(2px + 3cqh), var(--gap-xl));
+}
+
+.impressum-container {
+    background: linear-gradient(135deg, var(--color-brown-primary), var(--color-brown-secondary));
+    border: 4px solid var(--color-gold-dark);
+    border-radius: var(--border-radius-lg);
+    padding: clamp(var(--gap-l), calc(2px + 5cqh), var(--gap-xxl));
+    width: 70%;
+    max-width: 500px;
+    box-shadow: var(--shadow-overlay);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(var(--gap-s), calc(1px + 3cqh), var(--gap-l));
+    overflow-y: auto;
+    max-height: 85%;
+}
+
+.impressum-title {
+    color: var(--color-gold);
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Rye', cursive;
+    border-bottom: 2px solid var(--color-gold-dark);
+    padding-bottom: var(--gap-s);
+}
+
+.impressum-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.impressum-label {
+    color: var(--color-gold-dark);
+    font-weight: bold;
+    font-size: clamp(0.75rem, calc(0.4rem + 1.5cqh), 1.1rem);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.impressum-value {
+    color: var(--color-white);
+    font-size: clamp(0.8rem, calc(0.45rem + 1.8cqh), 1.2rem);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    line-height: 1.4;
+}
+
+.impressum-value a {
+    color: var(--color-gold);
+    text-decoration: underline;
+    transition: var(--transition-fast);
+
+    &:hover {
+        color: var(--color-gold-dark);
+    }
+}
+
+.impressum-disclaimer {
+    color: var(--color-gray-light);
+    font-size: clamp(0.6rem, calc(0.35rem + 1.2cqh), 0.85rem);
+    text-align: center;
+    font-style: italic;
+    margin-top: var(--gap-s);
+    padding-top: var(--gap-s);
+    border-top: 1px solid rgba(212, 168, 75, 0.3);
+}

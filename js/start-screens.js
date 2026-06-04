@@ -109,6 +109,12 @@ function showSettingsScreen() {
     initButtonHoverSounds();
 }
 
+/** Shows Impressum (legal notice) screen */
+function showImpressumScreen() {
+    document.getElementById('game_container').innerHTML = impressumScreenTemplate();
+    initButtonHoverSounds();
+}
+
 /**
  * Shows victory screen after delay
  * @param {number} delay - Delay in milliseconds
