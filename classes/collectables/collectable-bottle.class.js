@@ -8,14 +8,11 @@ class CollectableBottle extends CollectableObject {
     groundLevel = 430 - this.height;
     y = this.groundLevel;
 
-    /** @type {number} Left collision offset in pixels */
     hitBoxLeft = 10;
-    /** @type {number} Top collision offset in pixels */
     hitBoxTop = 10;
     hitBoxRight = 10 + this.hitBoxLeft;
     hitBoxBottom = 10 + this.hitBoxTop;
 
-    /** @type {string[]} Image paths for the bottle animation frames */
     images = [
         'assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
         'assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
