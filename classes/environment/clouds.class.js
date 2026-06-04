@@ -13,7 +13,7 @@ class Cloud extends MovableObjects {
      * @param {number} x - Horizontal position of the cloud
      */
     constructor(x) {
-        super().loadImage('assets/img/5_background/layers/4_clouds/full.png');
+        super().loadImage(imagePaths.background.imagesClouds[0]);
         this.x = x;
         this.animateCloud();
     }

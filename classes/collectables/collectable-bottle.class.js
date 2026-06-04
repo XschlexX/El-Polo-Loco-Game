@@ -13,10 +13,7 @@ class CollectableBottle extends CollectableObject {
     hitBoxRight = 10 + this.hitBoxLeft;
     hitBoxBottom = 10 + this.hitBoxTop;
 
-    images = [
-        'assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
-        'assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
-    ];
+    images = imagePaths.bottle.imagesGround;
 
     /**
      * Creates a new CollectableBottle at the given x position with a slightly randomized y offset.

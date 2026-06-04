@@ -5,29 +5,10 @@
  * @extends DrawableObject
  */
 class StatusBar extends DrawableObject {
-    imagesHealthBar = [
-        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
-        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
-        'assets/img/7_statusbars/3_icons/icon_health.png'
-    ];
-
-    imagesBottleBar = [
-        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
-        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
-        'assets/img/7_statusbars/3_icons/icon_salsa_bottle.png'
-    ];
-
-    imagesCoinBar = [
-        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
-        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
-        'assets/img/7_statusbars/3_icons/icon_coin.png'
-    ];
-
-    imagesHealthBarEndboss = [
-        'assets/img/7_statusbars/4_bar_elements/statusbar_empty_endboss.png',
-        'assets/img/7_statusbars/4_bar_elements/statusbar_blue_endboss.png',
-        'assets/img/7_statusbars/3_icons/icon_health_endboss.png'
-    ];
+    imagesHealthBar = imagePaths.statusbar.imagesHealthBar;
+    imagesBottleBar = imagePaths.statusbar.imagesBottleBar;
+    imagesCoinBar = imagePaths.statusbar.imagesCoinBar;
+    imagesHealthBarEndboss = imagePaths.statusbar.imagesHealthBarEndboss;
 
     x = 30;
     y = 20;
@@ -67,42 +48,52 @@ class StatusBar extends DrawableObject {
      * Binds the bar to the player character and starts periodic width updates.
      */
     setCharacter() {
-        const timeoutId = setTimeout(() => {
-            if (world) {
-                this.character = world.character;
-                if (this.statusbar === 'imagesBottleBar') {
-                    this.multiplier = this.maxWidth / 10;
-                } else if (this.statusbar === 'imagesCoinBar') {
-                    this.multiplier = this.maxWidth / 10;
-                } else {
-                    this.multiplier = this.maxWidth / this.character.energy;
-                }
-                this.setWidth();
-            } else {
-                console.error('Character nicht gefunden');
-            }
-        }, 500);
+        const timeoutId = setTimeout(() => this.initCharacterBar(), 500);
         GlobalIntervalManager.registerTimeout(timeoutId, 'StatusBar setCharacter', this, 500, null);
+    }
+
+    /** Initializes character bar binding and multiplier */
+    initCharacterBar() {
+        if (!world) {
+            console.error('Character nicht gefunden');
+            return;
+        }
+        this.character = world.character;
+        this.multiplier = this.getMultiplier();
+        this.setWidth();
+    }
+
+    /**
+     * Calculates the width multiplier based on bar type.
+     * @returns {number} The multiplier for width calculation
+     */
+    getMultiplier() {
+        if (this.statusbar === 'imagesBottleBar' || this.statusbar === 'imagesCoinBar') {
+            return this.maxWidth / 10;
+        }
+        return this.maxWidth / this.character.energy;
     }
 
     /**
      * Binds the bar to the endboss and starts periodic width updates.
      */
     setEndboss() {
-        const timeoutId = setTimeout(() => {
-            if (world) {
-                this.endboss = world.level.enemies.find(enemy => enemy instanceof Endboss);
-                if (this.endboss) {
-                    this.endbossMultiplier = this.width / this.endboss.energy;
-                    this.initialWidth = this.width;
-                    this.initialX = this.x;
-                    this.setEndbossWidth();
-                } else {
-                    console.error('Endboss nicht gefunden');
-                }
-            }
-        }, 500);
+        const timeoutId = setTimeout(() => this.initEndbossBar(), 500);
         GlobalIntervalManager.registerTimeout(timeoutId, 'StatusBar setEndboss', this, 500, null);
+    }
+
+    /** Initializes endboss bar binding and multiplier */
+    initEndbossBar() {
+        if (!world) return;
+        this.endboss = world.level.enemies.find(enemy => enemy instanceof Endboss);
+        if (!this.endboss) {
+            console.error('Endboss nicht gefunden');
+            return;
+        }
+        this.endbossMultiplier = this.width / this.endboss.energy;
+        this.initialWidth = this.width;
+        this.initialX = this.x;
+        this.setEndbossWidth();
     }
 
     /**
@@ -143,38 +134,50 @@ class StatusBar extends DrawableObject {
      * Adjusts position and dimensions based on the statusbar type and render variant.
      */
     setPosition() {
-        if (this.statusbar === 'imagesHealthBar' && this.type === 2) {
-            this.x = this.x - 15;
-            this.y = this.y - 4;
-            this.height = this.height * 1.35;
-            this.width = this.height * 1.1;
-        } else if (this.statusbar === 'imagesBottleBar' && this.type === 0) {
+        if (this.statusbar === 'imagesHealthBar') this.positionHealthBar();
+        else if (this.statusbar === 'imagesBottleBar') this.positionBottleBar();
+        else if (this.statusbar === 'imagesCoinBar') this.positionCoinBar();
+        else if (this.statusbar === 'imagesHealthBarEndboss') this.positionEndbossBar();
+    }
+
+    /** Positions the health bar icon */
+    positionHealthBar() {
+        if (this.type !== 2) return;
+        this.x = this.x - 15;
+        this.y = this.y - 4;
+        this.height = this.height * 1.35;
+        this.width = this.height * 1.1;
+    }
+
+    /** Positions the bottle bar elements */
+    positionBottleBar() {
+        if (this.type === 0 || this.type === 1) {
             this.y = this.y + this.gap;
-        } else if (this.statusbar === 'imagesBottleBar' && this.type === 1) {
-            this.y = this.y + this.gap;
-        } else if (this.statusbar === 'imagesBottleBar' && this.type === 2) {
+        } else if (this.type === 2) {
             this.x = this.x - 8;
             this.y = this.y - 10 + this.gap;
             this.height = this.height * 1.7;
             this.width = this.height * 0.45;
-        } else if (this.statusbar === 'imagesCoinBar' && this.type === 0) {
+        }
+    }
+
+    /** Positions the coin bar elements */
+    positionCoinBar() {
+        if (this.type === 0 || this.type === 1) {
             this.y = this.y + this.gap * 2;
-        } else if (this.statusbar === 'imagesCoinBar' && this.type === 1) {
-            this.y = this.y + this.gap * 2;
-        } else if (this.statusbar === 'imagesCoinBar' && this.type === 2) {
+        } else if (this.type === 2) {
             this.x = this.x - 15;
             this.y = this.y - 8 + this.gap * 2;
             this.height = this.height * 1.55;
             this.width = this.height;
-        } else if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 0) {
-            this.x = 720 - this.width - this.x;
-            this.y = this.y;
+        }
+    }
 
-        } else if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 1) {
+    /** Positions the endboss health bar elements */
+    positionEndbossBar() {
+        if (this.type === 0 || this.type === 1) {
             this.x = 720 - this.width - this.x;
-            this.y = this.y;
-
-        } else if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 2) {
+        } else if (this.type === 2) {
             this.y = this.y - 15;
             this.height = this.height * 2.5;
             this.width = this.height * 1.1;

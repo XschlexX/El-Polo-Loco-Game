@@ -115,29 +115,33 @@ class GlobalIntervalManager {
      * Stops all intervals and timeouts, including paused ones.
      */
     static clearAll() {
-        let clearedCount = 0;
+        this.clearAllIntervals();
+        this.clearAllTimeouts();
+        this.isPaused = false;
+        this.pausedIntervals = [];
+        this.pausedTimeouts = [];
+    }
 
+    /** Clears all registered intervals */
+    static clearAllIntervals() {
         for (const key in this.intervals) {
             const interval = this.intervals[key];
             if (interval.isActive || interval.intervalId) {
                 clearInterval(interval.intervalId);
                 interval.isActive = false;
-                clearedCount++;
             }
         }
+    }
 
+    /** Clears all registered timeouts */
+    static clearAllTimeouts() {
         for (const key in this.timeouts) {
             const timeout = this.timeouts[key];
             if (timeout.isActive || timeout.timeoutId) {
                 clearTimeout(timeout.timeoutId);
                 timeout.isActive = false;
-                clearedCount++;
             }
         }
-
-        this.isPaused = false;
-        this.pausedIntervals = [];
-        this.pausedTimeouts = [];
     }
 
     /**
@@ -193,90 +197,74 @@ class GlobalIntervalManager {
      * Pauses all active intervals and timeouts by clearing them and storing their data.
      */
     static pauseAll() {
-        if (this.isPaused) {
-            return;
-        }
-
+        if (this.isPaused) return;
         this.pauseStartTime = Date.now();
         this.pausedIntervals = [];
         this.pausedTimeouts = [];
-        let pausedCount = 0;
+        this.pauseAllIntervals();
+        this.pauseAllTimeouts();
+        this.isPaused = true;
+    }
 
+    /** Pauses all active intervals */
+    static pauseAllIntervals() {
         for (const key in this.intervals) {
             const interval = this.intervals[key];
             if (interval.isActive) {
-                this.pausedIntervals.push({
-                    key: key,
-                    name: interval.name,
-                    owner: interval.ownerRef,
-                    delay: interval.delay,
-                    callback: interval.callback
-                });
-
+                this.pausedIntervals.push({ key, name: interval.name, owner: interval.ownerRef, delay: interval.delay, callback: interval.callback });
                 clearInterval(interval.intervalId);
                 interval.isActive = false;
-                pausedCount++;
             }
         }
+    }
 
+    /** Pauses all active timeouts, storing remaining delay */
+    static pauseAllTimeouts() {
         for (const key in this.timeouts) {
             const timeout = this.timeouts[key];
             if (timeout.isActive) {
-                const elapsed = Date.now() - timeout.startTime;
-                const remaining = Math.max(0, timeout.delay - elapsed);
-
-                this.pausedTimeouts.push({
-                    key: key,
-                    name: timeout.name,
-                    owner: timeout.ownerRef,
-                    remainingDelay: remaining,
-                    callback: timeout.callback
-                });
-
+                const remaining = Math.max(0, timeout.delay - (Date.now() - timeout.startTime));
+                this.pausedTimeouts.push({ key, name: timeout.name, owner: timeout.ownerRef, remainingDelay: remaining, callback: timeout.callback });
                 clearTimeout(timeout.timeoutId);
                 timeout.isActive = false;
-                pausedCount++;
             }
         }
-
-        this.isPaused = true;
     }
 
     /**
      * Resumes all paused intervals and timeouts by recreating them.
      */
     static resumeAll() {
-        if (!this.isPaused) {
-            return;
-        }
-
-        let resumedCount = 0;
-
-        this.pausedIntervals.forEach(pausedInterval => {
-            const interval = this.intervals[pausedInterval.key];
-            if (interval && interval.callback) {
-                const newIntervalId = setInterval(interval.callback, pausedInterval.delay);
-                interval.intervalId = newIntervalId;
-                interval.isActive = true;
-                resumedCount++;
-            }
-        });
-
-        this.pausedTimeouts.forEach(pausedTimeout => {
-            const timeout = this.timeouts[pausedTimeout.key];
-            if (timeout && timeout.callback) {
-                const newTimeoutId = setTimeout(timeout.callback, pausedTimeout.remainingDelay);
-                timeout.timeoutId = newTimeoutId;
-                timeout.startTime = Date.now();
-                timeout.delay = pausedTimeout.remainingDelay;
-                timeout.isActive = true;
-                resumedCount++;
-            }
-        });
-
+        if (!this.isPaused) return;
+        this.resumeAllIntervals();
+        this.resumeAllTimeouts();
         this.pausedIntervals = [];
         this.pausedTimeouts = [];
         this.isPaused = false;
+    }
+
+    /** Resumes all paused intervals */
+    static resumeAllIntervals() {
+        this.pausedIntervals.forEach(paused => {
+            const interval = this.intervals[paused.key];
+            if (interval?.callback) {
+                interval.intervalId = setInterval(interval.callback, paused.delay);
+                interval.isActive = true;
+            }
+        });
+    }
+
+    /** Resumes all paused timeouts */
+    static resumeAllTimeouts() {
+        this.pausedTimeouts.forEach(paused => {
+            const timeout = this.timeouts[paused.key];
+            if (timeout?.callback) {
+                timeout.timeoutId = setTimeout(timeout.callback, paused.remainingDelay);
+                timeout.startTime = Date.now();
+                timeout.delay = paused.remainingDelay;
+                timeout.isActive = true;
+            }
+        });
     }
 
     /**

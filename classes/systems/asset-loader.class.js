@@ -14,204 +14,19 @@ class AssetLoader {
     }
 
     /**
-     * Collects all image paths from the various game classes.
-     * Called before loading begins.
+     * Collects all image paths from the global imagePaths registry.
+     * Iterates the two-level structure (entity → animation set → paths).
      */
     collectImagePaths() {
-        this.addImagesFromArray([
-            'assets/img/2_character_pepe/1_idle/idle/I-1.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-2.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-3.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-4.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-5.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-6.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-7.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-8.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-9.png',
-            'assets/img/2_character_pepe/1_idle/idle/I-10.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
-            'assets/img/2_character_pepe/1_idle/long_idle/I-20.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/2_character_pepe/2_walk/W-21.png',
-            'assets/img/2_character_pepe/2_walk/W-22.png',
-            'assets/img/2_character_pepe/2_walk/W-23.png',
-            'assets/img/2_character_pepe/2_walk/W-24.png',
-            'assets/img/2_character_pepe/2_walk/W-25.png',
-            'assets/img/2_character_pepe/2_walk/W-26.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/2_character_pepe/3_jump/J-31.png',
-            'assets/img/2_character_pepe/3_jump/J-32.png',
-            'assets/img/2_character_pepe/3_jump/J-33.png',
-            'assets/img/2_character_pepe/3_jump/J-34.png',
-            'assets/img/2_character_pepe/3_jump/J-35.png',
-            'assets/img/2_character_pepe/3_jump/J-36.png',
-            'assets/img/2_character_pepe/3_jump/J-37.png',
-            'assets/img/2_character_pepe/3_jump/J-38.png',
-            'assets/img/2_character_pepe/3_jump/J-39.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/2_character_pepe/4_hurt/H-41.png',
-            'assets/img/2_character_pepe/4_hurt/H-42.png',
-            'assets/img/2_character_pepe/4_hurt/H-43.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/2_character_pepe/5_dead/D-51.png',
-            'assets/img/2_character_pepe/5_dead/D-52.png',
-            'assets/img/2_character_pepe/5_dead/D-53.png',
-            'assets/img/2_character_pepe/5_dead/D-54.png',
-            'assets/img/2_character_pepe/5_dead/D-55.png',
-            'assets/img/2_character_pepe/5_dead/D-56.png',
-            'assets/img/2_character_pepe/5_dead/D-57.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/2_character_pepe/6_throw/th_1.png',
-            'assets/img/2_character_pepe/6_throw/th_2.png',
-            'assets/img/2_character_pepe/6_throw/th_3.png',
-            'assets/img/2_character_pepe/6_throw/th_4.png',
-            'assets/img/2_character_pepe/6_throw/th_5.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
-            'assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
-            'assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png',
-            'assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
-            'assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
-            'assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png',
-            'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/4_enemie_boss_chicken/1_walk/G1.png',
-            'assets/img/4_enemie_boss_chicken/1_walk/G2.png',
-            'assets/img/4_enemie_boss_chicken/1_walk/G3.png',
-            'assets/img/4_enemie_boss_chicken/1_walk/G4.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/4_enemie_boss_chicken/2_alert/G5.png',
-            'assets/img/4_enemie_boss_chicken/2_alert/G6.png',
-            'assets/img/4_enemie_boss_chicken/2_alert/G7.png',
-            'assets/img/4_enemie_boss_chicken/2_alert/G8.png',
-            'assets/img/4_enemie_boss_chicken/2_alert/G9.png',
-            'assets/img/4_enemie_boss_chicken/2_alert/G10.png',
-            'assets/img/4_enemie_boss_chicken/2_alert/G11.png',
-            'assets/img/4_enemie_boss_chicken/2_alert/G12.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/4_enemie_boss_chicken/3_attack/G13.png',
-            'assets/img/4_enemie_boss_chicken/3_attack/G14.png',
-            'assets/img/4_enemie_boss_chicken/3_attack/G15.png',
-            'assets/img/4_enemie_boss_chicken/3_attack/G16.png',
-            'assets/img/4_enemie_boss_chicken/3_attack/G17.png',
-            'assets/img/4_enemie_boss_chicken/3_attack/G18.png',
-            'assets/img/4_enemie_boss_chicken/3_attack/G19.png',
-            'assets/img/4_enemie_boss_chicken/3_attack/G20.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
-            'assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
-            'assets/img/4_enemie_boss_chicken/4_hurt/G23.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/4_enemie_boss_chicken/5_dead/G24.png',
-            'assets/img/4_enemie_boss_chicken/5_dead/G25.png',
-            'assets/img/4_enemie_boss_chicken/5_dead/G26.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/5_background/layers/air.png',
-            'assets/img/5_background/layers/3_third_layer/full.png',
-            'assets/img/5_background/layers/2_second_layer/full.png',
-            'assets/img/5_background/layers/1_first_layer/full.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/5_background/layers/4_clouds/full.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/8_coin/coin_1.png',
-            'assets/img/8_coin/coin_2.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
-            'assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/1_2_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/1_3_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/2_1_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/2_2_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/2_3_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/3_1_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/3_2_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/3_3_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/4_1_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/4_2_bottle_rotation.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/4_3_bottle_rotation.png'
-        ]);
-
-        this.addImagesFromArray([
-            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
-            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
-        ]);
-
-
-        this.addImagesFromArray([
-            'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
-            'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
-            'assets/img/7_statusbars/4_bar_elements/statusbar_empty_endboss.png',
-            'assets/img/7_statusbars/4_bar_elements/statusbar_blue_endboss.png',
-            'assets/img/7_statusbars/3_icons/icon_health.png',
-            'assets/img/7_statusbars/3_icons/icon_coin.png',
-            'assets/img/7_statusbars/3_icons/icon_salsa_bottle.png',
-            'assets/img/7_statusbars/3_icons/icon_health_endboss.png'
-        ]);
-    }
-
-    /**
-     * Adds image paths from an array into the image path Set.
-     * @param {string[]} paths - Array of image file paths
-     */
-    addImagesFromArray(paths) {
-        if (paths && Array.isArray(paths)) {
-            paths.forEach(path => {
-                if (path) this.imagePaths.add(path);
+        Object.values(imagePaths).forEach(entity => {
+            Object.values(entity).forEach(paths => {
+                if (Array.isArray(paths)) {
+                    paths.forEach(path => {
+                        if (path) this.imagePaths.add(path);
+                    });
+                }
             });
-        }
+        });
     }
 
     /**
@@ -256,57 +71,93 @@ class AssetLoader {
      * Loads all collected images, storing them in the global image cache.
      */
     loadImages() {
-        this.imagePaths.forEach(path => {
-            if (DrawableObject.globalImageCache && DrawableObject.globalImageCache[path]) {
-                this.loadedImages++;
-                this.updateProgress();
-                return;
-            }
+        this.imagePaths.forEach(path => this.loadSingleImage(path));
+    }
 
-            const img = new Image();
-            img.onload = () => {
-                this.loadedImages++;
-                if (DrawableObject.globalImageCache) {
-                    DrawableObject.globalImageCache[path] = img;
-                }
-                this.updateProgress();
-            };
-            img.onerror = () => {
-                console.warn(`Bild konnte nicht geladen werden: ${path}`);
-                this.loadedImages++;
-                this.updateProgress();
-            };
-            img.src = path;
-        });
+    /**
+     * Loads a single image, using cache if available.
+     * @param {string} path - Image file path
+     */
+    loadSingleImage(path) {
+        if (DrawableObject.globalImageCache?.[path]) {
+            this.loadedImages++;
+            this.updateProgress();
+            return;
+        }
+        const img = new Image();
+        img.onload = () => this.onImageLoaded(path, img);
+        img.onerror = () => this.onImageError(path);
+        img.src = path;
+    }
+
+    /**
+     * Called when an image loads successfully.
+     * @param {string} path - Image file path
+     * @param {HTMLImageElement} img - Loaded image element
+     */
+    onImageLoaded(path, img) {
+        this.loadedImages++;
+        if (DrawableObject.globalImageCache) {
+            DrawableObject.globalImageCache[path] = img;
+        }
+        this.updateProgress();
+    }
+
+    /**
+     * Called when an image fails to load.
+     * @param {string} path - Image file path
+     */
+    onImageError(path) {
+        console.warn(`Bild konnte nicht geladen werden: ${path}`);
+        this.loadedImages++;
+        this.updateProgress();
     }
 
     /**
      * Loads all collected sounds, storing them in the global sound cache.
      */
     loadSounds() {
-        this.soundPaths.forEach(path => {
-            if (SoundManager.globalSoundCache && SoundManager.globalSoundCache[path]) {
-                this.loadedSounds++;
-                this.updateProgress();
-                return;
-            }
+        this.soundPaths.forEach(path => this.loadSingleSound(path));
+    }
 
-            const audio = new Audio();
-            audio.oncanplaythrough = () => {
-                this.loadedSounds++;
-                if (SoundManager.globalSoundCache) {
-                    SoundManager.globalSoundCache[path] = audio;
-                }
-                this.updateProgress();
-            };
-            audio.onerror = () => {
-                console.warn(`Sound konnte nicht geladen werden: ${path}`);
-                this.loadedSounds++;
-                this.updateProgress();
-            };
-            audio.src = path;
-            audio.load();
-        });
+    /**
+     * Loads a single sound, using cache if available.
+     * @param {string} path - Sound file path
+     */
+    loadSingleSound(path) {
+        if (SoundManager.globalSoundCache?.[path]) {
+            this.loadedSounds++;
+            this.updateProgress();
+            return;
+        }
+        const audio = new Audio();
+        audio.oncanplaythrough = () => this.onSoundLoaded(path, audio);
+        audio.onerror = () => this.onSoundError(path);
+        audio.src = path;
+        audio.load();
+    }
+
+    /**
+     * Called when a sound loads successfully.
+     * @param {string} path - Sound file path
+     * @param {HTMLAudioElement} audio - Loaded audio element
+     */
+    onSoundLoaded(path, audio) {
+        this.loadedSounds++;
+        if (SoundManager.globalSoundCache) {
+            SoundManager.globalSoundCache[path] = audio;
+        }
+        this.updateProgress();
+    }
+
+    /**
+     * Called when a sound fails to load.
+     * @param {string} path - Sound file path
+     */
+    onSoundError(path) {
+        console.warn(`Sound konnte nicht geladen werden: ${path}`);
+        this.loadedSounds++;
+        this.updateProgress();
     }
 
     /**

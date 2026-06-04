@@ -5,12 +5,11 @@
 function generateBackgrounds() {
     const backgrounds = [];
 
-    const layers = [
-        { path: 'assets/img/5_background/layers/air.png', factor: 0 },
-        { path: 'assets/img/5_background/layers/3_third_layer/full.png', factor: 0.6 },
-        { path: 'assets/img/5_background/layers/2_second_layer/full.png', factor: 0.8 },
-        { path: 'assets/img/5_background/layers/1_first_layer/full.png', factor: 1 }
-    ];
+    const factors = [0, 0.6, 0.8, 1];
+    const layers = imagePaths.background.imagesLayers.map((path, i) => ({
+        path: path,
+        factor: factors[i]
+    }));
 
     for (let x = levelStart; x <= levelEnd; x += canvasWidth * 2) {
         layers.forEach(layer => {
@@ -70,13 +69,7 @@ function generateStatusBars(amount) {
  * @returns {Array} Array of Chicken instances
  */
 function generateChickens(count, chickenSpeed) {
-    const chickens = [];
-
-    for (let i = 0; i < count; i++) {
-        chickens.push(new Chicken(levelEnd, chickenSpeed));
-    }
-
-    return chickens;
+    return generateEntities(count, Chicken, levelEnd, chickenSpeed);
 }
 
 /**
@@ -86,13 +79,20 @@ function generateChickens(count, chickenSpeed) {
  * @returns {Array} Array of ChickenSmall instances
  */
 function generateSmallChickens(count, chickenSpeed) {
-    const chickens = [];
+    return generateEntities(count, ChickenSmall, levelEnd, chickenSpeed);
+}
 
-    for (let i = 0; i < count; i++) {
-        chickens.push(new ChickenSmall(levelEnd, chickenSpeed));
-    }
-
-    return chickens;
+/**
+ * Creates multiple instances of a given entity class.
+ * @param {number} count - Number of entities to create
+ * @param {Function} Factory - Constructor class for the entity
+ * @param {...*} args - Arguments passed to the constructor
+ * @returns {Array} Array of created instances
+ */
+function generateEntities(count, Factory, ...args) {
+    const entities = [];
+    for (let i = 0; i < count; i++) entities.push(new Factory(...args));
+    return entities;
 }
 
 /**
@@ -102,38 +102,7 @@ function generateSmallChickens(count, chickenSpeed) {
  * @returns {Array} Array of CollectableBottle instances
  */
 function generateBottlesWithMinDistance(count, minDistance) {
-    const bottles = [];
-    const minX = levelStart + 50;
-    const maxX = levelEnd - 100;
-
-    for (let i = 0; i < count; i++) {
-        let newX;
-        let validPosition = false;
-        let attempts = 0;
-        const maxAttempts = 500;
-
-        while (!validPosition && attempts < maxAttempts) {
-            newX = minX + Math.random() * (maxX - minX);
-            validPosition = true;
-
-            for (let bottle of bottles) {
-                if (Math.abs(newX - bottle.x) < minDistance) {
-                    validPosition = false;
-                    break;
-                }
-            }
-            attempts++;
-        }
-
-        if (validPosition) {
-            const bottle = new CollectableBottle(newX);
-            bottles.push(bottle);
-        } else {
-            console.warn(`Konnte Flasche ${i + 1} nicht mit Mindestabstand platzieren`);
-        }
-    }
-
-    return bottles;
+    return spawnWithMinDistance(count, minDistance, CollectableBottle, 'Flasche');
 }
 
 /**
@@ -143,36 +112,41 @@ function generateBottlesWithMinDistance(count, minDistance) {
  * @returns {Array} Array of CollectableCoin instances
  */
 function generateCoinsWithMinDistance(count, minDistance) {
-    const coins = [];
+    return spawnWithMinDistance(count, minDistance, CollectableCoin, 'Münze');
+}
+
+/**
+ * Spawns collectable objects with a minimum distance between each.
+ * @param {number} count - Number of objects to place
+ * @param {number} minDistance - Minimum pixel distance between objects
+ * @param {Function} Factory - Constructor class for the collectable
+ * @param {string} label - Label for warning messages
+ * @returns {Array} Array of spawned instances
+ */
+function spawnWithMinDistance(count, minDistance, Factory, label) {
+    const items = [];
     const minX = levelStart + 50;
     const maxX = levelEnd - 100;
-
     for (let i = 0; i < count; i++) {
-        let newX;
-        let validPosition = false;
-        let attempts = 0;
-        const maxAttempts = 500;
-
-        while (!validPosition && attempts < maxAttempts) {
-            newX = minX + Math.random() * (maxX - minX);
-            validPosition = true;
-
-            for (let coin of coins) {
-                if (Math.abs(newX - coin.x) < minDistance) {
-                    validPosition = false;
-                    break;
-                }
-            }
-            attempts++;
-        }
-
-        if (validPosition) {
-            const coin = new CollectableCoin(newX);
-            coins.push(coin);
-        } else {
-            console.warn(`Konnte Münze ${i + 1} nicht mit Mindestabstand platzieren`);
-        }
+        const x = findValidPosition(items, minX, maxX, minDistance);
+        if (x !== null) items.push(new Factory(x));
+        else console.warn(`Konnte ${label} ${i + 1} nicht mit Mindestabstand platzieren`);
     }
+    return items;
+}
 
-    return coins;
+/**
+ * Finds a random x-position with minimum distance to existing items.
+ * @param {Array} items - Already placed items
+ * @param {number} minX - Minimum x boundary
+ * @param {number} maxX - Maximum x boundary
+ * @param {number} minDistance - Required minimum distance
+ * @returns {number|null} Valid x-position or null if none found
+ */
+function findValidPosition(items, minX, maxX, minDistance) {
+    for (let attempt = 0; attempt < 500; attempt++) {
+        const newX = minX + Math.random() * (maxX - minX);
+        if (items.every(item => Math.abs(newX - item.x) >= minDistance)) return newX;
+    }
+    return null;
 }

@@ -279,5 +279,76 @@ let imagePaths = {
             'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
         ]
 
+    },
+
+    background: {
+        imagesLayers: [
+            'assets/img/5_background/layers/air.png',
+            'assets/img/5_background/layers/3_third_layer/full.png',
+            'assets/img/5_background/layers/2_second_layer/full.png',
+            'assets/img/5_background/layers/1_first_layer/full.png'
+        ],
+        imagesClouds: [
+            'assets/img/5_background/layers/4_clouds/full.png'
+        ]
+    },
+
+    coin: {
+        imagesCoin: [
+            'assets/img/8_coin/coin_1.png',
+            'assets/img/8_coin/coin_2.png'
+        ]
+    },
+
+    bottle: {
+        imagesGround: [
+            'assets/img/6_salsa_bottle/1-1_salsa_bottle_on_ground.png',
+            'assets/img/6_salsa_bottle/2-1_salsa_bottle_on_ground.png'
+        ],
+        imagesRotate: [
+            'assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/1_2_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/1_3_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/2_1_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/2_2_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/2_3_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/3_1_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/3_2_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/3_3_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/4_1_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/4_2_bottle_rotation.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/4_3_bottle_rotation.png'
+        ],
+        imagesSplash: [
+            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
+            'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
+        ]
+    },
+
+    statusbar: {
+        imagesHealthBar: [
+            'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
+            'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
+            'assets/img/7_statusbars/3_icons/icon_health.png'
+        ],
+        imagesBottleBar: [
+            'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
+            'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
+            'assets/img/7_statusbars/3_icons/icon_salsa_bottle.png'
+        ],
+        imagesCoinBar: [
+            'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
+            'assets/img/7_statusbars/4_bar_elements/statusbar_blue_modified.png',
+            'assets/img/7_statusbars/3_icons/icon_coin.png'
+        ],
+        imagesHealthBarEndboss: [
+            'assets/img/7_statusbars/4_bar_elements/statusbar_empty_endboss.png',
+            'assets/img/7_statusbars/4_bar_elements/statusbar_blue_endboss.png',
+            'assets/img/7_statusbars/3_icons/icon_health_endboss.png'
+        ]
     }
 };

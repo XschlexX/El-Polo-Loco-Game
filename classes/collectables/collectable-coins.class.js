@@ -13,10 +13,7 @@ class CollectableCoin extends CollectableObject {
     hitBoxRight = this.width * 0.35 + this.hitBoxLeft;
     hitBoxBottom = this.height * 0.35 + this.hitBoxTop;
 
-    images = [
-        'assets/img/8_coin/coin_1.png',
-        'assets/img/8_coin/coin_2.png'
-    ];
+    images = imagePaths.coin.imagesCoin;
 
     /**
      * Creates a new CollectableCoin at the given horizontal position with a randomized vertical offset.

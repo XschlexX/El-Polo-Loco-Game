@@ -15,29 +15,9 @@ class ThrowableObject extends MovableObjects {
     throwSpeed = 5;
     markedForDeletion = false;
 
-    imagesRotate = [
-        'assets/img/6_salsa_bottle/bottle_rotation/1_1_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/1_2_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/1_3_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/2_1_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/2_2_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/2_3_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/3_1_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/3_2_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/3_3_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/4_1_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/4_2_bottle_rotation.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/4_3_bottle_rotation.png'
-    ];
+    imagesRotate = imagePaths.bottle.imagesRotate;
 
-    imagesSplash = [
-        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
-        'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
-    ];
+    imagesSplash = imagePaths.bottle.imagesSplash;
 
 
     /**
@@ -59,34 +39,44 @@ class ThrowableObject extends MovableObjects {
 
     /**
      * Starts the rotation and splash animation loop.
-     * Plays rotation animation while airborne, then splash sequence on impact.
      */
     animate() {
         const animationCallback = () => {
-            if (!this.hasSplashed && this.isAboveGround(this.groundLevel)) {
-                this.playAnimation(this.imagesRotate);
-            } else if (!this.hasSplashed && !this.isAboveGround(this.groundLevel)) {
-                this.splash();
-            }
-
-            if (this.hasSplashed && !this.splashAnimationComplete) {
-                let i = this.currentImage % this.imagesSplash.length;
-                let path = this.imagesSplash[i];
-                this.img = this.imageCache[path];
-                this.currentImage++;
-
-                if (this.currentImage >= this.imagesSplash.length) {
-                    this.splashAnimationComplete = true;
-                    this.markedForDeletion = true;
-                    const timeoutId = setTimeout(() => { }, 100);
-                    GlobalIntervalManager.registerTimeout(timeoutId, 'ThrowableObject removal', this, 100, () => this.removeFromWorld());
-                }
-            }
-            this.height = this.img.naturalHeight * 0.2;
-            this.width = this.img.naturalWidth * 0.2;
+            this.updateFlightState();
+            if (this.hasSplashed && !this.splashAnimationComplete) this.advanceSplashFrame();
+            this.updateDimensions();
         };
         const intervalId = setInterval(animationCallback, 50);
         GlobalIntervalManager.register(intervalId, 'ThrowableObject animation', this, 50, animationCallback);
+    }
+
+    /** Updates rotation or triggers splash when bottle hits ground */
+    updateFlightState() {
+        if (this.hasSplashed) return;
+        if (this.isAboveGround(this.groundLevel)) this.playAnimation(this.imagesRotate);
+        else this.splash();
+    }
+
+    /** Advances the splash animation by one frame */
+    advanceSplashFrame() {
+        const i = this.currentImage % this.imagesSplash.length;
+        this.img = this.imageCache[this.imagesSplash[i]];
+        this.currentImage++;
+        if (this.currentImage >= this.imagesSplash.length) this.onSplashComplete();
+    }
+
+    /** Marks the bottle for deletion and schedules removal */
+    onSplashComplete() {
+        this.splashAnimationComplete = true;
+        this.markedForDeletion = true;
+        const timeoutId = setTimeout(() => { }, 100);
+        GlobalIntervalManager.registerTimeout(timeoutId, 'ThrowableObject removal', this, 100, () => this.removeFromWorld());
+    }
+
+    /** Updates dimensions based on current image */
+    updateDimensions() {
+        this.height = this.img.naturalHeight * 0.2;
+        this.width = this.img.naturalWidth * 0.2;
     }
 
     /**
