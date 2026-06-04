@@ -31,7 +31,7 @@ You are a JavaScript documentation specialist focused on cleaning up comments in
 
 **Keep these:**
 
-- Existing JSDoc comments (unless they need updating)
+- Existing JSDoc comments — but **review and improve** them if they are vague, incomplete, or missing `@param`/`@returns` tags
 - Legal/license headers
 - TODO/FIXME markers (if in English)
 
@@ -59,12 +59,21 @@ class ClassName {
 methodName(paramName, optionalParam) {
 ```
 
-### Property Documentation (for important static/class properties)
+### Property Documentation
+
+**DO NOT add `@type` JSDoc to class property declarations.** Leave them as-is without annotations:
 
 ```javascript
-/** @type {Type} Description of the property */
-static propertyName = value;
+// CORRECT — leave properties untouched:
+class Example {
+    height = 60;
+    width = 100;
+    energy = 500;
+    world;
+}
 ```
+
+**Exception:** Only add `@type` to `static` properties if they are shared caches or registries.
 
 ## JSDoc Rules
 
@@ -87,9 +96,10 @@ static propertyName = value;
 **MUST NOT DO:**
 
 - Change any code behavior or logic
-- Remove JSDoc comments that already exist (update if needed)
+- Add `@type` JSDoc to class property declarations (instance fields) — leave them untouched
 - Add comments to trivial getters/setters unless they have side effects
 - Modify indentation, spacing, or formatting
+- Delete existing JSDoc — only improve or enhance it
 
 ## Output Format
 

@@ -4,23 +4,14 @@
  */
 class MovableObjects extends DrawableObject {
 
-    /** @type {boolean} Whether the object is facing the opposite direction */
     otherDirection = false;
-    /** @type {number} Current vertical speed */
     speedY = 0;
-    /** @type {number} Gravitational acceleration applied each frame */
     acceleration = 0.3;
-    /** @type {number} Current health points of the object */
     energy = 10;
-    /** @type {number} Timestamp of the last hit in milliseconds */
     lastHit = 0;
-    /** @type {number} Left hitbox offset in pixels */
     hitBoxLeft = 0;
-    /** @type {number} Top hitbox offset in pixels */
     hitBoxTop = 0;
-    /** @type {number} Right hitbox offset in pixels */
     hitBoxRight = 0;
-    /** @type {number} Bottom hitbox offset in pixels */
     hitBoxBottom = 0;
 
 

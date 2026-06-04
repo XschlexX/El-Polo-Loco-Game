@@ -3,7 +3,6 @@
  * Extends MovableObjects with animation support and staggered start timing.
  */
 class CollectableObject extends MovableObjects {
-    /** @type {number|null} Timeout ID for delayed animation start */
     animationTimeoutId = null;
 
     /**

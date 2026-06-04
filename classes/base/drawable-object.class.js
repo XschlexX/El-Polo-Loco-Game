@@ -3,19 +3,12 @@
  * Provides image loading, caching, drawing with rotation/opacity, and debug frame rendering.
  */
 class DrawableObject {
-    /** @type {number} X position on the canvas */
     x;
-    /** @type {number} Y position on the canvas */
     y;
-    /** @type {number} Width of the object in pixels */
     width;
-    /** @type {number} Height of the object in pixels */
     height;
-    /** @type {HTMLImageElement} The current image element to draw */
     img;
-    /** @type {Object.<string, HTMLImageElement>} Cache of loaded image elements keyed by path */
     imageCache = {};
-    /** @type {number} Index of the current image in an animation sequence */
     currentImage = 0;
 
     /** @type {Object.<string, HTMLImageElement>} Shared cache for all drawable instances to avoid duplicate image loading */
