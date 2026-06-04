@@ -174,43 +174,51 @@ class Endboss extends MovableObjects {
         GlobalIntervalManager.clearByOwner(this);
     }
 
+    /**
+     * Plays a one-shot frame animation and calls onComplete when done.
+     * @param {string[]} frames - Array of image paths
+     * @param {string} intervalName - Name for interval registration
+     * @param {Function} onComplete - Callback after last frame
+     */
+    playOneShotAnimation(frames, intervalName, onComplete) {
+        let frameIndex = 0;
+        this.img = this.imageCache[frames[frameIndex]];
+        const advance = () => {
+            frameIndex++;
+            if (frameIndex < frames.length) {
+                this.img = this.imageCache[frames[frameIndex]];
+            } else {
+                GlobalIntervalManager.clear(interval, intervalName);
+                onComplete();
+            }
+        };
+        const interval = setInterval(advance, 150);
+        GlobalIntervalManager.register(interval, intervalName, this, 150, advance);
+    }
+
     /** Plays hurt animation once, then triggers death animation */
     playHurtAnimationOnce() {
         this.state.isPlayingHurt = true;
-        let frameIndex = 0;
-        this.img = this.imageCache[this.images.imagesHurt[frameIndex]];
-        const callback = () => {
-            frameIndex++;
-            if (frameIndex < this.images.imagesHurt.length) {
-                this.img = this.imageCache[this.images.imagesHurt[frameIndex]];
-            } else {
-                GlobalIntervalManager.clear(hurtInterval, 'Endboss hurt');
-                this.state.isPlayingHurt = false;
-                this.playDeathAnimationOnce();
-            }
-        };
-        const hurtInterval = setInterval(callback, 150);
-        GlobalIntervalManager.register(hurtInterval, 'Endboss hurt animation', this, 150, callback);
+        this.playOneShotAnimation(this.images.imagesHurt, 'Endboss hurt', () => this.onHurtComplete());
+    }
+
+    /** Called when hurt animation finishes */
+    onHurtComplete() {
+        this.state.isPlayingHurt = false;
+        this.playDeathAnimationOnce();
     }
 
     /** Plays death animation and shows win screen */
     playDeathAnimationOnce() {
         this.state.isPlayingDeath = true;
         this.world?.soundManager?.play('endbossDead');
-        let frameIndex = 0;
-        this.img = this.imageCache[this.images.imagesDead[frameIndex]];
-        const callback = () => {
-            frameIndex++;
-            if (frameIndex < this.images.imagesDead.length) {
-                this.img = this.imageCache[this.images.imagesDead[frameIndex]];
-            } else {
-                GlobalIntervalManager.clear(deathInterval, 'Endboss death');
-                this.state.isPlayingDeath = false;
-                showYouWonScreen(500);
-            }
-        };
-        const deathInterval = setInterval(callback, 150);
-        GlobalIntervalManager.register(deathInterval, 'Endboss death animation', this, 150, callback);
+        this.playOneShotAnimation(this.images.imagesDead, 'Endboss death', () => this.onDeathComplete());
+    }
+
+    /** Called when death animation finishes */
+    onDeathComplete() {
+        this.state.isPlayingDeath = false;
+        showYouWonScreen(500);
     }
 
     /**
@@ -236,20 +244,13 @@ class Endboss extends MovableObjects {
         this.state.isPlayingAlert = true;
         this.world?.soundManager?.playMusic('endbossAngry');
         this.otherDirection = this.world?.character?.x < this.x;
-        let frameIndex = 0;
-        this.img = this.imageCache[this.images.imagesAlert[frameIndex]];
-        const callback = () => {
-            frameIndex++;
-            if (frameIndex < this.images.imagesAlert.length) {
-                this.img = this.imageCache[this.images.imagesAlert[frameIndex]];
-            } else {
-                GlobalIntervalManager.clear(alertInterval, 'Endboss alert');
-                this.state.isPlayingAlert = false;
-                this.handleAttackAnimation();
-            }
-        };
-        const alertInterval = setInterval(callback, 150);
-        GlobalIntervalManager.register(alertInterval, 'Endboss alert animation', this, 150, callback);
+        this.playOneShotAnimation(this.images.imagesAlert, 'Endboss alert', () => this.onAlertComplete());
+    }
+
+    /** Called when alert animation finishes */
+    onAlertComplete() {
+        this.state.isPlayingAlert = false;
+        this.handleAttackAnimation();
     }
 
     /** Triggers attack animation if not played yet */
@@ -262,20 +263,13 @@ class Endboss extends MovableObjects {
         this.state.hasPlayedAttack = true;
         this.state.isPlayingAttack = true;
         this.world?.soundManager?.playMusic('endbossAngry');
-        let frameIndex = 0;
-        this.img = this.imageCache[this.images.imagesAttack[frameIndex]];
-        const callback = () => {
-            frameIndex++;
-            if (frameIndex < this.images.imagesAttack.length) {
-                this.img = this.imageCache[this.images.imagesAttack[frameIndex]];
-            } else {
-                GlobalIntervalManager.clear(attackInterval, 'Endboss attack');
-                this.state.isPlayingAttack = false;
-                this.state.isChasing = true;
-            }
-        };
-        const attackInterval = setInterval(callback, 150);
-        GlobalIntervalManager.register(attackInterval, 'Endboss attack animation', this, 150, callback);
+        this.playOneShotAnimation(this.images.imagesAttack, 'Endboss attack', () => this.onAttackComplete());
+    }
+
+    /** Called when attack animation finishes */
+    onAttackComplete() {
+        this.state.isPlayingAttack = false;
+        this.state.isChasing = true;
     }
 
     /** Called when colliding with character */

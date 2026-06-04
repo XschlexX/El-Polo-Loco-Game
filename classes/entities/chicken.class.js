@@ -36,65 +36,63 @@ class Chicken extends MovableObjects {
 
     /**
      * Starts the movement patrol and sprite animation intervals.
-     * The chicken walks back and forth between levelStart and levelEnd.
      */
     animate() {
-        const moveCallback = () => {
-            if (!this.isDead()) {
-
-                if (this.movingLeft) {
-                    this.moveLeft(true);
-                    if (this.x <= levelStart) {
-                        this.movingLeft = false;
-                    }
-                } else {
-                    this.moveRight();
-                    if (this.x + this.width >= levelEnd) {
-                        this.movingLeft = true;
-                    }
-                }
-            }
-        };
+        const moveCallback = () => this.updateMovement();
         const moveInterval = setInterval(moveCallback, 1000 / 60);
         GlobalIntervalManager.register(moveInterval, 'Chicken movement', this, 1000 / 60, moveCallback);
-
         const animationCallback = () => {
-            if (this.isDead()) {
-                this.playDeadAnimation();
-            } else {
-                this.playAnimation(this.images.imagesWalk);
-            }
+            if (this.isDead()) this.playDeadAnimation();
+            else this.playAnimation(this.images.imagesWalk);
         };
         const animationInterval = setInterval(animationCallback, 150);
         GlobalIntervalManager.register(animationInterval, 'Chicken animation', this, 150, animationCallback);
     }
 
     /**
-     * Plays the death animation: shows the dead sprite, stops all owned intervals,
-     * plays the death sound, and fades out before removing from the world.
+     * Updates the chicken's position, reversing direction at level boundaries.
+     */
+    updateMovement() {
+        if (this.isDead()) return;
+        if (this.movingLeft) {
+            this.moveLeft(true);
+            if (this.x <= levelStart) this.movingLeft = false;
+        } else {
+            this.moveRight();
+            if (this.x + this.width >= levelEnd) this.movingLeft = true;
+        }
+    }
+
+    /**
+     * Plays the death animation: shows the dead sprite, stops all owned intervals, and plays the death sound.
      */
     playDeadAnimation() {
         if (!this.isDying) {
             this.isDying = true;
             this.img = this.imageCache[this.images.imagesDead[0]];
             GlobalIntervalManager.clearByOwner(this);
-
             if (this.world && this.world.soundManager) {
                 this.world.soundManager.play('chickenDead');
             }
-
-            const fadeCallback = () => {
-                this.opacity -= 0.02;
-                if (this.opacity <= 0) {
-                    this.opacity = 0;
-                    GlobalIntervalManager.clear(fadeInterval, 'Chicken fade');
-                    this.markedForDeletion = true;
-                    this.removeFromWorld();
-                }
-            };
-            let fadeInterval = setInterval(fadeCallback, 40);
-            GlobalIntervalManager.register(fadeInterval, 'Chicken fade-out', this, 40, fadeCallback);
+            this.startFadeOut();
         }
+    }
+
+    /**
+     * Fades the chicken out and removes it from the world when complete.
+     */
+    startFadeOut() {
+        const fadeCallback = () => {
+            this.opacity -= 0.02;
+            if (this.opacity <= 0) {
+                this.opacity = 0;
+                GlobalIntervalManager.clear(fadeInterval, 'Chicken fade');
+                this.markedForDeletion = true;
+                this.removeFromWorld();
+            }
+        };
+        let fadeInterval = setInterval(fadeCallback, 40);
+        GlobalIntervalManager.register(fadeInterval, 'Chicken fade-out', this, 40, fadeCallback);
     }
 
     /**
