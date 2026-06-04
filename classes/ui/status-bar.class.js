@@ -1,3 +1,9 @@
+/**
+ * HUD status bar that displays health, bottle, coin, or endboss health indicators.
+ * Supports three render types per bar: background (0), fill (1), and icon (2).
+ * Automatically updates fill width based on the associated character or endboss state.
+ * @extends DrawableObject
+ */
 class StatusBar extends DrawableObject {
     imagesHealthBar = [
         'assets/img/7_statusbars/4_bar_elements/statusbar_empty_modified.png',
@@ -35,6 +41,10 @@ class StatusBar extends DrawableObject {
     multiplier;
 
 
+    /**
+     * @param {string} statusbar - The image set key (e.g. 'imagesHealthBar', 'imagesBottleBar')
+     * @param {number} type - The render type: 0 = background, 1 = fill, 2 = icon
+     */
     constructor(statusbar, type) {
         super();
         this.statusbar = statusbar;
@@ -42,12 +52,10 @@ class StatusBar extends DrawableObject {
         this.setPosition();
         this.loadImage(this[statusbar][type]);
 
-        // Setze initiale Breite für Bottle-Bar sofort auf 0, damit sie nicht voll angezeigt wird
         if (statusbar === 'imagesBottleBar' && type === 1 || statusbar === 'imagesCoinBar' && type === 1) {
             this.width = 0;
         }
 
-        // Initialisierung je nach Statusbar-Typ
         if (statusbar === 'imagesHealthBar' || statusbar === 'imagesBottleBar' || statusbar === 'imagesCoinBar') {
             this.setCharacter();
         } else if (statusbar === 'imagesHealthBarEndboss') {
@@ -55,12 +63,14 @@ class StatusBar extends DrawableObject {
         }
     }
 
+    /**
+     * Binds the bar to the player character and starts periodic width updates.
+     */
     setCharacter() {
         const timeoutId = setTimeout(() => {
             if (world) {
                 this.character = world.character;
                 if (this.statusbar === 'imagesBottleBar') {
-                    // Multiplier basiert auf Maximum (10 Bottles) und maximaler Breite (200px)
                     this.multiplier = this.maxWidth / 10;
                 } else if (this.statusbar === 'imagesCoinBar') {
                     this.multiplier = this.maxWidth / 10;
@@ -75,14 +85,17 @@ class StatusBar extends DrawableObject {
         GlobalIntervalManager.registerTimeout(timeoutId, 'StatusBar setCharacter', this, 500, null);
     }
 
+    /**
+     * Binds the bar to the endboss and starts periodic width updates.
+     */
     setEndboss() {
         const timeoutId = setTimeout(() => {
             if (world) {
                 this.endboss = world.level.enemies.find(enemy => enemy instanceof Endboss);
                 if (this.endboss) {
                     this.endbossMultiplier = this.width / this.endboss.energy;
-                    this.initialWidth = this.width; // Speichere die Anfangsbreite
-                    this.initialX = this.x; // Speichere die Anfangs-X-Position
+                    this.initialWidth = this.width;
+                    this.initialX = this.x;
                     this.setEndbossWidth();
                 } else {
                     console.error('Endboss nicht gefunden');
@@ -92,6 +105,9 @@ class StatusBar extends DrawableObject {
         GlobalIntervalManager.registerTimeout(timeoutId, 'StatusBar setEndboss', this, 500, null);
     }
 
+    /**
+     * Starts a periodic interval that updates the fill width based on character stats.
+     */
     setWidth() {
         const intervalCallback = () => {
             if (this.statusbar === 'imagesHealthBar' && this.type === 1) {
@@ -106,13 +122,15 @@ class StatusBar extends DrawableObject {
         GlobalIntervalManager.register(intervalId, 'StatusBar width update', this, 100, intervalCallback);
     }
 
+    /**
+     * Starts a periodic interval that updates the endboss health bar width and position.
+     */
     setEndbossWidth() {
         const intervalCallback = () => {
             if (this.statusbar === 'imagesHealthBarEndboss' && this.type === 1 && this.endboss) {
                 let newWidth = this.endboss.energy * this.endbossMultiplier;
                 let widthDifference = this.initialWidth - newWidth;
 
-                // Passe X-Position an, damit die Bar von links nach rechts kleiner wird
                 this.x = this.initialX + widthDifference;
                 this.width = newWidth;
             }
@@ -121,6 +139,9 @@ class StatusBar extends DrawableObject {
         GlobalIntervalManager.register(intervalId, 'StatusBar endboss width update', this, 100, intervalCallback);
     }
 
+    /**
+     * Adjusts position and dimensions based on the statusbar type and render variant.
+     */
     setPosition() {
         if (this.statusbar === 'imagesHealthBar' && this.type === 2) {
             this.x = this.x - 15;

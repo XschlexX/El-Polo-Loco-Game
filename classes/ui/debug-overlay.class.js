@@ -1,12 +1,7 @@
 /**
- * DebugOverlay - HTML-basierte Debug-Informationen
- * Ersetzt die Canvas-basierte debug-info.class.js
- * 
- * Funktionen:
- * - F2-Taste zum Ein-/Ausschalten des Debug-Modus
- * - Zeigt Character-Debug-Informationen an
- * - Zeigt Endboss-Debug-Informationen an
- * - Aktualisiert sich automatisch ohne Canvas-Rendering
+ * HTML-based debug overlay that displays runtime debug information.
+ * Replaces the canvas-based debug-info.class.js with DOM elements
+ * that auto-update without canvas rendering.
  */
 class DebugOverlay {
     world;
@@ -19,8 +14,7 @@ class DebugOverlay {
     }
 
     /**
-     * SETUP DEBUG TOGGLE
-     * Richtet die F2-Taste ein um Debug-Infos ein/auszuschalten
+     * Registers the F2 key listener to toggle debug mode visibility.
      */
     setupDebugToggle() {
         window.addEventListener('keydown', (e) => {
@@ -33,17 +27,15 @@ class DebugOverlay {
     }
 
     /**
-     * Erstellt die HTML-Elemente für den Debug-Overlay
+     * Creates the HTML elements for the debug overlay inside the game container.
      */
     createDebugElements() {
-        // Finde den Game-Container
         const gameContainer = document.getElementById('game_container');
         if (!gameContainer) {
             console.error('Game-Container nicht gefunden!');
             return;
         }
 
-        // Hauptcontainer für Debug-Overlay (innerhalb des Game-Containers)
         const debugContainer = document.createElement('div');
         debugContainer.id = 'debug-overlay';
         debugContainer.className = 'debug-overlay';
@@ -58,29 +50,28 @@ class DebugOverlay {
             display: none;
         `;
 
-        // Character Debug Panel (positioniert innerhalb des Game-Containers)
         const characterPanel = document.createElement('div');
         characterPanel.id = 'debug-character-panel';
         characterPanel.className = 'debug-panel';
         characterPanel.style.cssText = this.getPanelStyles(10, 10);
         debugContainer.appendChild(characterPanel);
 
-        // Endboss Debug Panel (rechte obere Ecke)
         const endbossPanel = document.createElement('div');
         endbossPanel.id = 'debug-endboss-panel';
         endbossPanel.className = 'debug-panel';
         endbossPanel.style.cssText = this.getPanelStylesRight(10, 10);
         debugContainer.appendChild(endbossPanel);
 
-        // Zum Game-Container hinzufügen (nicht zum body)
         gameContainer.appendChild(debugContainer);
 
-        // Starte das Update-Interval
         this.startUpdateInterval();
     }
 
     /**
-     * Gibt die CSS-Styles für ein Debug-Panel zurück (linke Seite)
+     * Returns CSS styles for a left-aligned debug panel.
+     * @param {number} x - Left offset in pixels
+     * @param {number} y - Top offset in pixels
+     * @returns {string} CSS style string
      */
     getPanelStyles(x, y) {
         return `
@@ -99,7 +90,10 @@ class DebugOverlay {
     }
 
     /**
-     * Gibt die CSS-Styles für ein Debug-Panel zurück (rechte Seite)
+     * Returns CSS styles for a right-aligned debug panel.
+     * @param {number} x - Right offset in pixels
+     * @param {number} y - Top offset in pixels
+     * @returns {string} CSS style string
      */
     getPanelStylesRight(x, y) {
         return `
@@ -118,7 +112,7 @@ class DebugOverlay {
     }
 
     /**
-     * Startet das Interval für automatische Updates
+     * Starts the auto-update interval that refreshes debug info every 100ms.
      */
     startUpdateInterval() {
         if (this.updateInterval) {
@@ -129,11 +123,11 @@ class DebugOverlay {
             if (debugModus && this.world) {
                 this.updateDebugInfo();
             }
-        }, 100); // Update alle 100ms
+        }, 100);
     }
 
     /**
-     * Stoppt das Update-Interval
+     * Stops the auto-update interval.
      */
     stopUpdateInterval() {
         if (this.updateInterval) {
@@ -143,7 +137,8 @@ class DebugOverlay {
     }
 
     /**
-     * Zeigt oder verbirgt den Debug-Overlay
+     * Shows or hides the debug overlay.
+     * @param {boolean} show - Whether to show the overlay
      */
     toggleVisibility(show) {
         const debugContainer = document.getElementById('debug-overlay');
@@ -154,7 +149,7 @@ class DebugOverlay {
     }
 
     /**
-     * Aktualisiert alle Debug-Informationen
+     * Updates all debug information panels.
      */
     updateDebugInfo() {
         this.updateCharacterDebug();
@@ -162,7 +157,7 @@ class DebugOverlay {
     }
 
     /**
-     * Aktualisiert die Character-Debug-Informationen
+     * Updates the character debug panel with current state values.
      */
     updateCharacterDebug() {
         const panel = document.getElementById('debug-character-panel');
@@ -194,7 +189,7 @@ class DebugOverlay {
     }
 
     /**
-     * Aktualisiert die Endboss-Debug-Informationen
+     * Updates the endboss debug panel with current state values.
      */
     updateEndbossDebug() {
         const panel = document.getElementById('debug-endboss-panel');
@@ -211,7 +206,6 @@ class DebugOverlay {
             return;
         }
 
-        // Zeige x + width wenn nach rechts, sonst nur x
         const displayX = boss.otherDirection ?
             Math.round(boss.x) :
             Math.round(boss.x + boss.width);
@@ -230,15 +224,15 @@ class DebugOverlay {
     }
 
     /**
-     * Setzt die World-Referenz
-     * Wird von start.js aufgerufen nach der World-Erstellung
+     * Sets the world reference. Called after world initialization.
+     * @param {Object} world - The game world instance
      */
     setWorld(world) {
         this.world = world;
     }
 
     /**
-     * Cleanup-Methode für sauberes Entfernen
+     * Cleans up intervals and removes the overlay from the DOM.
      */
     destroy() {
         this.stopUpdateInterval();

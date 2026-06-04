@@ -1,11 +1,16 @@
+/**
+ * In-game timer that displays elapsed time on the canvas.
+ * Supports pause and resume functionality.
+ * @extends DrawableObject
+ */
 class GameTimer extends DrawableObject {
     startTime;
     pausedTime = 0;
     isPaused = false;
     width = 120;
     height = 30;
-    y = 70;   // Unter Level Display (Level Display: y=10 + height=50 + gap=10)
-    x = 720 / 2 - this.width / 2;  // Zentriert unter Level Display (Level Display: x=320, width=80, Timer: width=200)
+    y = 70;
+    x = 720 / 2 - this.width / 2;
 
     constructor() {
         super();
@@ -13,7 +18,7 @@ class GameTimer extends DrawableObject {
     }
 
     /**
-     * Pausiert den Timer
+     * Pauses the timer, freezing the elapsed time at the current value.
      */
     pause() {
         if (!this.isPaused) {
@@ -23,7 +28,7 @@ class GameTimer extends DrawableObject {
     }
 
     /**
-     * Setzt den Timer fort
+     * Resumes the timer after a pause, adjusting the start time.
      */
     resume() {
         if (this.isPaused) {
@@ -35,21 +40,20 @@ class GameTimer extends DrawableObject {
     }
 
     /**
-     * Berechnet die vergangene Zeit seit Spielstart
-     * @returns {Object} Objekt mit Minuten und Sekunden
+     * Calculates the elapsed time since the game started.
+     * @returns {{ minutes: number, seconds: number }} Object with minutes and seconds
      */
     getElapsedTime() {
-        // Wenn pausiert, verwende die Zeit zum Pausierzeitpunkt
         const currentTime = this.isPaused ? this.pausedTime : new Date().getTime();
-        const elapsed = Math.floor((currentTime - this.startTime) / 1000); // in Sekunden
+        const elapsed = Math.floor((currentTime - this.startTime) / 1000);
         const minutes = Math.floor(elapsed / 60);
         const seconds = elapsed % 60;
         return { minutes, seconds };
     }
 
     /**
-     * Formatiert die Zeit als String (MM:SS)
-     * @returns {string} Formatierte Zeit
+     * Formats the elapsed time as a MM:SS string.
+     * @returns {string} Formatted time string
      */
     getFormattedTime() {
         const { minutes, seconds } = this.getElapsedTime();
@@ -59,26 +63,17 @@ class GameTimer extends DrawableObject {
     }
 
     /**
-     * Zeichnet den Timer auf dem Canvas
-     * @param {CanvasRenderingContext2D} ctx - Canvas Context
+     * Draws the timer with a rounded-rect background on the canvas.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
      */
     draw(ctx) {
         ctx.save();
 
-        // Hintergrund mit abgerundeten Ecken
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.beginPath();
         this.drawRoundedRect(ctx, this.x, this.y, this.width, this.height, 8);
         ctx.fill();
 
-        // // Rahmen mit abgerundeten Ecken
-        // ctx.strokeStyle = '#dabc45';
-        // ctx.lineWidth = 2;
-        // ctx.beginPath();
-        // this.drawRoundedRect(ctx, this.x, this.y, this.width, this.height, 8);
-        // ctx.stroke();
-
-        // Text
         ctx.font = 'bold 18px Rye, Arial';
         ctx.fillStyle = '#FFD700';
         ctx.textAlign = 'center';
@@ -92,6 +87,15 @@ class GameTimer extends DrawableObject {
         ctx.restore();
     }
 
+    /**
+     * Draws a rounded rectangle path on the canvas.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     * @param {number} x - X position
+     * @param {number} y - Y position
+     * @param {number} width - Rectangle width
+     * @param {number} height - Rectangle height
+     * @param {number} radius - Corner radius
+     */
     drawRoundedRect(ctx, x, y, width, height, radius) {
         ctx.moveTo(x + radius, y);
         ctx.lineTo(x + width - radius, y);
