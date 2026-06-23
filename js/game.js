@@ -30,6 +30,7 @@ function init() {
     mainScreen();
     initOrientationCheck();
     initButtonHoverSounds();
+    initAutoplayMusicHandler();
 }
 
 /**
@@ -51,6 +52,26 @@ function initButtonHoverSounds() {
 function playButtonHoverSound() {
     if (window.soundManager && !window.soundManager.muted) {
         window.soundManager.play('buttonHover');
+    }
+}
+
+/**
+ * Registers events to start menu music on the first user interaction.
+ */
+function initAutoplayMusicHandler() {
+    const events = ['click', 'keydown', 'touchstart'];
+    events.forEach(event => {
+        document.addEventListener(event, startMusicOnFirstInteraction, { once: true });
+    });
+}
+
+/**
+ * Starts the menu music on the first user interaction if audio is enabled.
+ */
+function startMusicOnFirstInteraction() {
+    const sm = window.soundManager;
+    if (sm && !sm.muted && sm.sounds['menuTheme'] && sm.sounds['menuTheme'].paused) {
+        sm.playMusic('menuTheme');
     }
 }
 

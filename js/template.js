@@ -10,10 +10,10 @@ function mainScreenTemplate() {
                 <button class="button" onclick="showInfoScreen()">INFO</button>
                 <button class="button" onclick="showSettingsScreen()">SETTINGS</button>
             </div>
-                <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
+                <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                     <img src="assets/icon/unmute.png" alt="unmute">
                 </button>
-                <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
+                <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                     <img src="assets/icon/mute.png" alt="mute">
                 </button>
                 <button class="button fz32" onclick="startGame(1)">START GAME</button>
@@ -29,10 +29,10 @@ function infoScreenTemplate() {
     return /*html*/`
         <div id="info_screen" class="all-screens">
             <img class="background-image" src="assets/img/5_background/first_half_background.png" alt="Info">
-            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
+            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                 <img src="assets/icon/unmute.png" alt="unmute">
             </button>
-            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
+            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                 <img src="assets/icon/mute.png" alt="mute">
             </button>
             <div class="screen-content">
@@ -126,10 +126,10 @@ function settingsScreenTemplate() {
     return /*html*/ `
         <div id="settings_screen" class="all-screens">
             <img class="background-image" src="assets/img/5_background/first_half_background.png" alt="Settings">
-            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
+            <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                 <img src="assets/icon/unmute.png" alt="unmute">
             </button>
-            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
+            <button id="mute-btn" onclick="toggleSoundButton()" class="unmute-button" title="Enable Sound">
                 <img src="assets/icon/mute.png" alt="mute">
             </button>
             <div class="screen-content">

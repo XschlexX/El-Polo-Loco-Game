@@ -89,18 +89,27 @@ class SoundManager {
      */
     play(name, restart = true) {
         if (this.muted) return;
-
         if (!this.sounds[name]) {
             console.warn(`Sound "${name}" nicht gefunden`);
             return;
         }
+        this.executePlay(name, restart);
+    }
 
+    /**
+     * Executes the actual playback and handles playback errors.
+     * @param {string} name - Identifier of the sound to play
+     * @param {boolean} restart - Whether to restart the sound from the beginning
+     */
+    executePlay(name, restart) {
         const sound = this.sounds[name];
         if (restart) {
             sound.currentTime = 0;
         }
         sound.play().catch(err => {
-            console.warn(`Fehler beim Abspielen von "${name}":`, err);
+            if (err.name !== 'NotAllowedError') {
+                console.warn(`Fehler beim Abspielen von "${name}":`, err);
+            }
         });
     }
 

@@ -22,18 +22,14 @@ function disableSound() {
  * Toggles the sound mute state and updates all audio UI elements.
  */
 function toggleSoundButton() {
-    const unmuteBtn = document.getElementById('unmute-btn');
-    const muteBtn = document.getElementById('mute-btn');
     if (window.soundManager && window.soundManager.muted) {
-        if (unmuteBtn) unmuteBtn.style.display = 'none';
-        if (muteBtn) muteBtn.style.display = 'block';
         enableSound();
     } else {
-        if (unmuteBtn) unmuteBtn.style.display = 'block';
-        if (muteBtn) muteBtn.style.display = 'none';
         disableSound();
     }
+    updateSoundButtonState();
     updateOverlayAudioToggleButton();
+    saveVolumeSettings();
 }
 
 /**
@@ -43,13 +39,9 @@ function updateSoundButtonState() {
     const unmuteBtn = document.getElementById('unmute-btn');
     const muteBtn = document.getElementById('mute-btn');
     if (unmuteBtn && muteBtn && window.soundManager) {
-        if (window.soundManager.muted) {
-            unmuteBtn.style.display = 'block';
-            muteBtn.style.display = 'none';
-        } else {
-            unmuteBtn.style.display = 'none';
-            muteBtn.style.display = 'block';
-        }
+        const isMuted = window.soundManager.muted;
+        unmuteBtn.style.display = isMuted ? 'none' : 'block';
+        muteBtn.style.display = isMuted ? 'block' : 'none';
     }
 }
 
@@ -133,7 +125,8 @@ function saveVolumeSettings() {
         const settings = {
             master: window.soundManager.masterVolume,
             music: window.soundManager.musicVolume,
-            sfx: window.soundManager.sfxVolume
+            sfx: window.soundManager.sfxVolume,
+            muted: window.soundManager.muted
         };
         localStorage.setItem('elPoloLoco_volumeSettings', JSON.stringify(settings));
     }
@@ -146,14 +139,36 @@ function loadVolumeSettings() {
     const saved = localStorage.getItem('elPoloLoco_volumeSettings');
     if (saved && window.soundManager) {
         const settings = JSON.parse(saved);
-        const masterVol = (typeof settings.master === 'number') ? settings.master : window.soundManager.masterVolume;
-        const musicVol = (typeof settings.music === 'number') ? settings.music : window.soundManager.musicVolume;
-        const sfxVol = (typeof settings.sfx === 'number') ? settings.sfx : window.soundManager.sfxVolume;
-        window.soundManager.setMasterVolume(masterVol);
-        window.soundManager.setMusicVolume(musicVol);
-        window.soundManager.setSfxVolume(sfxVol);
+        applyLoadedVolumeSettings(settings);
+        applyLoadedMuteState(settings);
     } else if (window.soundManager) {
         saveVolumeSettings();
+    }
+}
+
+/**
+ * Applies the loaded volume settings to the sound manager.
+ * @param {Object} settings - The parsed settings from localStorage
+ */
+function applyLoadedVolumeSettings(settings) {
+    const masterVol = (typeof settings.master === 'number') ? settings.master : window.soundManager.masterVolume;
+    const musicVol = (typeof settings.music === 'number') ? settings.music : window.soundManager.musicVolume;
+    const sfxVol = (typeof settings.sfx === 'number') ? settings.sfx : window.soundManager.sfxVolume;
+    window.soundManager.setMasterVolume(masterVol);
+    window.soundManager.setMusicVolume(musicVol);
+    window.soundManager.setSfxVolume(sfxVol);
+}
+
+/**
+ * Applies the loaded mute state to the sound manager.
+ * @param {Object} settings - The parsed settings from localStorage
+ */
+function applyLoadedMuteState(settings) {
+    const isMuted = (typeof settings.muted === 'boolean') ? settings.muted : window.soundManager.muted;
+    if (isMuted) {
+        window.soundManager.muteAll();
+    } else {
+        window.soundManager.unmuteAll();
     }
 }
 
