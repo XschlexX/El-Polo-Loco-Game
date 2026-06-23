@@ -25,22 +25,43 @@ class LevelDisplay extends DrawableObject {
      */
     draw(ctx) {
         ctx.save();
+        this.drawBackground(ctx);
+        this.drawLabel(ctx);
+        this.drawLevelNumber(ctx);
+        ctx.restore();
+    }
 
+    /**
+     * Draws the semitransparent rounded rectangle background for the badge.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    drawBackground(ctx) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.beginPath();
         this.drawRoundedRect(ctx, this.x, this.y, this.width, this.height, 8);
         ctx.fill();
+    }
 
+    /**
+     * Draws the 'LEVEL' header text.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    drawLabel(ctx) {
         ctx.font = 'bold 12px Rye, Arial';
         ctx.fillStyle = '#FFD700';
         ctx.textAlign = 'center';
         ctx.fillText('LEVEL', this.x + this.width / 2, this.y + 18);
+    }
 
+    /**
+     * Draws the level number text.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    drawLevelNumber(ctx) {
         ctx.font = 'bold 24px Rye, Arial';
         ctx.fillStyle = '#FFD700';
+        ctx.textAlign = 'center';
         ctx.fillText(this.levelNumber, this.x + this.width / 2, this.y + 42);
-
-        ctx.restore();
     }
 
     /**

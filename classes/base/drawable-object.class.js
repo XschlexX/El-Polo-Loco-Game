@@ -51,7 +51,17 @@ class DrawableObject {
      */
     draw(ctx) {
         ctx.save();
+        this.applyRotation(ctx);
+        this.applyOpacity(ctx);
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        ctx.restore();
+    }
 
+    /**
+     * Applies rotation to the canvas context if rotation is defined.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    applyRotation(ctx) {
         const rotationValue = this.rotation?.current !== undefined ? this.rotation.current : this.rotation;
         if (rotationValue) {
             const centerX = this.x + this.width / 2;
@@ -60,13 +70,16 @@ class DrawableObject {
             ctx.rotate(rotationValue * Math.PI / 180);
             ctx.translate(-centerX, -centerY);
         }
+    }
 
+    /**
+     * Applies opacity to the canvas context if opacity is defined.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    applyOpacity(ctx) {
         if (this.opacity !== undefined && this.opacity < 1) {
             ctx.globalAlpha = this.opacity;
         }
-
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-        ctx.restore();
     }
 
     /**

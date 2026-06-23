@@ -31,10 +31,24 @@ class GlobalIntervalManager {
      */
     static register(intervalId, name, owner, delay, callback = null) {
         this.intervalCounter++;
-        const registrationId = this.intervalCounter;
+        const regId = this.intervalCounter;
+        this.intervals[regId] = this.createIntervalRecord(regId, intervalId, name, owner, delay, callback);
+        return intervalId;
+    }
 
-        this.intervals[registrationId] = {
-            id: registrationId,
+    /**
+     * Creates a structured tracking record for a registered interval.
+     * @param {number} regId - The registration ID
+     * @param {number} intervalId - The ID returned from setInterval
+     * @param {string} name - Descriptive name for the interval
+     * @param {Object} owner - The object that created the interval
+     * @param {number} delay - The interval delay in milliseconds
+     * @param {Function} [callback] - The callback function
+     * @returns {Object} The formatted interval record
+     */
+    static createIntervalRecord(regId, intervalId, name, owner, delay, callback) {
+        return {
+            id: regId,
             intervalId: intervalId,
             name: name,
             owner: owner?.constructor?.name || 'Unknown',
@@ -44,8 +58,6 @@ class GlobalIntervalManager {
             createdAt: new Date().toLocaleTimeString(),
             isActive: true
         };
-
-        return intervalId;
     }
 
     /**
@@ -59,10 +71,24 @@ class GlobalIntervalManager {
      */
     static registerTimeout(timeoutId, name, owner, delay, callback) {
         this.timeoutCounter++;
-        const registrationId = this.timeoutCounter;
+        const regId = this.timeoutCounter;
+        this.timeouts[regId] = this.createTimeoutRecord(regId, timeoutId, name, owner, delay, callback);
+        return timeoutId;
+    }
 
-        this.timeouts[registrationId] = {
-            id: registrationId,
+    /**
+     * Creates a structured tracking record for a registered timeout.
+     * @param {number} regId - The registration ID
+     * @param {number} timeoutId - The ID returned from setTimeout
+     * @param {string} name - Descriptive name for the timeout
+     * @param {Object} owner - The object that created the timeout
+     * @param {number} delay - The timeout delay in milliseconds
+     * @param {Function} callback - The callback function
+     * @returns {Object} The formatted timeout record
+     */
+    static createTimeoutRecord(regId, timeoutId, name, owner, delay, callback) {
+        return {
+            id: regId,
             timeoutId: timeoutId,
             name: name,
             owner: owner?.constructor?.name || 'Unknown',
@@ -73,8 +99,6 @@ class GlobalIntervalManager {
             startTime: Date.now(),
             isActive: true
         };
-
-        return timeoutId;
     }
 
     /**
@@ -176,21 +200,28 @@ class GlobalIntervalManager {
     static getStats() {
         const active = this.getActive();
         const allIntervals = Object.values(this.intervals);
-        const byOwner = {};
+        return {
+            totalActive: active.length,
+            totalRegistered: allIntervals.length,
+            byOwner: this.groupActiveByOwner(active),
+            intervals: active
+        };
+    }
 
+    /**
+     * Groups active intervals by their owners and counts them.
+     * @param {Array} active - List of active intervals
+     * @returns {Object.<string, number>} Object mapping owner name to interval count
+     */
+    static groupActiveByOwner(active) {
+        const byOwner = {};
         active.forEach(interval => {
             if (!byOwner[interval.owner]) {
                 byOwner[interval.owner] = 0;
             }
             byOwner[interval.owner]++;
         });
-
-        return {
-            totalActive: active.length,
-            totalRegistered: allIntervals.length,
-            byOwner: byOwner,
-            intervals: active
-        };
+        return byOwner;
     }
 
     /**

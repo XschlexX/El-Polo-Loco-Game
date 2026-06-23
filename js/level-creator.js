@@ -41,25 +41,27 @@ function initLevelBounds(lvlData) {
  * @returns {Level} The constructed Level object
  */
 function buildLevel(lvlData) {
+    const character = new Character(lvlData.characterHP, lvlData.characterBottles);
+    const enemies = generateEnemies(lvlData);
+    const bottles = generateBottlesWithMinDistance(lvlData.bottleAmount, 100);
+    const coins = generateCoinsWithMinDistance(lvlData.coinsAmount, 50);
+    const statusBars = generateStatusBars(lvlData.coinsAmount);
+
     return new Level(
-        new Character(lvlData.characterHP, lvlData.characterBottles),
-        generateBackgrounds(),
-        generateClouds(),
-        generateStatusBars(lvlData.coinsAmount),
-        [
-            ...generateSmallChickens(lvlData.smallChickenAmount, lvlData.chickenSpeed),
-            ...generateChickens(lvlData.bigChickenAmount, lvlData.chickenSpeed)
-        ],
-        [
-            new Endboss(lvlData.endbossHP),
-        ],
-        [
-            new GameTimer()
-        ],
-        [
-            new LevelDisplay(lvlData.levelNumber)
-        ],
-        generateBottlesWithMinDistance(lvlData.bottleAmount, 100),
-        generateCoinsWithMinDistance(lvlData.coinsAmount, 50)
+        character, generateBackgrounds(), generateClouds(), statusBars,
+        enemies, [new Endboss(lvlData.endbossHP)], [new GameTimer()], [new LevelDisplay(lvlData.levelNumber)],
+        bottles, coins
     );
+}
+
+/**
+ * Generates enemies (chickens and endboss) for the level.
+ * @param {Object} lvlData - Level configuration data
+ * @returns {Array} List of enemies
+ */
+function generateEnemies(lvlData) {
+    return [
+        ...generateSmallChickens(lvlData.smallChickenAmount, lvlData.chickenSpeed),
+        ...generateChickens(lvlData.bigChickenAmount, lvlData.chickenSpeed)
+    ];
 }

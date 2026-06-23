@@ -123,20 +123,44 @@ class ThrowableObject extends MovableObjects {
      * @param {number} y - Starting Y position
      */
     throw(x, y) {
-        let throwDirection = this.character.otherDirection ? -this.throwSpeed : this.throwSpeed;
+        this.setInitialPosition(x, y);
+        this.applyPhysics();
+        this.startHorizontalMovement();
+    }
+
+    /**
+     * Sets the initial throwing coordinates based on character orientation.
+     * @param {number} x - Starting character X coordinate
+     * @param {number} y - Starting character Y coordinate
+     */
+    setInitialPosition(x, y) {
         if (!this.character.otherDirection) {
             this.x = x + this.character.width - this.character.hitBoxLeft;
         } else {
             this.x = x + this.character.hitBoxLeft - this.width;
         }
         this.y = y + this.character.hitBoxTop;
+    }
+
+    /**
+     * Applies vertical velocity and gravity to the throwable object.
+     */
+    applyPhysics() {
         this.speedY = 9;
         this.applyGravity(this.groundLevel);
-        const throwCallback = () => {
-            this.x += throwDirection;
+    }
+
+    /**
+     * Starts and registers the interval for horizontal throwing movement.
+     */
+    startHorizontalMovement() {
+        const direction = this.character.otherDirection ? -this.throwSpeed : this.throwSpeed;
+        const callback = () => {
+            this.x += direction;
         };
-        this.throwInterval = setInterval(throwCallback, 1000 / 60);
-        GlobalIntervalManager.register(this.throwInterval, 'ThrowableObject throw', this, 1000 / 60, throwCallback);
+        const interval = 1000 / 60;
+        this.throwInterval = setInterval(callback, interval);
+        GlobalIntervalManager.register(this.throwInterval, 'ThrowableObject throw', this, interval, callback);
     }
 
     /**

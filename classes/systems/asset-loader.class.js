@@ -50,19 +50,45 @@ class AssetLoader {
     loadAll(onProgress, onComplete) {
         this.onProgress = onProgress;
         this.onComplete = onComplete;
+        this.collectAssets();
+        this.initProgressCounters();
+        if (this.totalAssets === 0) {
+            this.handleEmptyAssets();
+            return;
+        }
+        this.startLoadingAssets();
+    }
 
+    /**
+     * Collects both image and sound asset paths.
+     */
+    collectAssets() {
         this.collectImagePaths();
         this.collectSoundPaths();
+    }
 
+    /**
+     * Initializes the progress tracking variables and totals.
+     */
+    initProgressCounters() {
         this.totalAssets = this.imagePaths.size + this.soundPaths.size;
         this.loadedImages = 0;
         this.loadedSounds = 0;
+    }
 
-        if (this.totalAssets === 0) {
-            if (this.onComplete) this.onComplete();
-            return;
+    /**
+     * Handles case when there are no assets to load by executing completion callback.
+     */
+    handleEmptyAssets() {
+        if (this.onComplete) {
+            this.onComplete();
         }
+    }
 
+    /**
+     * Triggers the load commands for both image and sound assets.
+     */
+    startLoadingAssets() {
         this.loadImages();
         this.loadSounds();
     }

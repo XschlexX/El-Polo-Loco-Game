@@ -12,25 +12,41 @@ class CollectableObject extends MovableObjects {
      */
     animate(interval, delay = 0) {
         const randomDelay = Math.random() * delay;
-
-        const startAnimationCallback = () => {
-            if (this.animationTimeoutId !== null) {
-                GlobalIntervalManager.clearTimeout(this.animationTimeoutId, 'CollectableObject animation start');
-                this.animationTimeoutId = null;
-            }
-
-            const animationCallback = () => {
-                this.playAnimation(this.images);
-            };
-            const intervalId = setInterval(animationCallback, interval);
-            GlobalIntervalManager.register(intervalId, 'CollectableObject animation', this, interval, animationCallback);
-        };
-
         if (randomDelay === 0) {
-            startAnimationCallback();
+            this.startAnimation(interval);
         } else {
-            this.animationTimeoutId = setTimeout(startAnimationCallback, randomDelay);
-            GlobalIntervalManager.registerTimeout(this.animationTimeoutId, 'CollectableObject animation start', this, randomDelay, startAnimationCallback);
+            const startCallback = () => this.startAnimation(interval);
+            this.animationTimeoutId = setTimeout(startCallback, randomDelay);
+            GlobalIntervalManager.registerTimeout(this.animationTimeoutId, 'CollectableObject animation start', this, randomDelay, startCallback);
         }
+    }
+
+    /**
+     * Clears startup timeout and sets up the animation loop.
+     * @param {number} interval - Animation interval in milliseconds.
+     */
+    startAnimation(interval) {
+        this.clearAnimationTimeout();
+        this.setupAnimationLoop(interval);
+    }
+
+    /**
+     * Clears any active animation startup timeout.
+     */
+    clearAnimationTimeout() {
+        if (this.animationTimeoutId !== null) {
+            GlobalIntervalManager.clearTimeout(this.animationTimeoutId, 'CollectableObject animation start');
+            this.animationTimeoutId = null;
+        }
+    }
+
+    /**
+     * Sets up the animation interval and registers it with the interval manager.
+     * @param {number} interval - Animation interval in milliseconds.
+     */
+    setupAnimationLoop(interval) {
+        const animationCallback = () => this.playAnimation(this.images);
+        const intervalId = setInterval(animationCallback, interval);
+        GlobalIntervalManager.register(intervalId, 'CollectableObject animation', this, interval, animationCallback);
     }
 }

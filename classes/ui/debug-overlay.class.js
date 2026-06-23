@@ -35,11 +35,22 @@ class DebugOverlay {
             console.error('Game-Container nicht gefunden!');
             return;
         }
+        const debugContainer = this.buildDebugContainer();
+        this.addPanel(debugContainer, 'debug-character-panel', this.getPanelStyles(10, 10));
+        this.addPanel(debugContainer, 'debug-endboss-panel', this.getPanelStylesRight(10, 10));
+        gameContainer.appendChild(debugContainer);
+        this.startUpdateInterval();
+    }
 
-        const debugContainer = document.createElement('div');
-        debugContainer.id = 'debug-overlay';
-        debugContainer.className = 'debug-overlay';
-        debugContainer.style.cssText = `
+    /**
+     * Creates and styles the main debug overlay container.
+     * @returns {HTMLDivElement} The configured debug container element.
+     */
+    buildDebugContainer() {
+        const container = document.createElement('div');
+        container.id = 'debug-overlay';
+        container.className = 'debug-overlay';
+        container.style.cssText = `
             position: absolute;
             top: 0;
             left: 0;
@@ -49,22 +60,21 @@ class DebugOverlay {
             z-index: 1000;
             display: none;
         `;
+        return container;
+    }
 
-        const characterPanel = document.createElement('div');
-        characterPanel.id = 'debug-character-panel';
-        characterPanel.className = 'debug-panel';
-        characterPanel.style.cssText = this.getPanelStyles(10, 10);
-        debugContainer.appendChild(characterPanel);
-
-        const endbossPanel = document.createElement('div');
-        endbossPanel.id = 'debug-endboss-panel';
-        endbossPanel.className = 'debug-panel';
-        endbossPanel.style.cssText = this.getPanelStylesRight(10, 10);
-        debugContainer.appendChild(endbossPanel);
-
-        gameContainer.appendChild(debugContainer);
-
-        this.startUpdateInterval();
+    /**
+     * Creates a debug panel div with specific styling and appends it to a parent.
+     * @param {HTMLElement} parent - The parent element to append the panel to.
+     * @param {string} id - The unique ID of the panel.
+     * @param {string} style - The CSS styles to apply.
+     */
+    addPanel(parent, id, style) {
+        const panel = document.createElement('div');
+        panel.id = id;
+        panel.className = 'debug-panel';
+        panel.style.cssText = style;
+        parent.appendChild(panel);
     }
 
     /**
@@ -165,18 +175,19 @@ class DebugOverlay {
             if (panel) panel.style.display = 'none';
             return;
         }
-
         panel.style.display = 'block';
-
         const char = this.world.character;
-        if (!char) {
-            panel.innerHTML = '<strong>Character Debug:</strong><br>Character nicht verfügbar';
-            return;
-        }
+        panel.innerHTML = char ? this.getCharacterDebugHtml(char) : '<strong>Character Debug:</strong><br>Character nicht verfügbar';
+    }
 
+    /**
+     * Generates HTML string representing the character's current debug stats.
+     * @param {Object} char - The character instance
+     * @returns {string} The formatted HTML string
+     */
+    getCharacterDebugHtml(char) {
         const isAboveGround = char.isAboveGround(char.groundLevel);
-
-        panel.innerHTML = `
+        return `
             <strong>Character Debug:</strong><br>
             Position: (${char.x.toFixed(1)}, ${char.y.toFixed(1)})<br>
             bottles: ${char.bottles}<br>
@@ -197,20 +208,19 @@ class DebugOverlay {
             if (panel) panel.style.display = 'none';
             return;
         }
-
         panel.style.display = 'block';
-
         const boss = this.world.level?.enemies?.find(e => e instanceof Endboss);
-        if (!boss) {
-            panel.innerHTML = '<strong>Endboss Debug:</strong><br>Endboss nicht verfügbar';
-            return;
-        }
+        panel.innerHTML = boss ? this.getEndbossDebugHtml(boss) : '<strong>Endboss Debug:</strong><br>Endboss nicht verfügbar';
+    }
 
-        const displayX = boss.otherDirection ?
-            Math.round(boss.x) :
-            Math.round(boss.x + boss.width);
-
-        panel.innerHTML = `
+    /**
+     * Generates HTML string representing the endboss's current debug stats.
+     * @param {Object} boss - The endboss instance
+     * @returns {string} The formatted HTML string
+     */
+    getEndbossDebugHtml(boss) {
+        const displayX = boss.otherDirection ? Math.round(boss.x) : Math.round(boss.x + boss.width);
+        return `
             <strong>Endboss Debug:</strong><br>
             Position: (${displayX})<br>
             StartX: ${Math.round(boss.startX)}<br>

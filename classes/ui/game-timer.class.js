@@ -68,12 +68,27 @@ class GameTimer extends DrawableObject {
      */
     draw(ctx) {
         ctx.save();
+        this.drawBackground(ctx);
+        this.drawTimeText(ctx);
+        ctx.restore();
+    }
 
+    /**
+     * Draws the semitransparent rounded rectangle background for the timer.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    drawBackground(ctx) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.beginPath();
         this.drawRoundedRect(ctx, this.x, this.y, this.width, this.height, 8);
         ctx.fill();
+    }
 
+    /**
+     * Draws the current formatted time text onto the canvas context.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
+    drawTimeText(ctx) {
         ctx.font = 'bold 18px Rye, Arial';
         ctx.fillStyle = '#FFD700';
         ctx.textAlign = 'center';
@@ -83,8 +98,6 @@ class GameTimer extends DrawableObject {
             this.x + this.width / 2,
             this.y + this.height / 2
         );
-
-        ctx.restore();
     }
 
     /**

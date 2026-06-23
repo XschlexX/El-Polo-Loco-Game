@@ -260,19 +260,38 @@ class Character extends MovableObjects {
      * Handles character death: plays death sound, disables keyboard input, and shows defeat screen.
      */
     characterDeadHandler() {
+        this.playDeathSound();
+        this.disableKeyboardInput();
+        this.playAnimation(this.images.imagesDead);
+        this.triggerDefeatScreen();
+    }
+
+    /**
+     * Plays the death sound if it has not been played yet.
+     */
+    playDeathSound() {
         if (this.world?.soundManager && !this.deathSoundPlayed) {
             this.world.soundManager.play('characterDead');
             this.deathSoundPlayed = true;
         }
+    }
 
+    /**
+     * Disables the active keyboard input and resets all key states to false.
+     */
+    disableKeyboardInput() {
         if (this.world?.keyboard) {
             keyboardActive = false;
             Object.keys(this.world.keyboard).forEach(key => {
                 this.world.keyboard[key] = false;
             });
         }
+    }
 
-        this.playAnimation(this.images.imagesDead);
+    /**
+     * Triggers the defeat screen if it has not been shown yet.
+     */
+    triggerDefeatScreen() {
         if (!this.defeatScreenShown) {
             showYouLostScreen(1000);
             this.defeatScreenShown = true;
@@ -284,25 +303,43 @@ class Character extends MovableObjects {
      * Camera follows character asymmetrically with smooth easing transition
      */
     updateCamera() {
-        const offsetFromEdge = 50;
+        const targetX = this.calculateTargetCameraX();
+        const clampedTargetX = this.clampCameraX(targetX);
+        this.applyCameraEasing(clampedTargetX);
+    }
+
+    /**
+     * Calculates the target camera position based on character direction and offset.
+     * @returns {number} The calculated target camera position.
+     */
+    calculateTargetCameraX() {
+        const offset = 50;
+        if (this.otherDirection) {
+            return -this.x + (canvasWidth - offset - this.width);
+        }
+        return -this.x + offset;
+    }
+
+    /**
+     * Clamps the given camera coordinate within level boundaries.
+     * @param {number} x - The camera position to clamp.
+     * @returns {number} The clamped camera position.
+     */
+    clampCameraX(x) {
         const minCameraX = -levelStart;
         const maxCameraX = -(levelEnd - canvasWidth);
+        return Math.min(Math.max(x, maxCameraX), minCameraX);
+    }
 
-        let targetCameraX;
-
-        if (this.otherDirection) {
-            targetCameraX = -this.x + (canvasWidth - offsetFromEdge - this.width);
-        } else {
-            targetCameraX = -this.x + offsetFromEdge;
-        }
-
-        targetCameraX = Math.min(Math.max(targetCameraX, maxCameraX), minCameraX);
-
-        const currentCameraX = this.world.camera_x;
-        const cameraDiff = targetCameraX - currentCameraX;
-        const newCameraX = currentCameraX + (cameraDiff * this.cameraEasingSpeed);
-
-        this.world.camera_x = Math.round(newCameraX);
+    /**
+     * Applies easing interpolation between current camera position and target.
+     * @param {number} targetX - The clamped target camera position.
+     */
+    applyCameraEasing(targetX) {
+        const currentX = this.world.camera_x;
+        const diff = targetX - currentX;
+        const newX = currentX + (diff * this.cameraEasingSpeed);
+        this.world.camera_x = Math.round(newX);
     }
 }
 

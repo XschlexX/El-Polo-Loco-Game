@@ -100,17 +100,35 @@ class Endboss extends MovableObjects {
         if (!this.state.isChasing) return false;
         const character = this.world?.character;
         if (character.x > this.x) {
-            const newX = this.x + this.movement.chasingSpeed;
-            if (newX <= this.maxX) this.x = newX;
-            this.otherDirection = false;
-            this.ramming.direction = 1;
+            this.chaseRight();
         } else {
-            const newX = this.x - this.movement.chasingSpeed;
-            if (newX >= levelStart) this.x = newX;
-            this.otherDirection = true;
-            this.ramming.direction = -1;
+            this.chaseLeft();
         }
         return true;
+    }
+
+    /**
+     * Moves the endboss to the right towards the character.
+     */
+    chaseRight() {
+        const newX = this.x + this.movement.chasingSpeed;
+        if (newX <= this.maxX) {
+            this.x = newX;
+        }
+        this.otherDirection = false;
+        this.ramming.direction = 1;
+    }
+
+    /**
+     * Moves the endboss to the left towards the character.
+     */
+    chaseLeft() {
+        const newX = this.x - this.movement.chasingSpeed;
+        if (newX >= levelStart) {
+            this.x = newX;
+        }
+        this.otherDirection = true;
+        this.ramming.direction = -1;
     }
 
     /** Handles patrol movement between boundaries */
