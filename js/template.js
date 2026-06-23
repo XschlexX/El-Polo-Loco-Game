@@ -9,6 +9,7 @@ function mainScreenTemplate() {
             <div class="startscreen-controls">
                 <button class="button" onclick="showInfoScreen()">INFO</button>
                 <button class="button" onclick="showSettingsScreen()">SETTINGS</button>
+                <button class="button" onclick="showImpressumScreen()">IMPRESSUM</button>
             </div>
                 <button id="unmute-btn" onclick="toggleSoundButton()" class="unmute-button" style="display: none;" title="Disable Sound">
                     <img src="assets/icon/unmute.png" alt="unmute">
@@ -61,7 +62,6 @@ function infoScreenTemplate() {
                         <div>Throw Bottle</div>
                     </div>
                 </div>
-                <button class="button" onclick="showImpressumScreen()">IMPRESSUM</button>
                 <button class="button" onclick="mainScreen()">BACK</button>
             </div>
         </div>
@@ -113,7 +113,7 @@ function impressumScreenTemplate() {
                     </span>
                 </div>
             </div>
-            <button class="button" onclick="showInfoScreen()">BACK</button>
+            <button class="button" onclick="mainScreen()">BACK</button>
         </div>
     `;
 }
