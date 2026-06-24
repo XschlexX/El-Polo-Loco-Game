@@ -134,54 +134,29 @@ class StatusBar extends DrawableObject {
      * Adjusts position and dimensions based on the statusbar type and render variant.
      */
     setPosition() {
-        if (this.statusbar === 'imagesHealthBar') this.positionHealthBar();
-        else if (this.statusbar === 'imagesBottleBar') this.positionBottleBar();
-        else if (this.statusbar === 'imagesCoinBar') this.positionCoinBar();
-        else if (this.statusbar === 'imagesHealthBarEndboss') this.positionEndbossBar();
+        const configs = {
+            imagesHealthBar: { gapMultiplier: 0, dx: -15, dy: -4, hScale: 1.35, wScale: 1.1 },
+            imagesBottleBar: { gapMultiplier: 1, dx: -8, dy: -10, hScale: 1.7, wScale: 0.45 },
+            imagesCoinBar: { gapMultiplier: 2, dx: -15, dy: -8, hScale: 1.55, wScale: 1.0 },
+            imagesHealthBarEndboss: { gapMultiplier: 0, dx: 0, dy: -15, hScale: 2.5, wScale: 1.1, isEndboss: true }
+        };
+        this.positionBar(configs[this.statusbar]);
     }
 
-    /** Positions the health bar icon */
-    positionHealthBar() {
-        if (this.type !== 2) return;
-        this.x = this.x - 15;
-        this.y = this.y - 4;
-        this.height = this.height * 1.35;
-        this.width = this.height * 1.1;
-    }
-
-    /** Positions the bottle bar elements */
-    positionBottleBar() {
-        if (this.type === 0 || this.type === 1) {
-            this.y = this.y + this.gap;
-        } else if (this.type === 2) {
-            this.x = this.x - 8;
-            this.y = this.y - 10 + this.gap;
-            this.height = this.height * 1.7;
-            this.width = this.height * 0.45;
-        }
-    }
-
-    /** Positions the coin bar elements */
-    positionCoinBar() {
-        if (this.type === 0 || this.type === 1) {
-            this.y = this.y + this.gap * 2;
-        } else if (this.type === 2) {
-            this.x = this.x - 15;
-            this.y = this.y - 8 + this.gap * 2;
-            this.height = this.height * 1.55;
-            this.width = this.height;
-        }
-    }
-
-    /** Positions the endboss health bar elements */
-    positionEndbossBar() {
-        if (this.type === 0 || this.type === 1) {
+    /**
+     * Positions statusbar components based on their configuration.
+     * @param {Object} config - The positioning configuration for the bar
+     */
+    positionBar(config) {
+        this.y += config.gapMultiplier * this.gap;
+        if (this.type === 2) {
+            this.x += config.dx;
+            this.y += config.dy;
+            this.height *= config.hScale;
+            this.width = this.height * config.wScale;
+            if (config.isEndboss) this.x = 720 - this.width - 6;
+        } else if (config.isEndboss) {
             this.x = 720 - this.width - this.x;
-        } else if (this.type === 2) {
-            this.y = this.y - 15;
-            this.height = this.height * 2.5;
-            this.width = this.height * 1.1;
-            this.x = 720 - this.width - 6;
         }
     }
 }
