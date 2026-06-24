@@ -88,7 +88,7 @@ const WorldRenderingMixin = {
      */
     drawParallaxLayers(factorGroups, sortedFactors) {
         sortedFactors.forEach(factor => {
-            const offset = this.camera_x * factor;
+            const offset = Math.round(this.camera_x * factor);
             this.ctx.translate(offset, 0);
             this.addObjectsToMap(factorGroups[factor]);
             this.ctx.translate(-offset, 0);
